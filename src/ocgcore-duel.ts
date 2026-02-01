@@ -24,7 +24,6 @@ import {
   LEN_HEADER,
 } from './constants';
 import {
-  decodeUtf8,
   parseCardQuery,
   parseFieldCardQuery,
   parseFieldInfo,
@@ -33,7 +32,7 @@ import {
 } from './adapters/ocgcore-parsers';
 import { normalizeStartDuelOptions } from './adapters/start-duel';
 import { OcgcoreWrapper } from './ocgcore-wrapper';
-import { encodeUtf8 } from './utility/utf8';
+import { decodeUtf8, encodeUtf8 } from './utility/utf8';
 
 export class OcgcoreDuel {
   private returnPtr = 0;

@@ -2,29 +2,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
-import { MapReader } from '../src/adapters';
+import { DirReader } from '../src/adapters';
 import type { CardData } from '../src/types/card-data';
 import { OcgcoreScriptConstants } from '../src/vendor/script-constants';
-
-function collectLuaScripts(
-  baseDir: string,
-  dir: string,
-  map: Map<string, Uint8Array>,
-): void {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      collectLuaScripts(baseDir, fullPath, map);
-      continue;
-    }
-    if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.lua')) {
-      continue;
-    }
-    const relPath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
-    map.set(relPath, fs.readFileSync(fullPath));
-  }
-}
 
 describe('ocgcore wasm flow', () => {
   jest.setTimeout(30000);
@@ -44,10 +24,7 @@ describe('ocgcore wasm flow', () => {
       }
     }
 
-    const scriptMap = new Map<string, Uint8Array>();
-    collectLuaScripts(baseDir, baseDir, scriptMap);
-    // console.log(scriptMap.keys())
-    wrapper.setScriptReader(MapReader(scriptMap));
+    wrapper.setScriptReader(DirReader(baseDir));
 
     wrapper.setCardReader((cardId): CardData => ({
       code: cardId,

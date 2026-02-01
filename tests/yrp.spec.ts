@@ -5,29 +5,9 @@ import initSqlJs from 'sql.js';
 
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
 import { playYrp } from '../src/play-yrp';
-import { MapReader } from '../src/adapters';
+import { DirReader } from '../src/adapters';
 import { createSqljsCardReader } from '../src/sqljs-card-reader';
 import { OcgcoreCommonConstants } from '../src/vendor/ocgcore-constants';
-
-function collectLuaScripts(
-  baseDir: string,
-  dir: string,
-  map: Map<string, Uint8Array>,
-): void {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      collectLuaScripts(baseDir, fullPath, map);
-      continue;
-    }
-    if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.lua')) {
-      continue;
-    }
-    const relPath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
-    map.set(relPath, fs.readFileSync(fullPath));
-  }
-}
 
 describe('playYrp', () => {
   jest.setTimeout(60000);
@@ -54,9 +34,7 @@ describe('playYrp', () => {
     const wrapper = await createOcgcoreWrapper({ wasmBinary });
 
     try {
-      const scriptMap = new Map<string, Uint8Array>();
-      collectLuaScripts(scriptDir, scriptDir, scriptMap);
-      wrapper.setScriptReader(MapReader(scriptMap));
+      wrapper.setScriptReader(DirReader(scriptDir));
 
       const SQL = await initSqlJs();
       const db = new SQL.Database(fs.readFileSync(cardsPath));

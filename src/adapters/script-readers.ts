@@ -30,6 +30,52 @@ function buildCandidates(filename: string): string[] {
   return candidates;
 }
 
+function getNodeFs(): { existsSync: (p: string) => boolean; readFileSync: (p: string) => Uint8Array } {
+  const req =
+    (typeof require !== 'undefined' && require) ||
+    (Function('return typeof require !== "undefined" && require')() as
+      | ((id: string) => unknown)
+      | false);
+  if (!req) {
+    throw new Error('DirReader requires Node.js fs module.');
+  }
+  try {
+    return req('node:fs') as { existsSync: (p: string) => boolean; readFileSync: (p: string) => Uint8Array };
+  } catch {
+    return req('fs') as { existsSync: (p: string) => boolean; readFileSync: (p: string) => Uint8Array };
+  }
+}
+
+function getNodePath(): { join: (...parts: string[]) => string } | null {
+  const req =
+    (typeof require !== 'undefined' && require) ||
+    (Function('return typeof require !== "undefined" && require')() as
+      | ((id: string) => unknown)
+      | false);
+  if (!req) {
+    return null;
+  }
+  try {
+    return req('node:path') as { join: (...parts: string[]) => string };
+  } catch {
+    try {
+      return req('path') as { join: (...parts: string[]) => string };
+    } catch {
+      return null;
+    }
+  }
+}
+
+function joinPath(baseDir: string, relativePath: string): string {
+  const pathMod = getNodePath();
+  if (pathMod) {
+    return pathMod.join(baseDir, relativePath);
+  }
+  const trimmedBase = baseDir.replace(/[/\\]+$/, '');
+  const trimmedRel = relativePath.replace(/^[/\\]+/, '');
+  return `${trimmedBase}/${trimmedRel}`;
+}
+
 export function MapReader(
   ...maps: Array<Map<string, string | Uint8Array>>
 ): ScriptReader {
@@ -43,6 +89,27 @@ export function MapReader(
       for (const map of maps) {
         if (map.has(candidate)) {
           return map.get(candidate) ?? null;
+        }
+      }
+    }
+    return null;
+  };
+}
+
+export function DirReader(...baseDirs: string[]): ScriptReader {
+  const fs = getNodeFs();
+  return (path) => {
+    const filename = normalizePath(path);
+    if (!filename.toLowerCase().endsWith('.lua')) {
+      return null;
+    }
+    const candidates = buildCandidates(filename);
+    for (const baseDir of baseDirs) {
+      for (const candidate of candidates) {
+        const normalized = candidate.startsWith('/') ? candidate.slice(1) : candidate;
+        const fullPath = joinPath(baseDir, normalized);
+        if (fs.existsSync(fullPath)) {
+          return fs.readFileSync(fullPath);
         }
       }
     }

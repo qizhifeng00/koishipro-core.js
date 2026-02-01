@@ -10,12 +10,7 @@ import {
 import { LEN_HEADER } from '../constants';
 import { OcgcoreCommonConstants } from '../vendor/ocgcore-constants';
 import { readI32, readU16, readU32, readU8 } from '../utility/binary';
-
-const decoder = new TextDecoder('utf-8');
-
-export function decodeUtf8(value: Uint8Array): string {
-  return decoder.decode(value);
-}
+import { decodeUtf8 } from '../utility/utf8';
 
 function parseCardInfo(payload: Uint8Array): OcgcoreCardInfo {
   let offset = 0;

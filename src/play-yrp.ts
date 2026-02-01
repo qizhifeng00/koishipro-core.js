@@ -150,18 +150,6 @@ export const playYrp = (
 
     while (true) {
       const { raw, status } = duel.process();
-      console.log(
-        'Duel process status:',
-        status,
-        'Message length:',
-        raw.length,
-        'Message:',
-        raw[0],
-        'Message string:',
-        Object.entries(OcgcoreCommonConstants).find(
-          ([k, v]) => v === raw[0] && k.startsWith('MSG_'),
-        )?.[0] ?? 'Unknown',
-      );
       messages.push(raw);
 
       if (raw.length > 0 && raw[0] === OcgcoreCommonConstants.MSG_RETRY) {

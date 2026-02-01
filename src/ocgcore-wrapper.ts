@@ -17,6 +17,13 @@ export class OcgcoreWrapper {
   private cardReaderFunc = 0;
   private messageHandlerFunc = 0;
 
+  private scriptReaders: ScriptReader[] = [];
+  private cardReaders: Array<(cardId: number) => CardDataInput | null | undefined> =
+    [];
+  private messageHandlers: Array<
+    (duel: OcgcoreDuel, message: string, type: OcgcoreMessageType | number) => void
+  > = [];
+
   private heapU8: Uint8Array;
   private heapView: DataView;
   private encoder = new TextEncoder();
@@ -31,6 +38,116 @@ export class OcgcoreWrapper {
     this.heapView = new DataView(this.heapU8.buffer);
     this.scriptBufferSize = options?.scriptBufferSize ?? 0x100000;
     this.logBufferSize = options?.logBufferSize ?? 1024;
+
+    this.scriptReaderFunc = this.createFunction((scriptPtr, lenPtr) => {
+      const scriptPath = this.getUTF8String(scriptPtr);
+      let content: string | Uint8Array | null | undefined;
+      for (const reader of this.scriptReaders) {
+        try {
+          content = reader(scriptPath);
+        } catch {
+          content = null;
+        }
+        if (content != null) {
+          break;
+        }
+      }
+      if (content == null) {
+        return 0;
+      }
+
+      if (!this.scriptBufferPtr) {
+        this.scriptBufferPtr = this.ocgcoreModule._malloc(this.scriptBufferSize);
+      }
+
+      const bytes =
+        typeof content === 'string' ? this.encoder.encode(content) : content;
+      if (bytes.length > this.scriptBufferSize) {
+        this.ocgcoreModule._free(this.scriptBufferPtr);
+        this.scriptBufferPtr = this.ocgcoreModule._malloc(bytes.length);
+        this.scriptBufferSize = bytes.length;
+      }
+
+      this.heapU8.set(bytes, this.scriptBufferPtr);
+      this.heapView.setInt32(lenPtr, bytes.length, true);
+      return this.scriptBufferPtr;
+    }, 'iii');
+    this.ocgcoreModule._set_script_reader(this.scriptReaderFunc);
+
+    this.cardReaderFunc = this.createFunction((cardId, cardDataPtr) => {
+      let data: CardDataInput | null | undefined;
+      for (const reader of this.cardReaders) {
+        try {
+          data = reader(cardId);
+        } catch {
+          data = null;
+        }
+        if (data) {
+          break;
+        }
+      }
+      if (!data) {
+        return 0;
+      }
+
+      const CardDataCtor = CardDataStruct as unknown as {
+        new (): CardDataStructInstance;
+      };
+      let buf: Uint8Array;
+      if (data instanceof CardDataCtor) {
+        buf = CardDataStruct.raw(data) as Uint8Array;
+      } else {
+        const cardData = new CardDataCtor();
+        cardData.code = data.code;
+        cardData.alias = data.alias;
+        const targetSetcode = cardData.setcode;
+        targetSetcode.fill(0);
+        if (data.setcode instanceof Uint16Array && data.setcode.length === 16) {
+          targetSetcode.set(data.setcode);
+        } else {
+          for (let i = 0; i < 16 && i < data.setcode.length; i++) {
+            targetSetcode[i] = data.setcode[i];
+          }
+        }
+        cardData.type = data.type;
+        cardData.level = data.level;
+        cardData.attribute = data.attribute;
+        cardData.race = data.race;
+        cardData.attack = data.attack;
+        cardData.defense = data.defense;
+        cardData.lscale = data.lscale;
+        cardData.rscale = data.rscale;
+        cardData.linkMarker = data.linkMarker;
+        buf = CardDataStruct.raw(cardData) as Uint8Array;
+      }
+
+      this.heapU8.set(buf, cardDataPtr);
+      return 0;
+    }, 'iii');
+    this.ocgcoreModule._set_card_reader(this.cardReaderFunc);
+
+    this.messageHandlerFunc = this.createFunction((duelPtr, messageType) => {
+      if (!this.logBufferPtr) {
+        this.logBufferPtr = this.ocgcoreModule._malloc(this.logBufferSize);
+      }
+      this.ocgcoreModule._get_log_message(duelPtr, this.logBufferPtr);
+      const message = this.getUTF8String(this.logBufferPtr);
+      const type =
+        messageType === 1
+          ? OcgcoreMessageType.ScriptError
+          : messageType === 2
+            ? OcgcoreMessageType.DebugMessage
+            : messageType;
+      const duel = this.getOrCreateDuel(duelPtr);
+      for (const handler of this.messageHandlers) {
+        try {
+          handler(duel, message, type);
+        } catch {
+          // ignore handler errors
+        }
+      }
+    }, 'iii');
+    this.ocgcoreModule._set_message_handler(this.messageHandlerFunc);
   }
 
   getUTF8String(ptr: number): string {
@@ -110,7 +227,7 @@ export class OcgcoreWrapper {
     return this.getOrCreateDuel(duelPtr);
   }
 
-  defaultScriptReader(namePtr: number, dataPtr: number): number {
+  _defaultScriptReader(namePtr: number, dataPtr: number): number {
     return this.ocgcoreModule._default_script_reader(namePtr, dataPtr);
   }
 
@@ -122,99 +239,27 @@ export class OcgcoreWrapper {
     this.ocgcoreModule._free(ptr);
   }
 
-  _setScriptReader(funcPtr: number): void {
-    this.ocgcoreModule._set_script_reader(funcPtr);
-  }
-
-  _setCardReader(funcPtr: number): void {
-    this.ocgcoreModule._set_card_reader(funcPtr);
-  }
-
-  _setMessageHandler(funcPtr: number): void {
-    this.ocgcoreModule._set_message_handler(funcPtr);
-  }
-
-  stdioExit(): void {
+  _stdioExit(): void {
     this.ocgcoreModule.___stdio_exit();
   }
 
-  setScriptReader(reader: ScriptReader): void {
-    if (this.scriptReaderFunc) {
-      this.ocgcoreModule.removeFunction(this.scriptReaderFunc);
+  setScriptReader(reader: ScriptReader, reset = false): this {
+    if (reset) {
+      this.scriptReaders = [];
     }
-
-    if (!this.scriptBufferPtr) {
-      this.scriptBufferPtr = this.ocgcoreModule._malloc(this.scriptBufferSize);
-    }
-
-    this.scriptReaderFunc = this.createFunction((scriptPtr, lenPtr) => {
-      const scriptPath = this.getUTF8String(scriptPtr);
-      const content = reader(scriptPath);
-      if (content == null) {
-        return 0;
-      }
-
-      const bytes =
-        typeof content === 'string' ? this.encoder.encode(content) : content;
-      if (bytes.length > this.scriptBufferSize) {
-        this.ocgcoreModule._free(this.scriptBufferPtr);
-        this.scriptBufferPtr = this.ocgcoreModule._malloc(bytes.length);
-        this.scriptBufferSize = bytes.length;
-      }
-
-      this.heapU8.set(bytes, this.scriptBufferPtr);
-      this.heapView.setInt32(lenPtr, bytes.length, true);
-      return this.scriptBufferPtr;
-    }, 'iii');
-
-    this._setScriptReader(this.scriptReaderFunc);
+    this.scriptReaders.push(reader);
+    return this;
   }
 
-  setCardReader(reader: (cardId: number) => CardDataInput): void {
-    if (this.cardReaderFunc) {
-      this.ocgcoreModule.removeFunction(this.cardReaderFunc);
+  setCardReader(
+    reader: (cardId: number) => CardDataInput | null | undefined,
+    reset = false,
+  ): this {
+    if (reset) {
+      this.cardReaders = [];
     }
-
-    this.cardReaderFunc = this.createFunction((cardId, cardDataPtr) => {
-      const data = reader(cardId);
-      if (!data) {
-        return 0;
-      }
-
-      const CardDataCtor = CardDataStruct as unknown as { new (): CardDataStructInstance };
-      let buf: Uint8Array;
-      if (data instanceof CardDataCtor) {
-        buf = CardDataStruct.raw(data) as Uint8Array;
-      } else {
-        const cardData = new CardDataCtor();
-        cardData.code = data.code;
-        cardData.alias = data.alias;
-        const targetSetcode = cardData.setcode;
-        targetSetcode.fill(0);
-        if (data.setcode instanceof Uint16Array && data.setcode.length === 16) {
-          targetSetcode.set(data.setcode);
-        } else {
-          for (let i = 0; i < 16 && i < data.setcode.length; i++) {
-            targetSetcode[i] = data.setcode[i];
-          }
-        }
-        cardData.type = data.type;
-        cardData.level = data.level;
-        cardData.attribute = data.attribute;
-        cardData.race = data.race;
-        cardData.attack = data.attack;
-        cardData.defense = data.defense;
-        cardData.lscale = data.lscale;
-        cardData.rscale = data.rscale;
-        cardData.linkMarker = data.linkMarker;
-        buf = CardDataStruct.raw(cardData) as Uint8Array;
-      }
-
-      this.heapU8.set(buf, cardDataPtr);
-      return 0;
-    }, 'iii');
-
-    this._setCardReader(this.cardReaderFunc);
+    this.cardReaders.push(reader);
+    return this;
   }
 
   setMessageHandler(
@@ -223,25 +268,13 @@ export class OcgcoreWrapper {
       message: string,
       type: OcgcoreMessageType | number,
     ) => void,
-  ): void {
-    if (!this.logBufferPtr) {
-      this.logBufferPtr = this.ocgcoreModule._malloc(this.logBufferSize);
+    reset = false,
+  ): this {
+    if (reset) {
+      this.messageHandlers = [];
     }
-    if (this.messageHandlerFunc) {
-      this.ocgcoreModule.removeFunction(this.messageHandlerFunc);
-    }
-    this.messageHandlerFunc = this.createFunction((duelPtr, messageType) => {
-      this.ocgcoreModule._get_log_message(duelPtr, this.logBufferPtr);
-      const message = this.getUTF8String(this.logBufferPtr);
-      const type =
-        messageType === 1
-          ? OcgcoreMessageType.ScriptError
-          : messageType === 2
-            ? OcgcoreMessageType.DebugMessage
-            : messageType;
-      handler(this.getOrCreateDuel(duelPtr), message, type);
-    }, 'iii');
-    this._setMessageHandler(this.messageHandlerFunc);
+    this.messageHandlers.push(handler);
+    return this;
   }
 
   getOrCreateDuel(duelPtr: number): OcgcoreDuel {
