@@ -1,6 +1,9 @@
 import { Buffer } from 'buffer';
 
-if (typeof globalThis !== 'undefined' && !(globalThis as { Buffer?: unknown }).Buffer) {
+if (
+  typeof globalThis !== 'undefined' &&
+  !(globalThis as { Buffer?: unknown }).Buffer
+) {
   (globalThis as { Buffer?: unknown }).Buffer = Buffer;
 }
 

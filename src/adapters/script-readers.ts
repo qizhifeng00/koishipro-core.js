@@ -23,14 +23,19 @@ function buildCandidates(filename: string): string[] {
   for (const entry of entries) {
     candidates.push(entry);
     if (!entry.startsWith('./')) {
-      const dotEntry = entry.startsWith('/') ? `./${entry.slice(1)}` : `./${entry}`;
+      const dotEntry = entry.startsWith('/')
+        ? `./${entry.slice(1)}`
+        : `./${entry}`;
       candidates.push(dotEntry);
     }
   }
   return candidates;
 }
 
-function getNodeFs(): { existsSync: (p: string) => boolean; readFileSync: (p: string) => Uint8Array } {
+function getNodeFs(): {
+  existsSync: (p: string) => boolean;
+  readFileSync: (p: string) => Uint8Array;
+} {
   const req =
     (typeof require !== 'undefined' && require) ||
     (Function('return typeof require !== "undefined" && require')() as
@@ -40,9 +45,15 @@ function getNodeFs(): { existsSync: (p: string) => boolean; readFileSync: (p: st
     throw new Error('DirReader requires Node.js fs module.');
   }
   try {
-    return req('node:fs') as { existsSync: (p: string) => boolean; readFileSync: (p: string) => Uint8Array };
+    return req('node:fs') as {
+      existsSync: (p: string) => boolean;
+      readFileSync: (p: string) => Uint8Array;
+    };
   } catch {
-    return req('fs') as { existsSync: (p: string) => boolean; readFileSync: (p: string) => Uint8Array };
+    return req('fs') as {
+      existsSync: (p: string) => boolean;
+      readFileSync: (p: string) => Uint8Array;
+    };
   }
 }
 
@@ -106,7 +117,9 @@ export function DirReader(...baseDirs: string[]): ScriptReader {
     const candidates = buildCandidates(filename);
     for (const baseDir of baseDirs) {
       for (const candidate of candidates) {
-        const normalized = candidate.startsWith('/') ? candidate.slice(1) : candidate;
+        const normalized = candidate.startsWith('/')
+          ? candidate.slice(1)
+          : candidate;
         const fullPath = joinPath(baseDir, normalized);
         if (fs.existsSync(fullPath)) {
           return fs.readFileSync(fullPath);

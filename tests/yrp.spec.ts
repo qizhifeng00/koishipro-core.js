@@ -47,7 +47,8 @@ describe('playYrp', () => {
       const yrpBytes = fs.readFileSync(yrpPath);
       const messages = playYrp(wrapper, new Uint8Array(yrpBytes));
       const newTurnCount = messages.filter(
-        (msg) => msg.length > 0 && msg[0] === OcgcoreCommonConstants.MSG_NEW_TURN,
+        (msg) =>
+          msg.length > 0 && msg[0] === OcgcoreCommonConstants.MSG_NEW_TURN,
       ).length;
 
       expect(newTurnCount).toBeGreaterThanOrEqual(2);

@@ -16,10 +16,12 @@ export async function createOcgcoreWrapper(
     ...options.moduleOverrides,
   };
   if (options.wasmBinary) {
-    overrides.wasmBinary = options.wasmBinary as unknown as OcgcoreModule['wasmBinary'];
+    overrides.wasmBinary =
+      options.wasmBinary as unknown as OcgcoreModule['wasmBinary'];
   }
   if (options.locateFile) {
-    overrides.locateFile = options.locateFile as unknown as OcgcoreModule['locateFile'];
+    overrides.locateFile =
+      options.locateFile as unknown as OcgcoreModule['locateFile'];
   }
   const moduleInstance = await factory(overrides);
   return new OcgcoreWrapper(moduleInstance);

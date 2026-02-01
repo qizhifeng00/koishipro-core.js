@@ -13,5 +13,5 @@ export function normalizeStartDuelOptions(
       duelOptions = (duelOptions | flag) >>> 0;
     }
   }
-  return ((((duelRule & 0xffff) << 16) | (duelOptions & 0xffff)) >>> 0);
+  return (((duelRule & 0xffff) << 16) | (duelOptions & 0xffff)) >>> 0;
 }

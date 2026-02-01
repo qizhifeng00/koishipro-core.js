@@ -31,10 +31,10 @@ function toUint16ArrayFromSetcode(value: number | bigint): Uint16Array {
 
 function mapRowToCardData(row: SqljsRow): CardData {
   const type = (row.type ?? 0) >>> 0;
-  let attack = row.atk ?? 0;
+  const attack = row.atk ?? 0;
   let defense = row.def ?? 0;
   let linkMarker = 0;
-  if (((type & OcgcoreCommonConstants.TYPE_LINK) >>> 0) !== 0) {
+  if ((type & OcgcoreCommonConstants.TYPE_LINK) >>> 0 !== 0) {
     linkMarker = defense;
     defense = 0;
   }
@@ -82,7 +82,12 @@ function queryOne(db: Database, cardId: number): CardData | null {
   const res = db.exec(
     `SELECT id, alias, setcode, type, atk, def, level, race, attribute FROM datas WHERE id = ${cardId}`,
   );
-  if (!res || res.length === 0 || !res[0].values || res[0].values.length === 0) {
+  if (
+    !res ||
+    res.length === 0 ||
+    !res[0].values ||
+    res[0].values.length === 0
+  ) {
     return null;
   }
   const row = res[0].values[0] as unknown[];

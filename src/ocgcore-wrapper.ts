@@ -18,10 +18,15 @@ export class OcgcoreWrapper {
   private messageHandlerFunc = 0;
 
   private scriptReaders: ScriptReader[] = [];
-  private cardReaders: Array<(cardId: number) => CardDataInput | null | undefined> =
-    [];
+  private cardReaders: Array<
+    (cardId: number) => CardDataInput | null | undefined
+  > = [];
   private messageHandlers: Array<
-    (duel: OcgcoreDuel, message: string, type: OcgcoreMessageType | number) => void
+    (
+      duel: OcgcoreDuel,
+      message: string,
+      type: OcgcoreMessageType | number,
+    ) => void
   > = [];
 
   private heapU8: Uint8Array;
@@ -57,7 +62,9 @@ export class OcgcoreWrapper {
       }
 
       if (!this.scriptBufferPtr) {
-        this.scriptBufferPtr = this.ocgcoreModule._malloc(this.scriptBufferSize);
+        this.scriptBufferPtr = this.ocgcoreModule._malloc(
+          this.scriptBufferSize,
+        );
       }
 
       const bytes =
@@ -173,7 +180,10 @@ export class OcgcoreWrapper {
     const encoded = args.map((item) =>
       typeof item === 'string' ? this.encoder.encode(item) : item,
     );
-    const totalLength = encoded.reduce((acc, bytes) => acc + bytes.length + 1, 0);
+    const totalLength = encoded.reduce(
+      (acc, bytes) => acc + bytes.length + 1,
+      0,
+    );
     if (totalLength > this.tmpStringBufferSize) {
       if (this.tmpStringBufferPtr) {
         this.ocgcoreModule._free(this.tmpStringBufferPtr);
@@ -201,7 +211,10 @@ export class OcgcoreWrapper {
     return this.ocgcoreModule.addFunction(fn, signature);
   }
 
-  addFunction(fn: (...args: number[]) => number | void, signature: string): number {
+  addFunction(
+    fn: (...args: number[]) => number | void,
+    signature: string,
+  ): number {
     return this.ocgcoreModule.addFunction(fn, signature);
   }
 

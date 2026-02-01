@@ -26,20 +26,22 @@ describe('ocgcore wasm flow', () => {
 
     wrapper.setScriptReader(DirReader(baseDir));
 
-    wrapper.setCardReader((cardId): CardData => ({
-      code: cardId,
-      alias: 0,
-      setcode: new Uint16Array(16),
-      type: 0x1 | 0x20,
-      level: 4,
-      attribute: 1,
-      race: 1,
-      attack: 2000,
-      defense: 1500,
-      lscale: 0,
-      rscale: 0,
-      linkMarker: 0,
-    }));
+    wrapper.setCardReader(
+      (cardId): CardData => ({
+        code: cardId,
+        alias: 0,
+        setcode: new Uint16Array(16),
+        type: 0x1 | 0x20,
+        level: 4,
+        attribute: 1,
+        race: 1,
+        attack: 2000,
+        defense: 1500,
+        lscale: 0,
+        rscale: 0,
+        linkMarker: 0,
+      }),
+    );
 
     const duel = wrapper.createDuel(23452322);
 
@@ -59,7 +61,7 @@ describe('ocgcore wasm flow', () => {
       position: OcgcoreScriptConstants.POS_FACEUP_ATTACK,
     });
 
-    duel.startDuel(((5 << 16) >>> 0));
+    duel.startDuel((5 << 16) >>> 0);
 
     const responses: Array<number> = [7, -1];
     let iterations = 0;
