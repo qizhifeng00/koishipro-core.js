@@ -46,7 +46,7 @@ describe('ocgcore wasm flow', () => {
 
     const scriptMap = new Map<string, Uint8Array>();
     collectLuaScripts(baseDir, baseDir, scriptMap);
-    console.log(scriptMap.keys())
+    // console.log(scriptMap.keys())
     wrapper.setScriptReader(MapReader(scriptMap));
 
     wrapper.setCardReader((cardId): CardData => ({

@@ -38,3 +38,4 @@ lerna-debug.log*
 /config.yaml
 /ygopro-scripts
 /ygopro-core
+/cards.cdb

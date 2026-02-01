@@ -15,7 +15,10 @@ function normalizeYrp(input: YGOProYrp | Uint8Array): YGOProYrp {
   return new YGOProYrp().fromYrp(input);
 }
 
-function createReplayDuel(wrapper: OcgcoreWrapper, yrp: YGOProYrp): OcgcoreDuel {
+function createReplayDuel(
+  wrapper: OcgcoreWrapper,
+  yrp: YGOProYrp,
+): OcgcoreDuel {
   const header = yrp.header;
   const seedSequence = header?.seedSequence ?? [];
   if (seedSequence.length > 0) {
@@ -101,7 +104,12 @@ export const playYrp = (
     setRegistryValue(duel, 'draw_count', String(yrp.drawCount));
 
     const playerNames = yrp.isTag
-      ? [yrp.hostName, yrp.tagHostName ?? '', yrp.tagClientName ?? '', yrp.clientName]
+      ? [
+          yrp.hostName,
+          yrp.tagHostName ?? '',
+          yrp.tagClientName ?? '',
+          yrp.clientName,
+        ]
       : [yrp.hostName, yrp.clientName];
     for (let i = 0; i < playerNames.length; i++) {
       setRegistryValue(duel, `player_name_${i}`, playerNames[i] ?? '');
@@ -142,10 +150,21 @@ export const playYrp = (
 
     while (true) {
       const { raw, status } = duel.process();
+      console.log(
+        'Duel process status:',
+        status,
+        'Message length:',
+        raw.length,
+        'Message:',
+        raw[0],
+        'Message string:',
+        Object.entries(OcgcoreCommonConstants).find(
+          ([k, v]) => v === raw[0] && k.startsWith('MSG_'),
+        )?.[0] ?? 'Unknown',
+      );
       messages.push(raw);
 
       if (raw.length > 0 && raw[0] === OcgcoreCommonConstants.MSG_RETRY) {
-        endDuel();
         throw new Error('Got MSG_RETRY');
       }
 
@@ -153,6 +172,9 @@ export const playYrp = (
         continue;
       }
       if (status === 1) {
+        if (raw.length === 0) {
+          continue;
+        }
         const response = responses.shift();
         if (!response) {
           break;

@@ -1,6 +1,6 @@
 {
   "name": "koishipro-core.js",
-  "description": "koishipro-core.js-desc",
+  "description": "WASM wrapper for YGOPro/ocgcore, designed for both Node and browser runtimes.",
   "version": "1.0.0",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
