@@ -19,24 +19,35 @@ npm install koishipro-core.js
 
 ## Quick Start
 ```ts
-import { createOcgcoreWrapper, ZipReader, createSqljsCardReader } from 'koishipro-core.js';
+import {
+  createOcgcoreWrapper,
+  ZipReader,
+  DirReader,
+  createSqljsCardReader,
+} from 'koishipro-core.js';
 import initSqlJs from 'sql.js';
 
 const wrapper = await createOcgcoreWrapper();
 
-// Provide scripts via zip
+// Provide scripts via zip + local directory fallback (Node only)
 const zipBytes = await fetch('/script.zip').then((r) => r.arrayBuffer());
-wrapper.setScriptReader(await ZipReader(new Uint8Array(zipBytes)));
+wrapper
+  .setScriptReader(await ZipReader(new Uint8Array(zipBytes)), true)
+  .setScriptReader(DirReader('./ygopro-scripts'));
 
 // Provide cards via sql.js
 const SQL = await initSqlJs();
 const db = new SQL.Database(await fetch('/cards.cdb').then((r) => r.arrayBuffer()));
 wrapper.setCardReader(createSqljsCardReader(db));
 
-// Optional: log messages from ocgcore
-wrapper.setMessageHandler((_duel, message, type) => {
-  console.log(type, message);
-});
+// Optional: log messages from ocgcore (multiple handlers allowed)
+wrapper
+  .setMessageHandler((_duel, message, type) => {
+    console.log(type, message);
+  }, true)
+  .setMessageHandler((_duel, message, type) => {
+    if (type === 1) console.error(message);
+  });
 
 const duel = wrapper.createDuel(1234);
 duel.setPlayerInfo({ playerId: 0, lp: 8000, startCount: 5, drawCount: 1 });
@@ -74,15 +85,18 @@ console.log('message count:', messages.length);
 - `createOcgcoreWrapper(options?)`  
   Load the ocgcore WASM module and return an `OcgcoreWrapper`.
 - `OcgcoreWrapper`  
-  Manages the WASM module, script/card/message handlers, and duel creation.
+  Manages the WASM module, script/card/message handlers, and duel creation.  
+  Script readers and handlers can be registered multiple times (fallback/fan-out).
 - `OcgcoreDuel`  
   Duel lifecycle and core engine calls (`startDuel`, `process`, `setResponse`, etc.).
 
 ### Script Readers
-- `MapReader(map)`  
-  Resolve Lua scripts from a `Map<string, string | Uint8Array>`.
-- `ZipReader(zipBytes)`  
-  Load all `.lua` files from a zip and expose them via `MapReader`.
+- `MapReader(...maps)`  
+  Resolve Lua scripts from one or more `Map<string, string | Uint8Array>` with fallback.
+- `ZipReader(...zipBytes)`  
+  Load all `.lua` files from one or more zips and expose them via `MapReader` (fallback order).
+- `DirReader(...dirs)`  
+  Node-only directory reader with the same resolution rules (fallback order).
 
 ### Replay
 - `playYrp(wrapper, yrpOrBytes)`  
