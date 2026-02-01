@@ -28,10 +28,7 @@ describe('playYrp', () => {
       throw new Error(`Missing replay file: ${yrpPath}`);
     }
 
-    const wasmBinary = fs.readFileSync(
-      path.join(process.cwd(), 'src', 'vendor', 'wasm_cjs', 'libocgcore.wasm'),
-    );
-    const wrapper = await createOcgcoreWrapper({ wasmBinary });
+    const wrapper = await createOcgcoreWrapper();
 
     try {
       wrapper.setScriptReader(DirReader(scriptDir));

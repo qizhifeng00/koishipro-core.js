@@ -37,6 +37,4 @@ export interface OcgcoreModule extends EmscriptenModule {
 
 export type OcgcoreFactory = ((
   moduleOverrides?: Partial<OcgcoreModule>
-) => Promise<OcgcoreModule>) & {
-  ready: Promise<OcgcoreModule>;
-};
+) => Promise<OcgcoreModule>);

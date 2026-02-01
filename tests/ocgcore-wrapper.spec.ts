@@ -10,10 +10,7 @@ describe('ocgcore wasm flow', () => {
   jest.setTimeout(30000);
 
   test('runs a basic duel process loop', async () => {
-    const wasmBinary = fs.readFileSync(
-      path.join(process.cwd(), 'src', 'vendor', 'wasm_cjs', 'libocgcore.wasm'),
-    );
-    const wrapper = await createOcgcoreWrapper({ wasmBinary });
+    const wrapper = await createOcgcoreWrapper();
     let baseDir = path.join(process.cwd(), 'ygopro-scripts');
     if (!fs.existsSync(baseDir)) {
       const fallback = '/home/nanahira/ygo/ygopro/script';

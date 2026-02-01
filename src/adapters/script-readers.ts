@@ -1,6 +1,8 @@
 import JSZip from 'jszip';
 
 import { ScriptReader } from '../types/ocgcore-readers';
+import { getNodeFs } from '../utility/node-fs';
+import { getNodePath } from '../utility/node-path';
 
 const SCRIPT_PREFIX = './script/';
 
@@ -30,51 +32,6 @@ function buildCandidates(filename: string): string[] {
     }
   }
   return candidates;
-}
-
-function getNodeFs(): {
-  existsSync: (p: string) => boolean;
-  readFileSync: (p: string) => Uint8Array;
-} {
-  const req =
-    (typeof require !== 'undefined' && require) ||
-    (Function('return typeof require !== "undefined" && require')() as
-      | ((id: string) => unknown)
-      | false);
-  if (!req) {
-    throw new Error('DirReader requires Node.js fs module.');
-  }
-  try {
-    return req('node:fs') as {
-      existsSync: (p: string) => boolean;
-      readFileSync: (p: string) => Uint8Array;
-    };
-  } catch {
-    return req('fs') as {
-      existsSync: (p: string) => boolean;
-      readFileSync: (p: string) => Uint8Array;
-    };
-  }
-}
-
-function getNodePath(): { join: (...parts: string[]) => string } | null {
-  const req =
-    (typeof require !== 'undefined' && require) ||
-    (Function('return typeof require !== "undefined" && require')() as
-      | ((id: string) => unknown)
-      | false);
-  if (!req) {
-    return null;
-  }
-  try {
-    return req('node:path') as { join: (...parts: string[]) => string };
-  } catch {
-    try {
-      return req('path') as { join: (...parts: string[]) => string };
-    } catch {
-      return null;
-    }
-  }
 }
 
 function joinPath(baseDir: string, relativePath: string): string {
