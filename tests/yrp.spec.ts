@@ -4,7 +4,7 @@ import path from 'node:path';
 import initSqlJs from 'sql.js';
 
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
-import { playYrp } from '../src/play-yrp';
+import { playYrp, playYrpStep } from '../src/play-yrp';
 import { DirReader } from '../src/adapters';
 import { createSqljsCardReader } from '../src/sqljs-card-reader';
 import { OcgcoreCommonConstants } from '../src/vendor/ocgcore-constants';
@@ -42,7 +42,10 @@ describe('playYrp', () => {
       });
 
       const yrpBytes = fs.readFileSync(yrpPath);
-      const messages = playYrp(wrapper, new Uint8Array(yrpBytes));
+      const messages: Uint8Array[] = [];
+      for (const res of playYrpStep(wrapper, yrpBytes)) {
+        messages.push(res.result.raw);
+      }
       const newTurnCount = messages.filter(
         (msg) =>
           msg.length > 0 && msg[0] === OcgcoreCommonConstants.MSG_NEW_TURN,

@@ -1,9 +1,6 @@
-export type NodeRequire = (id: string) => unknown;
-
 export function loadNodeModule<T>(id: string, altId?: string): T | null {
-  const req = new Function(
-    'return typeof require !== "undefined" ? require : undefined'
-  )() as NodeRequire | undefined;
+  const req =
+    typeof module.require !== 'undefined' ? module.require : undefined;
   if (!req) {
     return null;
   }

@@ -4,6 +4,7 @@ import { OcgcoreDuel } from './ocgcore-duel';
 import { OcgcoreWrapper } from './ocgcore-wrapper';
 import { OcgcoreCommonConstants } from './vendor/ocgcore-constants';
 import { OcgcoreScriptConstants } from './vendor/script-constants';
+import { OcgcoreProcessResult } from './types';
 
 const { LOCATION_DECK, LOCATION_EXTRA, POS_FACEDOWN_DEFENSE } =
   OcgcoreScriptConstants;
@@ -82,12 +83,11 @@ function setRegistryValue(duel: OcgcoreDuel, key: string, value: string): void {
   duel.setRegistryValue(key, value);
 }
 
-export const playYrp = (
+export function* playYrpStep(
   ocgcoreWrapper: OcgcoreWrapper,
   yrpInput: YGOProYrp | Uint8Array,
-): Uint8Array[] => {
+) {
   const yrp = normalizeYrp(yrpInput);
-  const messages: Uint8Array[] = [];
   const responses = yrp.responses.slice();
   const duel = createReplayDuel(ocgcoreWrapper, yrp);
   let ended = false;
@@ -149,18 +149,24 @@ export const playYrp = (
     duel.startDuel(yrp.opt >>> 0);
 
     while (true) {
-      const { raw, status } = duel.process();
-      messages.push(raw);
+      const result = duel.process();
+      yield {
+        duel,
+        result,
+      };
 
-      if (raw.length > 0 && raw[0] === OcgcoreCommonConstants.MSG_RETRY) {
+      if (
+        result.raw.length > 0 &&
+        result.raw[0] === OcgcoreCommonConstants.MSG_RETRY
+      ) {
         throw new Error('Got MSG_RETRY');
       }
 
-      if (status === 0) {
+      if (result.status === 0) {
         continue;
       }
-      if (status === 1) {
-        if (raw.length === 0) {
+      if (result.status === 1) {
+        if (result.raw.length === 0) {
           continue;
         }
         const response = responses.shift();
@@ -175,6 +181,15 @@ export const playYrp = (
   } finally {
     endDuel();
   }
+}
 
-  return messages;
+export const playYrp = (
+  ocgcoreWrapper: OcgcoreWrapper,
+  yrpInput: YGOProYrp | Uint8Array,
+) => {
+  const results: Uint8Array[] = [];
+  for (const result of playYrpStep(ocgcoreWrapper, yrpInput)) {
+    results.push(result.result.raw);
+  }
+  return results;
 };
