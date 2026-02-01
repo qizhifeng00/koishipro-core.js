@@ -31,14 +31,19 @@ function buildCandidates(filename: string): string[] {
 }
 
 export function MapReader(
-  map: Map<string, string | Uint8Array>,
+  ...maps: Array<Map<string, string | Uint8Array>>
 ): ScriptReader {
   return (path) => {
     const filename = normalizePath(path);
+    if (!filename.toLowerCase().endsWith('.lua')) {
+      return null;
+    }
     const candidates = buildCandidates(filename);
     for (const candidate of candidates) {
-      if (map.has(candidate)) {
-        return map.get(candidate) ?? null;
+      for (const map of maps) {
+        if (map.has(candidate)) {
+          return map.get(candidate) ?? null;
+        }
       }
     }
     return null;
@@ -56,24 +61,29 @@ function normalizeZipEntryName(name: string): string[] {
 }
 
 export async function ZipReader(
-  data: Uint8Array | ArrayBuffer | Blob,
+  ...inputs: Array<Uint8Array | ArrayBuffer | Blob>
 ): Promise<ScriptReader> {
-  const zip = await JSZip.loadAsync(data);
-  const map = new Map<string, string | Uint8Array>();
-  const entries = Object.values(zip.files);
-  await Promise.all(
-    entries.map(async (entry) => {
-      if (entry.dir) {
-        return;
-      }
-      if (!entry.name.toLowerCase().endsWith('.lua')) {
-        return;
-      }
-      const content = await entry.async('uint8array');
-      for (const name of normalizeZipEntryName(entry.name)) {
-        map.set(name, content);
-      }
+  const maps = await Promise.all(
+    inputs.map(async (data) => {
+      const zip = await JSZip.loadAsync(data);
+      const map = new Map<string, string | Uint8Array>();
+      const entries = Object.values(zip.files);
+      await Promise.all(
+        entries.map(async (entry) => {
+          if (entry.dir) {
+            return;
+          }
+          if (!entry.name.toLowerCase().endsWith('.lua')) {
+            return;
+          }
+          const content = await entry.async('uint8array');
+          for (const name of normalizeZipEntryName(entry.name)) {
+            map.set(name, content);
+          }
+        }),
+      );
+      return map;
     }),
   );
-  return MapReader(map);
+  return MapReader(...maps);
 }
