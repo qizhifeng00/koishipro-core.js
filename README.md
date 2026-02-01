@@ -50,6 +50,25 @@ duel.endDuel();
 wrapper.finalize();
 ```
 
+## Replay Playback
+`playYrp` replays a `.yrp/.yrp2` file by feeding responses back to ocgcore and
+collecting each engine message as `Uint8Array`. You can pass a parsed `YGOProYrp`
+instance or raw bytes.
+
+```ts
+import { createOcgcoreWrapper, playYrp } from 'koishipro-core.js';
+import { YGOProYrp } from 'ygopro-yrp-encode';
+
+const wrapper = await createOcgcoreWrapper();
+
+// ...setScriptReader / setCardReader / setMessageHandler...
+
+const yrpBytes = await fetch('/replay.yrp').then((r) => r.arrayBuffer());
+const messages = playYrp(wrapper, new Uint8Array(yrpBytes));
+console.log('message count:', messages.length);
+```
+
+
 ## API Overview
 ### Core
 - `createOcgcoreWrapper(options?)`  
@@ -68,6 +87,7 @@ wrapper.finalize();
 ### Replay
 - `playYrp(wrapper, yrpOrBytes)`  
   Run a replay and return a list of raw message `Uint8Array`s.  
+  Accepts `YGOProYrp` or raw `.yrp/.yrp2` bytes.  
   Throws `Got MSG_RETRY` if a retry is encountered.
 
 ### Card Reader
