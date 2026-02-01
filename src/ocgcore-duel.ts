@@ -138,7 +138,9 @@ export class OcgcoreDuel {
     );
   }
 
-  queryFieldCard(query: OcgcoreQueryFieldCardParams): OcgcoreFieldCardQueryResult {
+  queryFieldCard(
+    query: OcgcoreQueryFieldCardParams,
+  ): OcgcoreFieldCardQueryResult {
     const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_field_card(
       this.duelPtr,
@@ -185,7 +187,8 @@ export class OcgcoreDuel {
 
   preloadScript(scriptPath: string): void {
     this.ocgcoreWrapper.useTmpData(
-      (ptr) => this.ocgcoreWrapper.ocgcoreModule._preload_script(this.duelPtr, ptr),
+      (ptr) =>
+        this.ocgcoreWrapper.ocgcoreModule._preload_script(this.duelPtr, ptr),
       scriptPath,
     );
   }
