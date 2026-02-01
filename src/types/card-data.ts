@@ -3,7 +3,7 @@ import { CardDataStruct } from '../structs/card-data';
 export interface CardData {
   code: number;
   alias: number;
-  setcode: Uint16Array;
+  setcode: number[] | Uint16Array;
   type: number;
   level: number;
   attribute: number;
@@ -17,3 +17,4 @@ export interface CardData {
 
 export type CardDataStructInstance = InstanceType<typeof CardDataStruct>;
 export type CardDataInput = CardData | CardDataStructInstance;
+export type CardReader = (cardId: number) => CardDataInput | null;

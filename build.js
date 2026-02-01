@@ -31,6 +31,30 @@ function nodeBuiltinsExternal() {
   // 既包含 'fs' 也包含 'node:fs' 形式
   return uniq([...builtinModules, ...builtinModules.map((m) => `node:${m}`)]);
 }
+function vendorExternal() {
+  return [
+    './vendor/wasm_cjs/libocgcore.cjs',
+    './vendor/wasm_cjs/libocgcore.wasm',
+    './vendor/wasm_esm/libocgcore.mjs',
+    './vendor/wasm_esm/libocgcore.wasm',
+  ];
+}
+function copyVendorAssets(outDir = DIST_DIR) {
+  const srcVendor = path.join(process.cwd(), 'src', 'vendor');
+  const distVendor = path.join(process.cwd(), outDir, 'vendor');
+  if (!fs.existsSync(srcVendor)) return;
+  ensureDir(distVendor);
+  fs.cpSync(path.join(srcVendor, 'wasm_cjs'), path.join(distVendor, 'wasm_cjs'), {
+    recursive: true,
+  });
+  fs.cpSync(path.join(srcVendor, 'wasm_esm'), path.join(distVendor, 'wasm_esm'), {
+    recursive: true,
+  });
+  const sharedDts = path.join(srcVendor, 'libocgcore.shared.d.ts');
+  if (fs.existsSync(sharedDts)) {
+    fs.copyFileSync(sharedDts, path.join(distVendor, 'libocgcore.shared.d.ts'));
+  }
+}
 async function loadEsbuild() {
   try { return require('esbuild'); }
   catch { const mod = await import('esbuild'); return mod.build ? mod : mod.default; }
@@ -44,6 +68,9 @@ async function buildOne(format, options) {
   const { external, tsconfig, entryPoints } = options;
   const isCjs = format === 'cjs';
   const outfile = path.join(DIST_DIR, isCjs ? 'index.cjs' : 'index.mjs');
+  const resolveExtensions = isCjs
+    ? ['.cjs.ts', '.ts', '.tsx', '.js', '.jsx', '.cjs', '.mjs', '.json']
+    : ['.esm.ts', '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.json'];
 
   ensureDir(path.dirname(outfile));
   console.log(`[build] ${format} -> ${outfile}`);
@@ -56,6 +83,7 @@ async function buildOne(format, options) {
     format, // 'cjs' | 'esm'
     platform: isCjs ? 'node' : 'neutral',
     target: isCjs ? 'es2021' : 'esnext',
+    resolveExtensions,
     external, // deps + peerDeps + node builtins (含 node:*)
     logLevel: 'info',
     ...(tsconfig ? { tsconfig } : {}),
@@ -126,8 +154,9 @@ function buildTypesAPI(outDir = DIST_DIR) {
 
   const pkg = readJSONSafe('package.json');
   const externalFromPkg = depsAsExternal(pkg);
+  const vendorExt = vendorExternal();
   // 统一 external：依赖 + peer + Node 内置（含 node:*）
-  const external = uniq([...externalFromPkg, ...nodeBuiltinsExternal()]);
+  const external = uniq([...externalFromPkg, ...nodeBuiltinsExternal(), ...vendorExt]);
   const tscPath = tsconfigPath();
   const entryPoints = entryPointsFromPkg(pkg);
 
@@ -139,10 +168,12 @@ function buildTypesAPI(outDir = DIST_DIR) {
     }
     case 'cjs': {
       await buildOne('cjs', { external, tsconfig: tscPath, entryPoints });
+      copyVendorAssets(DIST_DIR);
       break;
     }
     case 'esm': {
       await buildOne('esm', { external, tsconfig: tscPath, entryPoints });
+      copyVendorAssets(DIST_DIR);
       break;
     }
     case 'types': {
@@ -157,6 +188,7 @@ function buildTypesAPI(outDir = DIST_DIR) {
       await buildOne('cjs', { external, tsconfig: tscPath, entryPoints });
       await buildOne('esm', { external, tsconfig: tscPath, entryPoints });
       buildTypesAPI(DIST_DIR);
+      copyVendorAssets(DIST_DIR);
       console.log('[build] Done.');
       break;
     }

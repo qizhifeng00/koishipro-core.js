@@ -6,9 +6,12 @@ if (typeof globalThis !== 'undefined' && !(globalThis as { Buffer?: unknown }).B
 
 export * from './src/ocgcore-wrapper';
 export * from './src/ocgcore-duel';
+export * from './src/create-ocgcore-wrapper';
 export * from './src/types';
 export * from './src/structs';
 export * from './src/adapters';
 export * from './src/constants';
 export * from './src/utility';
 export * from './src/vendor';
+export * from './src/sqljs-card-reader';
+export * from './src/play-yrp';

@@ -1,0 +1,79 @@
+import JSZip from 'jszip';
+
+import { ScriptReader } from '../types/ocgcore-readers';
+
+const SCRIPT_PREFIX = './script/';
+
+function normalizePath(input: string): string {
+  let path = input.replace(/\\/g, '/');
+  if (path.startsWith(SCRIPT_PREFIX)) {
+    path = path.slice(SCRIPT_PREFIX.length);
+  }
+  return path;
+}
+
+function buildCandidates(filename: string): string[] {
+  const entries = [
+    filename,
+    `specials/${filename}`,
+    `expansions/script/${filename}`,
+    `script/${filename}`,
+  ];
+  const candidates: string[] = [];
+  for (const entry of entries) {
+    candidates.push(entry);
+    if (!entry.startsWith('./')) {
+      const dotEntry = entry.startsWith('/') ? `./${entry.slice(1)}` : `./${entry}`;
+      candidates.push(dotEntry);
+    }
+  }
+  return candidates;
+}
+
+export function MapReader(
+  map: Map<string, string | Uint8Array>,
+): ScriptReader {
+  return (path) => {
+    const filename = normalizePath(path);
+    const candidates = buildCandidates(filename);
+    for (const candidate of candidates) {
+      if (map.has(candidate)) {
+        return map.get(candidate) ?? null;
+      }
+    }
+    return null;
+  };
+}
+
+function normalizeZipEntryName(name: string): string[] {
+  const normalized = name.replace(/\\/g, '/').replace(/^\.?\//, '');
+  const names = new Set<string>();
+  names.add(normalized);
+  if (normalized.startsWith('script/')) {
+    names.add(normalized.slice('script/'.length));
+  }
+  return Array.from(names);
+}
+
+export async function ZipReader(
+  data: Uint8Array | ArrayBuffer | Blob,
+): Promise<ScriptReader> {
+  const zip = await JSZip.loadAsync(data);
+  const map = new Map<string, string | Uint8Array>();
+  const entries = Object.values(zip.files);
+  await Promise.all(
+    entries.map(async (entry) => {
+      if (entry.dir) {
+        return;
+      }
+      if (!entry.name.toLowerCase().endsWith('.lua')) {
+        return;
+      }
+      const content = await entry.async('uint8array');
+      for (const name of normalizeZipEntryName(entry.name)) {
+        map.set(name, content);
+      }
+    }),
+  );
+  return MapReader(map);
+}

@@ -31,7 +31,9 @@ import {
   parseRegistryDump,
   parseRegistryKeys,
 } from './adapters/ocgcore-parsers';
+import { normalizeStartDuelOptions } from './adapters/start-duel';
 import { OcgcoreWrapper } from './ocgcore-wrapper';
+import { encodeUtf8 } from './utility/utf8';
 
 export class OcgcoreDuel {
   private returnPtr = 0;
@@ -46,7 +48,7 @@ export class OcgcoreDuel {
     if (!this.returnPtr) {
       this.returnPtr = this.ocgcoreWrapper.malloc(this.returnSize);
     }
-    const optionValue = this.ocgcoreWrapper.normalizeStartDuelOptions(options);
+    const optionValue = normalizeStartDuelOptions(options);
     this.ocgcoreWrapper.ocgcoreModule._start_duel(this.duelPtr, optionValue);
   }
 
@@ -86,8 +88,8 @@ export class OcgcoreDuel {
 
   process(): OcgcoreProcessResult {
     const result = this.ocgcoreWrapper.ocgcoreModule._process(this.duelPtr);
-    const length = result & 0x0fffffff;
-    const status = (result >>> 28) & 0x0f;
+    const length = (result & 0x0fffffff) >>> 0;
+    const status = ((result >>> 28) & 0x0f) >>> 0;
     const message = this.getMessage(length);
     return { length: message.length, raw: message.raw, status };
   }
@@ -194,7 +196,7 @@ export class OcgcoreDuel {
   }
 
   getRegistryValue(key: string): OcgcoreRegistryValueResult {
-    const keyBytes = this.ocgcoreWrapper.encodeUtf8(key);
+    const keyBytes = encodeUtf8(key);
     const outPtr = this.ocgcoreWrapper.malloc(REGISTRY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.useTmpData(
       (keyPtr) =>
@@ -214,8 +216,8 @@ export class OcgcoreDuel {
   }
 
   setRegistryValue(key: string, value: string): void {
-    const keyBytes = this.ocgcoreWrapper.encodeUtf8(key);
-    const valueBytes = this.ocgcoreWrapper.encodeUtf8(value);
+    const keyBytes = encodeUtf8(key);
+    const valueBytes = encodeUtf8(value);
     this.ocgcoreWrapper.useTmpData(
       (keyPtr, valuePtr) =>
         this.ocgcoreWrapper.ocgcoreModule._set_registry_value(

@@ -3,7 +3,7 @@ import { OcgcoreDuel } from './ocgcore-duel';
 import { CardDataInput, CardDataStructInstance } from './types/card-data';
 import { CardDataStruct } from './structs/card-data';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
-import { OcgcoreStartDuelOptions } from './types/ocgcore-params';
+import { ScriptReader } from './types/ocgcore-readers';
 
 export class OcgcoreWrapper {
   private scriptBufferPtr = 0;
@@ -39,24 +39,6 @@ export class OcgcoreWrapper {
       length++;
     }
     return this.decoder.decode(this.heapU8.subarray(ptr, ptr + length));
-  }
-
-  encodeUtf8(value: string): Uint8Array {
-    return this.encoder.encode(value);
-  }
-
-  normalizeStartDuelOptions(options: number | OcgcoreStartDuelOptions): number {
-    if (typeof options === 'number') {
-      return options;
-    }
-    const duelRule = options.rule ?? 0;
-    let duelOptions = options.options ?? 0;
-    if (options.flags?.length) {
-      for (const flag of options.flags) {
-        duelOptions |= flag;
-      }
-    }
-    return ((duelRule & 0xffff) << 16) | (duelOptions & 0xffff);
   }
 
   setHeap(ptr: number, data: Uint8Array): void {
@@ -156,7 +138,7 @@ export class OcgcoreWrapper {
     this.ocgcoreModule.___stdio_exit();
   }
 
-  setScriptReader(reader: (path: string) => string | Uint8Array): void {
+  setScriptReader(reader: ScriptReader): void {
     if (this.scriptReaderFunc) {
       this.ocgcoreModule.removeFunction(this.scriptReaderFunc);
     }
@@ -207,14 +189,14 @@ export class OcgcoreWrapper {
         const cardData = new CardDataCtor();
         cardData.code = data.code;
         cardData.alias = data.alias;
-        if (data.setcode.length === 16 && data.setcode instanceof Uint16Array) {
-          cardData.setcode = data.setcode;
+        const targetSetcode = cardData.setcode;
+        targetSetcode.fill(0);
+        if (data.setcode instanceof Uint16Array && data.setcode.length === 16) {
+          targetSetcode.set(data.setcode);
         } else {
-          const setcode = new Uint16Array(16);
           for (let i = 0; i < 16 && i < data.setcode.length; i++) {
-            setcode[i] = data.setcode[i];
+            targetSetcode[i] = data.setcode[i];
           }
-          cardData.setcode = setcode;
         }
         cardData.type = data.type;
         cardData.level = data.level;
