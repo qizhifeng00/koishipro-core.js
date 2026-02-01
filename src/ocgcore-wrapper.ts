@@ -3,7 +3,7 @@ import { OcgcoreDuel } from './ocgcore-duel';
 import { CardDataInput, CardDataStructInstance } from './types/card-data';
 import { CardDataStruct } from './structs/card-data';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
-import { ScriptReader } from './types/ocgcore-readers';
+import { CardReader, MessageHandler, ScriptReader } from './types/callback';
 
 export class OcgcoreWrapper {
   private scriptBufferPtr = 0;
@@ -18,16 +18,8 @@ export class OcgcoreWrapper {
   private messageHandlerFunc = 0;
 
   private scriptReaders: ScriptReader[] = [];
-  private cardReaders: Array<
-    (cardId: number) => CardDataInput | null | undefined
-  > = [];
-  private messageHandlers: Array<
-    (
-      duel: OcgcoreDuel,
-      message: string,
-      type: OcgcoreMessageType | number,
-    ) => void
-  > = [];
+  private cardReaders: CardReader[] = [];
+  private messageHandlers: MessageHandler[] = [];
 
   private heapU8: Uint8Array;
   private heapView: DataView;
@@ -140,11 +132,9 @@ export class OcgcoreWrapper {
       this.ocgcoreModule._get_log_message(duelPtr, this.logBufferPtr);
       const message = this.getUTF8String(this.logBufferPtr);
       const type =
-        messageType === 1
-          ? OcgcoreMessageType.ScriptError
-          : messageType === 2
-            ? OcgcoreMessageType.DebugMessage
-            : messageType;
+        messageType === 2
+          ? OcgcoreMessageType.DebugMessage
+          : OcgcoreMessageType.ScriptError;
       const duel = this.getOrCreateDuel(duelPtr);
       for (const handler of this.messageHandlers) {
         try {
@@ -265,7 +255,7 @@ export class OcgcoreWrapper {
   }
 
   setCardReader(
-    reader: (cardId: number) => CardDataInput | null | undefined,
+    reader: CardReader,
     reset = false,
   ): this {
     if (reset) {
@@ -276,11 +266,7 @@ export class OcgcoreWrapper {
   }
 
   setMessageHandler(
-    handler: (
-      duel: OcgcoreDuel,
-      message: string,
-      type: OcgcoreMessageType | number,
-    ) => void,
+    handler: MessageHandler,
     reset = false,
   ): this {
     if (reset) {

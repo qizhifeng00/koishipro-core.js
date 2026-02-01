@@ -17,4 +17,3 @@ export interface CardData {
 
 export type CardDataStructInstance = InstanceType<typeof CardDataStruct>;
 export type CardDataInput = CardData | CardDataStructInstance;
-export type CardReader = (cardId: number) => CardDataInput | null;

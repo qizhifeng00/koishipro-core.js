@@ -18,3 +18,4 @@ export * from './src/constants';
 export * from './src/vendor';
 export * from './src/sqljs-card-reader';
 export * from './src/play-yrp';
+export * from './src/test-card';

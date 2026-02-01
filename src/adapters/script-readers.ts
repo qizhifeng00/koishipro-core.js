@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 
-import { ScriptReader } from '../types/ocgcore-readers';
+import { ScriptReader } from '../types/callback';
 import { getNodeFs } from '../utility/node-fs';
 import { getNodePath } from '../utility/node-path';
 
