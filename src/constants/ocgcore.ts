@@ -1,4 +1,6 @@
-export const MESSAGE_BUFFER_SIZE = 0x2000;
+import { OcgcoreCommonConstants } from '../vendor/ocgcore-constants';
+
+export const MESSAGE_BUFFER_SIZE = OcgcoreCommonConstants.SIZE_MESSAGE_BUFFER;
 export const QUERY_BUFFER_SIZE = 0x4000;
 export const REGISTRY_BUFFER_SIZE = 0x2000;
 

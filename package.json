@@ -19,6 +19,7 @@
     "build:esm": "node build.js esm",
     "build:types": "node build.js types",
     "clean": "node build.js clean",
+    "gen-constants": "node scripts/gen-constants.js",
     "test": "jest --passWithNoTests",
     "start": "node dist/index.cjs",
     "fetch-ocgcore": "node scripts/download-vendor.js"

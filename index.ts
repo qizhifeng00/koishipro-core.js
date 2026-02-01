@@ -11,3 +11,4 @@ export * from './src/structs';
 export * from './src/adapters';
 export * from './src/constants';
 export * from './src/utility';
+export * from './src/vendor';

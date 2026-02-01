@@ -3,6 +3,7 @@ import {
   OcgcoreFieldCardQueryResult,
   OcgcoreFieldInfoResult,
   OcgcoreMessageResult,
+  OcgcoreProcessResult,
   OcgcoreRegistryDumpResult,
   OcgcoreRegistryKeysResult,
   OcgcoreRegistryValueResult,
@@ -75,7 +76,7 @@ export class OcgcoreDuel {
     );
   }
 
-  getMessage(length: number): OcgcoreMessageResult {
+  private getMessage(length: number): OcgcoreMessageResult {
     const ptr = this.ocgcoreWrapper.malloc(MESSAGE_BUFFER_SIZE);
     this.ocgcoreWrapper.ocgcoreModule._get_message(this.duelPtr, ptr);
     const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
@@ -83,8 +84,12 @@ export class OcgcoreDuel {
     return { length, raw };
   }
 
-  process(): number {
-    return this.ocgcoreWrapper.ocgcoreModule._process(this.duelPtr);
+  process(): OcgcoreProcessResult {
+    const result = this.ocgcoreWrapper.ocgcoreModule._process(this.duelPtr);
+    const length = result & 0x0fffffff;
+    const status = (result >>> 28) & 0x0f;
+    const message = this.getMessage(length);
+    return { length: message.length, raw: message.raw, status };
   }
 
   newCard(card: OcgcoreNewCardParams): void {

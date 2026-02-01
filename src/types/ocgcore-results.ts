@@ -52,6 +52,10 @@ export interface OcgcoreFieldCardQueryResult extends OcgcoreBinaryResult {
 
 export interface OcgcoreMessageResult extends OcgcoreBinaryResult {}
 
+export interface OcgcoreProcessResult extends OcgcoreBinaryResult {
+  status: number;
+}
+
 export interface OcgcoreFieldInfoPlayerState {
   lp: number;
   mzone: Array<{ occupied: boolean; position?: number; xyzCount?: number }>;

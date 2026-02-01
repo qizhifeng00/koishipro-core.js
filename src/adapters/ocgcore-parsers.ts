@@ -8,6 +8,7 @@ import {
   OcgcoreRegistryDumpEntry,
 } from '../types/ocgcore-results';
 import { LEN_HEADER } from '../constants';
+import { OcgcoreCommonConstants } from '../vendor/ocgcore-constants';
 import { readI32, readU16, readU32, readU8 } from '../utility/binary';
 
 const decoder = new TextDecoder('utf-8');
@@ -25,70 +26,70 @@ function parseCardInfo(payload: Uint8Array): OcgcoreCardInfo {
     return info;
   }
 
-  if (flags & 0x1) {
+  if (flags & OcgcoreCommonConstants.QUERY_CODE) {
     info.code = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x2) {
+  if (flags & OcgcoreCommonConstants.QUERY_POSITION) {
     const pdata = readI32(payload, offset);
     offset += 4;
     info.position = (pdata >>> 24) & 0xff;
   }
-  if (flags & 0x4) {
+  if (flags & OcgcoreCommonConstants.QUERY_ALIAS) {
     info.alias = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x8) {
+  if (flags & OcgcoreCommonConstants.QUERY_TYPE) {
     info.type = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x10) {
+  if (flags & OcgcoreCommonConstants.QUERY_LEVEL) {
     info.level = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x20) {
+  if (flags & OcgcoreCommonConstants.QUERY_RANK) {
     info.rank = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x40) {
+  if (flags & OcgcoreCommonConstants.QUERY_ATTRIBUTE) {
     info.attribute = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x80) {
+  if (flags & OcgcoreCommonConstants.QUERY_RACE) {
     info.race = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x100) {
+  if (flags & OcgcoreCommonConstants.QUERY_ATTACK) {
     info.attack = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x200) {
+  if (flags & OcgcoreCommonConstants.QUERY_DEFENSE) {
     info.defense = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x400) {
+  if (flags & OcgcoreCommonConstants.QUERY_BASE_ATTACK) {
     info.baseAttack = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x800) {
+  if (flags & OcgcoreCommonConstants.QUERY_BASE_DEFENSE) {
     info.baseDefense = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x1000) {
+  if (flags & OcgcoreCommonConstants.QUERY_REASON) {
     info.reason = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x2000) {
+  if (flags & OcgcoreCommonConstants.QUERY_REASON_CARD) {
     offset += 4;
   }
-  if (flags & 0x4000) {
+  if (flags & OcgcoreCommonConstants.QUERY_EQUIP_CARD) {
     const controller = readU8(payload, offset);
     const location = readU8(payload, offset + 1);
     const sequence = readU8(payload, offset + 2);
     info.equipCard = { controller, location, sequence };
     offset += 4;
   }
-  if (flags & 0x8000) {
+  if (flags & OcgcoreCommonConstants.QUERY_TARGET_CARD) {
     const count = readI32(payload, offset);
     offset += 4;
     const targets: OcgcoreCardLocationRef[] = [];
@@ -101,7 +102,7 @@ function parseCardInfo(payload: Uint8Array): OcgcoreCardInfo {
     }
     info.targetCards = targets;
   }
-  if (flags & 0x10000) {
+  if (flags & OcgcoreCommonConstants.QUERY_OVERLAY_CARD) {
     const count = readI32(payload, offset);
     offset += 4;
     const overlay: number[] = [];
@@ -111,7 +112,7 @@ function parseCardInfo(payload: Uint8Array): OcgcoreCardInfo {
     }
     info.overlayCards = overlay;
   }
-  if (flags & 0x20000) {
+  if (flags & OcgcoreCommonConstants.QUERY_COUNTERS) {
     const count = readI32(payload, offset);
     offset += 4;
     const counters: OcgcoreCounterInfo[] = [];
@@ -123,23 +124,23 @@ function parseCardInfo(payload: Uint8Array): OcgcoreCardInfo {
     }
     info.counters = counters;
   }
-  if (flags & 0x40000) {
+  if (flags & OcgcoreCommonConstants.QUERY_OWNER) {
     info.owner = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x80000) {
+  if (flags & OcgcoreCommonConstants.QUERY_STATUS) {
     info.status = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x200000) {
+  if (flags & OcgcoreCommonConstants.QUERY_LSCALE) {
     info.lscale = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x400000) {
+  if (flags & OcgcoreCommonConstants.QUERY_RSCALE) {
     info.rscale = readI32(payload, offset);
     offset += 4;
   }
-  if (flags & 0x800000) {
+  if (flags & OcgcoreCommonConstants.QUERY_LINK) {
     info.link = readI32(payload, offset);
     offset += 4;
     info.linkMarker = readI32(payload, offset);
