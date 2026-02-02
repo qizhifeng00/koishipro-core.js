@@ -153,6 +153,7 @@ export function* playYrpStep(
       yield {
         duel,
         result,
+        responses,
       };
 
       if (
