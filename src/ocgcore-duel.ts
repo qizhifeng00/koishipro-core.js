@@ -63,9 +63,9 @@ export class OcgcoreDuel {
   setPlayerInfo(info: OcgcoreSetPlayerInfoParams): void {
     this.ocgcoreWrapper.ocgcoreModule._set_player_info(
       this.duelPtr,
-      info.playerId,
+      info.player,
       info.lp,
-      info.startCount,
+      info.startHand,
       info.drawCount,
     );
   }
@@ -98,7 +98,7 @@ export class OcgcoreDuel {
       this.duelPtr,
       card.code,
       card.owner,
-      card.playerId,
+      card.player,
       card.location,
       card.sequence,
       card.position,
@@ -118,7 +118,7 @@ export class OcgcoreDuel {
     const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_card(
       this.duelPtr,
-      query.playerId,
+      query.player,
       query.location,
       query.sequence,
       query.queryFlag,
@@ -134,7 +134,7 @@ export class OcgcoreDuel {
   queryFieldCount(query: OcgcoreQueryFieldCountParams): number {
     return this.ocgcoreWrapper.ocgcoreModule._query_field_count(
       this.duelPtr,
-      query.playerId,
+      query.player,
       query.location,
     );
   }
@@ -145,7 +145,7 @@ export class OcgcoreDuel {
     const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_field_card(
       this.duelPtr,
-      query.playerId,
+      query.player,
       query.location,
       query.queryFlag,
       ptr,

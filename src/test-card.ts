@@ -29,14 +29,14 @@ export function testCard(
 
   duel.preloadScript('./script/special.lua');
   duel.preloadScript('./script/init.lua');
-  duel.setPlayerInfo({ playerId: 0, lp: 8000, startCount: 5, drawCount: 1 });
-  duel.setPlayerInfo({ playerId: 1, lp: 8000, startCount: 5, drawCount: 1 });
+  duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
+  duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
 
   for (const code of ids) {
     duel.newCard({
       code,
       owner: 0,
-      playerId: 0,
+      player: 0,
       location: LOCATION_DECK,
       sequence: 0,
       position: POS_FACEUP_ATTACK,

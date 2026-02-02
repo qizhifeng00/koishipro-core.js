@@ -32,14 +32,14 @@ function loadDeck(
   duel: OcgcoreDuel,
   deck: { main?: number[]; extra?: number[] } | null,
   owner: number,
-  playerId: number,
+  player: number,
 ): void {
   if (!deck) return;
   for (const code of deck.main ?? []) {
     duel.newCard({
       code,
       owner,
-      playerId,
+      player,
       location: LOCATION_DECK,
       sequence: 0,
       position: POS_FACEDOWN_DEFENSE,
@@ -49,7 +49,7 @@ function loadDeck(
     duel.newCard({
       code,
       owner,
-      playerId,
+      player,
       location: LOCATION_EXTRA,
       sequence: 0,
       position: POS_FACEDOWN_DEFENSE,
@@ -118,15 +118,15 @@ export function* playYrpStep(
     setRegistryValue(duel, 'player_type_1', '1');
 
     duel.setPlayerInfo({
-      playerId: 0,
+      player: 0,
       lp: yrp.startLp,
-      startCount: yrp.startHand,
+      startHand: yrp.startHand,
       drawCount: yrp.drawCount,
     });
     duel.setPlayerInfo({
-      playerId: 1,
+      player: 1,
       lp: yrp.startLp,
-      startCount: yrp.startHand,
+      startHand: yrp.startHand,
       drawCount: yrp.drawCount,
     });
 

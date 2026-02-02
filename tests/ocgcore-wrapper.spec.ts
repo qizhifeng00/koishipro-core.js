@@ -46,13 +46,13 @@ describe('ocgcore wasm flow', () => {
     duel.preloadScript('./script/utility.lua');
     duel.preloadScript('./script/procedure.lua');
 
-    duel.setPlayerInfo({ playerId: 0, lp: 8000, startCount: 5, drawCount: 1 });
-    duel.setPlayerInfo({ playerId: 1, lp: 8000, startCount: 5, drawCount: 1 });
+    duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
+    duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
 
     duel.newCard({
       code: 10000,
       owner: 0,
-      playerId: 0,
+      player: 0,
       location: OcgcoreScriptConstants.LOCATION_DECK,
       sequence: 0,
       position: OcgcoreScriptConstants.POS_FACEUP_ATTACK,

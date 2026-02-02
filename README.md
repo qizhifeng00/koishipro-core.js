@@ -50,8 +50,8 @@ wrapper
   });
 
 const duel = wrapper.createDuel(1234);
-duel.setPlayerInfo({ playerId: 0, lp: 8000, startCount: 5, drawCount: 1 });
-duel.setPlayerInfo({ playerId: 1, lp: 8000, startCount: 5, drawCount: 1 });
+duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
+duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
 duel.startDuel(0);
 
 const { raw, status } = duel.process();

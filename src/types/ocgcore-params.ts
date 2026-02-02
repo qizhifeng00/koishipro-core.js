@@ -7,16 +7,16 @@ export interface OcgcoreStartDuelOptions {
 }
 
 export interface OcgcoreSetPlayerInfoParams {
-  playerId: number;
+  player: number;
   lp: number;
-  startCount: number;
+  startHand: number;
   drawCount: number;
 }
 
 export interface OcgcoreNewCardParams {
   code: number;
   owner: number;
-  playerId: number;
+  player: number;
   location: number;
   sequence: number;
   position: number;
@@ -29,7 +29,7 @@ export interface OcgcoreNewTagCardParams {
 }
 
 export interface OcgcoreQueryCardParams {
-  playerId: number;
+  player: number;
   location: number;
   sequence: number;
   queryFlag: number;
@@ -37,12 +37,12 @@ export interface OcgcoreQueryCardParams {
 }
 
 export interface OcgcoreQueryFieldCountParams {
-  playerId: number;
+  player: number;
   location: number;
 }
 
 export interface OcgcoreQueryFieldCardParams {
-  playerId: number;
+  player: number;
   location: number;
   queryFlag: number;
   useCache?: number;
