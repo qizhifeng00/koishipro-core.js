@@ -52,7 +52,11 @@ export class OcgcoreDuel {
     this.ocgcoreWrapper.ocgcoreModule._start_duel(this.duelPtr, optionValue);
   }
 
+  ended = false;
+
   endDuel(): void {
+    if (this.ended) return;
+    this.ended = true;
     this.ocgcoreWrapper.ocgcoreModule._end_duel(this.duelPtr);
     if (this.returnPtr) {
       this.ocgcoreWrapper.free(this.returnPtr);
@@ -190,7 +194,11 @@ export class OcgcoreDuel {
     this.ocgcoreWrapper.ocgcoreModule._set_responsei(this.duelPtr, value);
   }
 
-  setResponse(response: Uint8Array): void {
+  setResponse(response: Uint8Array | number): void {
+    if (typeof response === 'number') {
+      this.setResponseInt(response);
+      return;
+    }
     if (response.length > this.returnSize) {
       this.ocgcoreWrapper.free(this.returnPtr);
       this.returnPtr = this.ocgcoreWrapper.malloc(response.length);

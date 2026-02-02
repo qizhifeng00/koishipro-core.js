@@ -16,18 +16,6 @@ function normalizeYrp(input: YGOProYrp | Uint8Array): YGOProYrp {
   return new YGOProYrp().fromYrp(input);
 }
 
-function createReplayDuel(
-  wrapper: OcgcoreWrapper,
-  yrp: YGOProYrp,
-): OcgcoreDuel {
-  const header = yrp.header;
-  const seedSequence = header?.seedSequence ?? [];
-  if (seedSequence.length > 0) {
-    return wrapper.createDuelV2(seedSequence);
-  }
-  return wrapper.createDuel(header?.seed ?? 0);
-}
-
 function loadDeck(
   duel: OcgcoreDuel,
   deck: { main?: number[]; extra?: number[] } | null,
@@ -83,104 +71,128 @@ function setRegistryValue(duel: OcgcoreDuel, key: string, value: string): void {
   duel.setRegistryValue(key, value);
 }
 
+export function createDuelFromYrp(
+  wrapper: OcgcoreWrapper,
+  yrpInput: YGOProYrp | Uint8Array,
+) {
+  const yrp = normalizeYrp(yrpInput);
+  const header = yrp.header;
+  const seedSequence = header?.seedSequence ?? [];
+  const duel =
+    seedSequence.length > 0
+      ? wrapper.createDuelV2(seedSequence)
+      : wrapper.createDuel(header?.seed ?? 0);
+
+  setRegistryValue(duel, 'duel_mode', yrp.isTag ? 'tag' : 'single');
+  setRegistryValue(duel, 'start_lp', String(yrp.startLp));
+  setRegistryValue(duel, 'start_hand', String(yrp.startHand));
+  setRegistryValue(duel, 'draw_count', String(yrp.drawCount));
+
+  const playerNames = yrp.isTag
+    ? [
+        yrp.hostName,
+        yrp.tagHostName ?? '',
+        yrp.tagClientName ?? '',
+        yrp.clientName,
+      ]
+    : [yrp.hostName, yrp.clientName];
+  for (let i = 0; i < playerNames.length; i++) {
+    setRegistryValue(duel, `player_name_${i}`, playerNames[i] ?? '');
+  }
+  setRegistryValue(duel, 'player_type_0', '0');
+  setRegistryValue(duel, 'player_type_1', '1');
+
+  duel.setPlayerInfo({
+    player: 0,
+    lp: yrp.startLp,
+    startHand: yrp.startHand,
+    drawCount: yrp.drawCount,
+  });
+  duel.setPlayerInfo({
+    player: 1,
+    lp: yrp.startLp,
+    startHand: yrp.startHand,
+    drawCount: yrp.drawCount,
+  });
+
+  duel.preloadScript('./script/patches/entry.lua');
+  duel.preloadScript('./script/special.lua');
+  duel.preloadScript('./script/init.lua');
+
+  if (yrp.isSingleMode && yrp.singleScript) {
+    duel.preloadScript(`./single/${yrp.singleScript}`);
+  } else if (yrp.isTag) {
+    loadDeck(duel, yrp.hostDeck, 0, 0);
+    loadTagDeck(duel, yrp.tagHostDeck, 0);
+    loadDeck(duel, yrp.clientDeck, 1, 1);
+    loadTagDeck(duel, yrp.tagClientDeck, 1);
+  } else {
+    loadDeck(duel, yrp.hostDeck, 0, 0);
+    loadDeck(duel, yrp.clientDeck, 1, 1);
+  }
+
+  duel.startDuel(yrp.opt >>> 0);
+  return { yrp, duel };
+}
+
+export function consumeResponseFromOcgcoreProcess(
+  duel: OcgcoreDuel,
+  result: OcgcoreProcessResult,
+  responses: Uint8Array[],
+) {
+  if (
+    result.raw.length > 0 &&
+    result.raw[0] === OcgcoreCommonConstants.MSG_RETRY
+  ) {
+    throw new Error('Got MSG_RETRY');
+  }
+
+  if (result.status === 0) {
+    return false;
+  }
+  if (result.status === 1) {
+    if (result.raw.length === 0) {
+      return false;
+    }
+    const response = responses.shift();
+    if (!response) {
+      return true;
+    }
+    duel.setResponse(response);
+    return false;
+  }
+  return true;
+}
+
+export function* processYrpDuelStep(duel: OcgcoreDuel, yrp: YGOProYrp) {
+  const responses = yrp.responses.slice();
+
+  while (true) {
+    const result = duel.process();
+    yield {
+      duel,
+      result,
+      responses,
+    };
+
+    if (consumeResponseFromOcgcoreProcess(duel, result, responses)) {
+      break;
+    }
+  }
+}
+
 export function* playYrpStep(
   ocgcoreWrapper: OcgcoreWrapper,
   yrpInput: YGOProYrp | Uint8Array,
 ) {
-  const yrp = normalizeYrp(yrpInput);
-  const responses = yrp.responses.slice();
-  const duel = createReplayDuel(ocgcoreWrapper, yrp);
-  let ended = false;
-  const endDuel = () => {
-    if (ended) return;
-    duel.endDuel();
-    ended = true;
-  };
+  const { yrp, duel } = createDuelFromYrp(ocgcoreWrapper, yrpInput);
 
   try {
-    setRegistryValue(duel, 'duel_mode', yrp.isTag ? 'tag' : 'single');
-    setRegistryValue(duel, 'start_lp', String(yrp.startLp));
-    setRegistryValue(duel, 'start_hand', String(yrp.startHand));
-    setRegistryValue(duel, 'draw_count', String(yrp.drawCount));
-
-    const playerNames = yrp.isTag
-      ? [
-          yrp.hostName,
-          yrp.tagHostName ?? '',
-          yrp.tagClientName ?? '',
-          yrp.clientName,
-        ]
-      : [yrp.hostName, yrp.clientName];
-    for (let i = 0; i < playerNames.length; i++) {
-      setRegistryValue(duel, `player_name_${i}`, playerNames[i] ?? '');
-    }
-    setRegistryValue(duel, 'player_type_0', '0');
-    setRegistryValue(duel, 'player_type_1', '1');
-
-    duel.setPlayerInfo({
-      player: 0,
-      lp: yrp.startLp,
-      startHand: yrp.startHand,
-      drawCount: yrp.drawCount,
-    });
-    duel.setPlayerInfo({
-      player: 1,
-      lp: yrp.startLp,
-      startHand: yrp.startHand,
-      drawCount: yrp.drawCount,
-    });
-
-    duel.preloadScript('./script/patches/entry.lua');
-    duel.preloadScript('./script/special.lua');
-    duel.preloadScript('./script/init.lua');
-
-    if (yrp.isSingleMode && yrp.singleScript) {
-      duel.preloadScript(`./single/${yrp.singleScript}`);
-    } else if (yrp.isTag) {
-      loadDeck(duel, yrp.hostDeck, 0, 0);
-      loadTagDeck(duel, yrp.tagHostDeck, 0);
-      loadDeck(duel, yrp.clientDeck, 1, 1);
-      loadTagDeck(duel, yrp.tagClientDeck, 1);
-    } else {
-      loadDeck(duel, yrp.hostDeck, 0, 0);
-      loadDeck(duel, yrp.clientDeck, 1, 1);
-    }
-
-    duel.startDuel(yrp.opt >>> 0);
-
-    while (true) {
-      const result = duel.process();
-      yield {
-        duel,
-        result,
-        responses,
-      };
-
-      if (
-        result.raw.length > 0 &&
-        result.raw[0] === OcgcoreCommonConstants.MSG_RETRY
-      ) {
-        throw new Error('Got MSG_RETRY');
-      }
-
-      if (result.status === 0) {
-        continue;
-      }
-      if (result.status === 1) {
-        if (result.raw.length === 0) {
-          continue;
-        }
-        const response = responses.shift();
-        if (!response) {
-          break;
-        }
-        duel.setResponse(response);
-        continue;
-      }
-      break;
+    for (const stepResult of processYrpDuelStep(duel, yrp)) {
+      yield stepResult;
     }
   } finally {
-    endDuel();
+    duel.endDuel();
   }
 }
 
