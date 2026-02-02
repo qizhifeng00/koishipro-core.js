@@ -44,7 +44,7 @@ function joinPath(baseDir: string, relativePath: string): string {
   return `${trimmedBase}/${trimmedRel}`;
 }
 
-export function MapReader(
+export function MapScriptReader(
   ...maps: Array<Map<string, string | Uint8Array>>
 ): ScriptReader {
   return (path) => {
@@ -64,7 +64,7 @@ export function MapReader(
   };
 }
 
-export function DirReader(...baseDirs: string[]): ScriptReader {
+export function DirScriptReader(...baseDirs: string[]): ScriptReader {
   const fs = getNodeFs();
   return (path) => {
     const filename = normalizePath(path);
@@ -97,7 +97,7 @@ function normalizeZipEntryName(name: string): string[] {
   return Array.from(names);
 }
 
-export async function ZipReader(
+export async function ZipScriptReader(
   ...inputs: Array<Uint8Array | ArrayBuffer | Blob>
 ): Promise<ScriptReader> {
   const maps = await Promise.all(
@@ -122,5 +122,24 @@ export async function ZipReader(
       return map;
     }),
   );
-  return MapReader(...maps);
+  return MapScriptReader(...maps);
+}
+
+/** @deprecated Use MapScriptReader instead. */
+export function MapReader(
+  ...maps: Array<Map<string, string | Uint8Array>>
+): ScriptReader {
+  return MapScriptReader(...maps);
+}
+
+/** @deprecated Use DirScriptReader instead. */
+export function DirReader(...baseDirs: string[]): ScriptReader {
+  return DirScriptReader(...baseDirs);
+}
+
+/** @deprecated Use ZipScriptReader instead. */
+export async function ZipReader(
+  ...inputs: Array<Uint8Array | ArrayBuffer | Blob>
+): Promise<ScriptReader> {
+  return ZipScriptReader(...inputs);
 }

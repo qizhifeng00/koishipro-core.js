@@ -22,9 +22,9 @@ npm install koishipro-core.js
 ```ts
 import {
   createOcgcoreWrapper,
-  ZipReader,
-  DirReader,
-  createSqljsCardReader,
+  ZipScriptReader,
+  DirScriptReader,
+  SqljsCardReader,
 } from 'koishipro-core.js';
 import initSqlJs from 'sql.js';
 
@@ -33,13 +33,13 @@ const wrapper = await createOcgcoreWrapper();
 // Provide scripts via zip + local directory fallback (Node only)
 const zipBytes = await fetch('/script.zip').then((r) => r.arrayBuffer());
 wrapper
-  .setScriptReader(await ZipReader(new Uint8Array(zipBytes)), true)
-  .setScriptReader(DirReader('./ygopro-scripts'));
+  .setScriptReader(await ZipScriptReader(new Uint8Array(zipBytes)), true)
+  .setScriptReader(DirScriptReader('./ygopro-scripts'));
 
 // Provide cards via sql.js
 const SQL = await initSqlJs();
 const db = new SQL.Database(await fetch('/cards.cdb').then((r) => r.arrayBuffer()));
-wrapper.setCardReader(createSqljsCardReader(db));
+wrapper.setCardReader(SqljsCardReader(db));
 
 // Optional: log messages from ocgcore (multiple handlers allowed)
 wrapper
@@ -202,29 +202,32 @@ Represents a single duel instance with full lifecycle management.
 
 ### Script Readers
 
-#### `MapReader(...maps: Map<string, string | Uint8Array>[]): ScriptReader`
+#### `MapScriptReader(...maps: Map<string, string | Uint8Array>[]): ScriptReader`
 Resolve Lua scripts from one or more Maps with fallback order.
 
 ```ts
 const scripts = new Map([
   ['c12345.lua', 'function c12345.initial_effect(c) end'],
 ]);
-wrapper.setScriptReader(MapReader(scripts));
+wrapper.setScriptReader(MapScriptReader(scripts));
 ```
 
-#### `ZipReader(...zipBytes: Uint8Array[]): Promise<ScriptReader>`
+#### `ZipScriptReader(...zipBytes: Uint8Array[]): Promise<ScriptReader>`
 Load all `.lua` files from one or more zips.
 
 ```ts
 const zipBytes = await fetch('/scripts.zip').then(r => r.arrayBuffer());
-wrapper.setScriptReader(await ZipReader(new Uint8Array(zipBytes)));
+wrapper.setScriptReader(await ZipScriptReader(new Uint8Array(zipBytes)));
 ```
 
-#### `DirReader(...dirs: string[]): ScriptReader`
+#### `DirScriptReader(...dirs: string[]): ScriptReader`
 Node-only directory reader with fallback order.
 
 ```ts
-wrapper.setScriptReader(DirReader('./ygopro-scripts', './custom-scripts'));
+wrapper.setScriptReader(DirScriptReader('./ygopro-scripts', './custom-scripts'));
+
+#### `DirScriptReaderEx(...dirs: string[]): Promise<ScriptReader>`
+Node-only directory reader with zip/ypk fallback. Zips are scanned in project root and `expansions/` with lower priority than filesystem scripts.
 ```
 
 ### Replay Functions
@@ -266,7 +269,7 @@ for (const { duel, result } of playYrpStep(wrapper, yrpBytes)) {
 
 ### Card Reader
 
-#### `createSqljsCardReader(...dbs: Database[]): CardReader`
+#### `SqljsCardReader(...dbs: Database[]): CardReader`
 Build a `CardReader` from one or more SQL.js databases with fallback order.
 
 ```ts
@@ -277,7 +280,10 @@ const db1 = new SQL.Database(officialCards);
 const db2 = new SQL.Database(customCards);
 
 // Try db1 first, fallback to db2
-wrapper.setCardReader(createSqljsCardReader(db1, db2));
+wrapper.setCardReader(SqljsCardReader(db1, db2));
+
+#### `DirCardReader(sqljs: SqlJsStatic, ...dirs: string[]): Promise<CardReader>`
+Node-only card reader that loads `cards.cdb`, `expansions/*.cdb`, and root-level `.cdb` files inside `*.zip`/`*.ypk` archives under each directory.
 ```
 
 ### Constants

@@ -28,7 +28,7 @@ describe('Registry Round-trip Tests', () => {
 
       // Dump to dict
       const dump1 = duel1.dumpRegistry();
-      
+
       // Verify dump contains all keys
       for (const key of Object.keys(originalDict)) {
         expect(dump1.dict).toHaveProperty(key);
@@ -45,10 +45,10 @@ describe('Registry Round-trip Tests', () => {
 
       // Dump again and verify
       const dump2 = duel2.dumpRegistry();
-      
+
       // Both dicts should be identical
       expect(dump2.dict).toEqual(dump1.dict);
-      
+
       // Verify all original values
       for (const [key, value] of Object.entries(originalDict)) {
         expect(dump2.dict[key]).toBe(value);
@@ -75,7 +75,7 @@ describe('Registry Round-trip Tests', () => {
         utf8_emoji: '🎮🃏🎴',
         newlines: 'line1\nline2\nline3',
         tabs: 'col1\tcol2\tcol3',
-        quotes: "single'quotes\"double",
+        quotes: 'single\'quotes"double',
         mixed: 'Hello 世界 🌏!',
       };
 
@@ -152,7 +152,7 @@ describe('Registry Round-trip Tests', () => {
 
       // Dump again
       const dump2 = duel2.dumpRegistry();
-      
+
       // Dict should be identical
       expect(dump2.dict).toEqual(dump1.dict);
       expect(dump2.dict).toEqual(originalDict);
@@ -186,10 +186,10 @@ describe('Registry Round-trip Tests', () => {
 
         // Dump to dict
         const dump = duel.dumpRegistry();
-        
+
         // Verify no data loss
         expect(dump.dict).toEqual(originalDict);
-        
+
         currentDict = dump.dict;
         duel.endDuel();
       }
@@ -258,7 +258,9 @@ describe('Registry Round-trip Tests', () => {
 
       // Dump
       const dump1 = duel1.dumpRegistry();
-      expect(Object.keys(dump1.dict).length).toBe(Object.keys(originalDict).length);
+      expect(Object.keys(dump1.dict).length).toBe(
+        Object.keys(originalDict).length,
+      );
 
       duel1.endDuel();
 
@@ -270,9 +272,11 @@ describe('Registry Round-trip Tests', () => {
 
       // Dump again
       const dump2 = duel2.dumpRegistry();
-      
+
       // Verify all keys and values
-      expect(Object.keys(dump2.dict).length).toBe(Object.keys(originalDict).length);
+      expect(Object.keys(dump2.dict).length).toBe(
+        Object.keys(originalDict).length,
+      );
       expect(dump2.dict).toEqual(originalDict);
 
       duel2.endDuel();

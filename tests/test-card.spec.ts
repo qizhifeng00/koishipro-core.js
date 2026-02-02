@@ -4,8 +4,8 @@ import path from 'node:path';
 import initSqlJs from 'sql.js';
 
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
-import { DirReader } from '../src/adapters';
-import { createSqljsCardReader } from '../src/sqljs-card-reader';
+import { DirScriptReader } from '../src/script-reader';
+import { SqljsCardReader } from '../src/card-reader';
 import { testCard } from '../src/test-card';
 import { OcgcoreMessageType } from '../src/types/ocgcore-enums';
 
@@ -31,10 +31,10 @@ describe('testCard', () => {
     );
     const wrapper = await createOcgcoreWrapper({ wasmBinary });
     try {
-      wrapper.setScriptReader(DirReader(scriptDir), true);
+      wrapper.setScriptReader(DirScriptReader(scriptDir), true);
       const SQL = await initSqlJs();
       const db = new SQL.Database(fs.readFileSync(cardsPath));
-      wrapper.setCardReader(createSqljsCardReader(db), true);
+      wrapper.setCardReader(SqljsCardReader(db), true);
 
       const logs = testCard(wrapper, 10000);
       const hasError = logs.some(
@@ -72,11 +72,11 @@ describe('testCard', () => {
 
       wrapper
         .setScriptReader(badReader, true)
-        .setScriptReader(DirReader(scriptDir));
+        .setScriptReader(DirScriptReader(scriptDir));
 
       const SQL = await initSqlJs();
       const db = new SQL.Database(fs.readFileSync(cardsPath));
-      wrapper.setCardReader(createSqljsCardReader(db), true);
+      wrapper.setCardReader(SqljsCardReader(db), true);
 
       const logs = testCard(wrapper, 10000);
       const errorLogs = logs.filter(

@@ -16,6 +16,7 @@ export * from './src/adapters';
 export * from './src/constants';
 // export * from './src/utility';
 export * from './src/vendor';
-export * from './src/sqljs-card-reader';
+export * from './src/script-reader';
+export * from './src/card-reader';
 export * from './src/play-yrp';
 export * from './src/test-card';

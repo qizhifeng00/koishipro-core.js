@@ -8,7 +8,7 @@ describe('Registry', () => {
 
     try {
       const duel = wrapper.createDuel(12345);
-      
+
       // Initialize duel
       duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
@@ -44,7 +44,7 @@ describe('Registry', () => {
 
     try {
       const duel = wrapper.createDuel(12345);
-      
+
       // Initialize duel
       duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
@@ -75,7 +75,7 @@ describe('Registry', () => {
       const duel1 = wrapper.createDuel(12345);
       duel1.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel1.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
-      
+
       duel1.setRegistryValue('persistent_key_1', 'persistent_value_1');
       duel1.setRegistryValue('persistent_key_2', 'persistent_value_2');
       duel1.setRegistryValue('duel_mode', 'match');
@@ -121,7 +121,7 @@ describe('Registry', () => {
       const duel1 = wrapper.createDuel(12345);
       duel1.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel1.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
-      
+
       duel1.setRegistryValue('key_a', 'value_a');
       duel1.setRegistryValue('key_b', 'value_b');
       duel1.setRegistryValue('key_c', 'value_c');
@@ -161,7 +161,7 @@ describe('Registry', () => {
 
     try {
       const duel = wrapper.createDuel(12345);
-      
+
       // Initialize duel
       duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
@@ -195,7 +195,7 @@ describe('Registry', () => {
 
     try {
       const duel = wrapper.createDuel(12345);
-      
+
       // Initialize duel
       duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
@@ -232,7 +232,7 @@ describe('Registry', () => {
 
     try {
       const duel = wrapper.createDuel(12345);
-      
+
       // Initialize duel
       duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });
@@ -263,7 +263,7 @@ describe('Registry', () => {
 
     try {
       const duel = wrapper.createDuel(12345);
-      
+
       // Use registry like playYrp does - before setPlayerInfo
       duel.setRegistryValue('duel_mode', 'single');
       duel.setRegistryValue('start_lp', '8000');
@@ -271,7 +271,7 @@ describe('Registry', () => {
       duel.setRegistryValue('draw_count', '1');
       duel.setRegistryValue('player_name_0', 'Player1');
       duel.setRegistryValue('player_name_1', 'Player2');
-      
+
       // Initialize duel after setting registry
       duel.setPlayerInfo({ player: 0, lp: 8000, startHand: 5, drawCount: 1 });
       duel.setPlayerInfo({ player: 1, lp: 8000, startHand: 5, drawCount: 1 });

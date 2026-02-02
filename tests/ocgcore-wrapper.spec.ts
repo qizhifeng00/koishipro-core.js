@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
-import { DirReader } from '../src/adapters';
+import { DirScriptReader } from '../src/script-reader';
 import type { CardData } from '../src/types/card-data';
 import { OcgcoreScriptConstants } from '../src/vendor/script-constants';
 
@@ -21,7 +21,7 @@ describe('ocgcore wasm flow', () => {
       }
     }
 
-    wrapper.setScriptReader(DirReader(baseDir));
+    wrapper.setScriptReader(DirScriptReader(baseDir));
 
     wrapper.setCardReader(
       (cardId): CardData => ({

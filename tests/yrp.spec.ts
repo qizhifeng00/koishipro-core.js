@@ -6,8 +6,8 @@ import { YGOProMsgNewTurn } from 'ygopro-msg-encode';
 
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
 import { playYrpStep } from '../src/play-yrp';
-import { DirReader } from '../src/adapters';
-import { createSqljsCardReader } from '../src/sqljs-card-reader';
+import { DirScriptReader } from '../src/script-reader';
+import { SqljsCardReader } from '../src/card-reader';
 import { OcgcoreCommonConstants, OcgcoreScriptConstants } from '../src/vendor';
 
 describe('playYrp', () => {
@@ -32,11 +32,11 @@ describe('playYrp', () => {
     const wrapper = await createOcgcoreWrapper();
 
     try {
-      wrapper.setScriptReader(DirReader(scriptDir));
+      wrapper.setScriptReader(DirScriptReader(scriptDir));
 
       const SQL = await initSqlJs();
       const db = new SQL.Database(fs.readFileSync(cardsPath));
-      wrapper.setCardReader(createSqljsCardReader(db));
+      wrapper.setCardReader(SqljsCardReader(db));
 
       wrapper.setMessageHandler((_duel, message, type) => {
         throw new Error(`MessageHandler invoked (${type}): ${message}`);

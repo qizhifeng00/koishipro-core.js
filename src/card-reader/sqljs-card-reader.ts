@@ -1,7 +1,7 @@
 import type { Database } from 'sql.js';
-import { OcgcoreCommonConstants } from './vendor/ocgcore-constants';
-import type { CardData } from './types/card-data';
-import type { CardReader } from './types/callback';
+import { OcgcoreCommonConstants } from '../vendor/ocgcore-constants';
+import type { CardData } from '../types/card-data';
+import type { CardReader } from '../types/callback';
 
 type SqljsRow = {
   id: number;
@@ -105,7 +105,7 @@ function queryOne(db: Database, cardId: number): CardData | null {
   });
 }
 
-export function createSqljsCardReader(...dbs: Database[]): CardReader {
+export function SqljsCardReader(...dbs: Database[]): CardReader {
   return (cardId: number) => {
     for (const db of dbs) {
       const data = queryOne(db, cardId);
@@ -115,4 +115,9 @@ export function createSqljsCardReader(...dbs: Database[]): CardReader {
     }
     return null;
   };
+}
+
+/** @deprecated Use SqljsCardReader instead. */
+export function createSqljsCardReader(...dbs: Database[]): CardReader {
+  return SqljsCardReader(...dbs);
 }

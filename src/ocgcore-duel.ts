@@ -266,7 +266,7 @@ export class OcgcoreDuel {
     );
     const raw = this.ocgcoreWrapper.copyHeap(outPtr, Math.max(0, length));
     this.ocgcoreWrapper.free(outPtr);
-    
+
     // Parse directly into dict
     const dict: Record<string, string> = {};
     if (length > 0) {
@@ -277,7 +277,7 @@ export class OcgcoreDuel {
         }
       }
     }
-    
+
     return { length, raw, dict };
   }
 
