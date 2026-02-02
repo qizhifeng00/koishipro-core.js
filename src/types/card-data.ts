@@ -15,5 +15,4 @@ export interface CardData {
   linkMarker: number;
 }
 
-export type CardDataStructInstance = InstanceType<typeof CardDataStruct>;
-export type CardDataInput = CardData | CardDataStructInstance;
+export type CardDataInput = CardData;

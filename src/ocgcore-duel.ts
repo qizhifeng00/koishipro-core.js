@@ -32,7 +32,8 @@ import {
 } from './adapters/ocgcore-parsers';
 import { normalizeStartDuelOptions } from './adapters/start-duel';
 import { OcgcoreWrapper } from './ocgcore-wrapper';
-import { decodeUtf8, encodeUtf8 } from './utility/utf8';
+import { decodeUtf8 } from './utility/utf8';
+import { YGOProMessages, YGOProMsgBase } from 'ygopro-msg-encode';
 
 export class OcgcoreDuel {
   private returnPtr = 0;
@@ -89,8 +90,24 @@ export class OcgcoreDuel {
     const result = this.ocgcoreWrapper.ocgcoreModule._process(this.duelPtr);
     const length = (result & 0x0fffffff) >>> 0;
     const status = ((result >>> 28) & 0x0f) >>> 0;
-    const message = this.getMessage(length);
-    return { length: message.length, raw: message.raw, status };
+    const messageData = this.getMessage(length);
+
+    // Parse message using YGOProMessages (only one message per process call)
+    let parsedMessage: YGOProMsgBase | undefined;
+    if (messageData.raw.length > 0) {
+      try {
+        parsedMessage = YGOProMessages.getInstanceFromPayload(messageData.raw);
+      } catch (e) {
+        // If parsing fails, parsedMessage remains undefined
+      }
+    }
+
+    return {
+      length: messageData.length,
+      raw: messageData.raw,
+      status,
+      message: parsedMessage,
+    };
   }
 
   newCard(card: OcgcoreNewCardParams): void {
@@ -195,14 +212,12 @@ export class OcgcoreDuel {
   }
 
   getRegistryValue(key: string): OcgcoreRegistryValueResult {
-    const keyBytes = encodeUtf8(key);
     const outPtr = this.ocgcoreWrapper.malloc(REGISTRY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.useTmpData(
       (keyPtr) =>
         this.ocgcoreWrapper.ocgcoreModule._get_registry_value(
           this.duelPtr,
           keyPtr,
-          keyBytes.length,
           outPtr,
         ),
       key,
@@ -215,16 +230,12 @@ export class OcgcoreDuel {
   }
 
   setRegistryValue(key: string, value: string): void {
-    const keyBytes = encodeUtf8(key);
-    const valueBytes = encodeUtf8(value);
     this.ocgcoreWrapper.useTmpData(
       (keyPtr, valuePtr) =>
         this.ocgcoreWrapper.ocgcoreModule._set_registry_value(
           this.duelPtr,
           keyPtr,
-          keyBytes.length,
           valuePtr,
-          valueBytes.length,
         ),
       key,
       value,
@@ -255,19 +266,38 @@ export class OcgcoreDuel {
     );
     const raw = this.ocgcoreWrapper.copyHeap(outPtr, Math.max(0, length));
     this.ocgcoreWrapper.free(outPtr);
-    const entries = length >= 0 ? parseRegistryDump(raw) : [];
-    return { length, raw, entries };
+    
+    // Parse directly into dict
+    const dict: Record<string, string> = {};
+    if (length > 0) {
+      const entries = parseRegistryDump(raw);
+      for (const entry of entries) {
+        if (entry.valueText !== undefined) {
+          dict[entry.key] = entry.valueText;
+        }
+      }
+    }
+    
+    return { length, raw, dict };
   }
 
-  loadRegistry(input: Uint8Array): void {
-    this.ocgcoreWrapper.useTmpData(
-      (ptr) =>
-        this.ocgcoreWrapper.ocgcoreModule._load_registry(
-          this.duelPtr,
-          ptr,
-          input.length,
-        ),
-      input,
-    );
+  loadRegistry(input: Uint8Array | Record<string, string>): void {
+    if (input instanceof Uint8Array) {
+      // Load from binary format
+      this.ocgcoreWrapper.useTmpData(
+        (ptr) =>
+          this.ocgcoreWrapper.ocgcoreModule._load_registry(
+            this.duelPtr,
+            ptr,
+            input.length,
+          ),
+        input,
+      );
+    } else {
+      // Load from dict format
+      for (const [key, value] of Object.entries(input)) {
+        this.setRegistryValue(key, value);
+      }
+    }
   }
 }

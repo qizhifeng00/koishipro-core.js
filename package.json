@@ -41,7 +41,7 @@
     "buffer": "^6.0.3",
     "jszip": "^3.10.1",
     "sql.js": "^1.13.0",
-    "typed-struct": "^1.3.0",
+    "ygopro-msg-encode": "^1.0.1",
     "ygopro-yrp-encode": "^1.0.1"
   },
   "jest": {

@@ -24,8 +24,8 @@ export interface OcgcoreModule extends EmscriptenModule {
   _set_responsei(duelPtr: number, value: number): void;
   _set_responseb(duelPtr: number, bufPtr: number): void;
   _preload_script(duelPtr: number, scriptNamePtr: number): void;
-  _get_registry_value(duelPtr: number, keyPtr: number, keyLen: number, outBufPtr: number): number;
-  _set_registry_value(duelPtr: number, keyPtr: number, keyLen: number, valuePtr: number, valueLen: number): void;
+  _get_registry_value(duelPtr: number, keyPtr: number, outBufPtr: number): number;
+  _set_registry_value(duelPtr: number, keyPtr: number, valuePtr: number): void;
   _get_registry_keys(duelPtr: number, bufPtr: number): number;
   _clear_registry(duelPtr: number): void;
   _dump_registry(duelPtr: number, bufPtr: number): number;

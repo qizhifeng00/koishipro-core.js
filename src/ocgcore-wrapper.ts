@@ -1,6 +1,6 @@
 import { OcgcoreModule } from './vendor/libocgcore.shared';
 import { OcgcoreDuel } from './ocgcore-duel';
-import { CardDataInput, CardDataStructInstance } from './types/card-data';
+import { CardDataInput } from './types/card-data';
 import { CardDataStruct } from './structs/card-data';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
 import { CardReader, MessageHandler, ScriptReader } from './types/callback';
@@ -89,17 +89,16 @@ export class OcgcoreWrapper {
         return 0;
       }
 
-      const CardDataCtor = CardDataStruct as unknown as {
-        new (): CardDataStructInstance;
-      };
       let buf: Uint8Array;
-      if (data instanceof CardDataCtor) {
-        buf = CardDataStruct.raw(data) as Uint8Array;
+      if (data instanceof CardDataStruct) {
+        buf = data.toBytes();
       } else {
-        const cardData = new CardDataCtor();
+        const cardData = new CardDataStruct();
         cardData.code = data.code;
         cardData.alias = data.alias;
-        const targetSetcode = cardData.setcode;
+
+        // Initialize setcode array
+        const targetSetcode = new Uint16Array(16);
         targetSetcode.fill(0);
         if (data.setcode instanceof Uint16Array && data.setcode.length === 16) {
           targetSetcode.set(data.setcode);
@@ -108,6 +107,8 @@ export class OcgcoreWrapper {
             targetSetcode[i] = data.setcode[i];
           }
         }
+        cardData.setcode = targetSetcode;
+
         cardData.type = data.type;
         cardData.level = data.level;
         cardData.attribute = data.attribute;
@@ -117,7 +118,7 @@ export class OcgcoreWrapper {
         cardData.lscale = data.lscale;
         cardData.rscale = data.rscale;
         cardData.linkMarker = data.linkMarker;
-        buf = CardDataStruct.raw(cardData) as Uint8Array;
+        buf = cardData.toBytes();
       }
 
       this.heapU8.set(buf, cardDataPtr);
@@ -254,10 +255,7 @@ export class OcgcoreWrapper {
     return this;
   }
 
-  setCardReader(
-    reader: CardReader,
-    reset = false,
-  ): this {
+  setCardReader(reader: CardReader, reset = false): this {
     if (reset) {
       this.cardReaders = [];
     }
@@ -265,10 +263,7 @@ export class OcgcoreWrapper {
     return this;
   }
 
-  setMessageHandler(
-    handler: MessageHandler,
-    reset = false,
-  ): this {
+  setMessageHandler(handler: MessageHandler, reset = false): this {
     if (reset) {
       this.messageHandlers = [];
     }
