@@ -64,10 +64,11 @@ async function collectFsDbPaths(
   };
 
   const results: string[] = [];
-  results.push(...(await collectCdbFiles(baseDir)));
 
   const expansionsDir = joinPath(pathMod, baseDir, 'expansions');
   results.push(...(await collectCdbFiles(expansionsDir)));
+
+  results.push(...(await collectCdbFiles(baseDir)));
 
   return results;
 }
