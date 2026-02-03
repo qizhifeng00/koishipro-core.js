@@ -43,33 +43,31 @@ async function collectFsDbPaths(
   pathMod: NodePath | null,
   baseDir: string,
 ): Promise<string[]> {
-  const results: string[] = [];
-  const baseDb = joinPath(pathMod, baseDir, 'cards.cdb');
-  try {
-    const stats = await fs.promises.stat(baseDb);
-    if (stats.isFile()) {
-      results.push(baseDb);
+  const collectCdbFiles = async (dirPath: string): Promise<string[]> => {
+    const paths: string[] = [];
+    const entries = await safeReadDir(fs, dirPath);
+    for (const entry of entries) {
+      if (!entry.toLowerCase().endsWith('.cdb')) {
+        continue;
+      }
+      const fullPath = joinPath(pathMod, dirPath, entry);
+      try {
+        const stats = await fs.promises.stat(fullPath);
+        if (stats.isFile()) {
+          paths.push(fullPath);
+        }
+      } catch {
+        continue;
+      }
     }
-  } catch {
-    // ignore
-  }
+    return paths;
+  };
+
+  const results: string[] = [];
+  results.push(...(await collectCdbFiles(baseDir)));
 
   const expansionsDir = joinPath(pathMod, baseDir, 'expansions');
-  const entries = await safeReadDir(fs, expansionsDir);
-  for (const entry of entries) {
-    if (!entry.toLowerCase().endsWith('.cdb')) {
-      continue;
-    }
-    const fullPath = joinPath(pathMod, expansionsDir, entry);
-    try {
-      const stats = await fs.promises.stat(fullPath);
-      if (stats.isFile()) {
-        results.push(fullPath);
-      }
-    } catch {
-      continue;
-    }
-  }
+  results.push(...(await collectCdbFiles(expansionsDir)));
 
   return results;
 }
