@@ -1,6 +1,5 @@
 import { OcgcoreWrapper } from './ocgcore-wrapper';
-import { OcgcoreCommonConstants } from './vendor/ocgcore-constants';
-import { OcgcoreScriptConstants } from './vendor/script-constants';
+import { OcgcoreCommonConstants, OcgcoreScriptConstants } from './vendor';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
 
 const { LOCATION_DECK, POS_FACEUP_ATTACK } = OcgcoreScriptConstants;

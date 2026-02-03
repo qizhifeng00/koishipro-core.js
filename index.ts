@@ -15,7 +15,7 @@ export * from './src/structs';
 export * from './src/adapters';
 export * from './src/constants';
 // export * from './src/utility';
-export * from './src/vendor';
+export * as _OcgcoreConstants from './src/vendor';
 export * from './src/script-reader';
 export * from './src/card-reader';
 export * from './src/play-yrp';

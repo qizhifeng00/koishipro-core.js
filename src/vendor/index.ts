@@ -1,2 +1,4 @@
-export * from './ocgcore-constants';
-export * from './script-constants';
+export {
+  OcgcoreCommonConstants,
+  OcgcoreScriptConstants,
+} from 'ygopro-msg-encode';

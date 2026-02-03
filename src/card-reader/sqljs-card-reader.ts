@@ -1,5 +1,5 @@
 import type { Database } from 'sql.js';
-import { OcgcoreCommonConstants } from '../vendor/ocgcore-constants';
+import { OcgcoreCommonConstants } from '../vendor';
 import type { CardData } from '../types/card-data';
 import type { CardReader } from '../types/callback';
 

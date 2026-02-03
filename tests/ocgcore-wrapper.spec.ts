@@ -4,7 +4,7 @@ import path from 'node:path';
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
 import { DirScriptReader } from '../src/script-reader';
 import type { CardData } from '../src/types/card-data';
-import { OcgcoreScriptConstants } from '../src/vendor/script-constants';
+import { OcgcoreScriptConstants } from '../src/vendor';
 
 describe('ocgcore wasm flow', () => {
   jest.setTimeout(30000);
