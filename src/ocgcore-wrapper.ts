@@ -17,9 +17,9 @@ export class OcgcoreWrapper {
   private cardReaderFunc = 0;
   private messageHandlerFunc = 0;
 
-  private scriptReaders: ScriptReader[] = [];
-  private cardReaders: CardReader[] = [];
-  private messageHandlers: MessageHandler[] = [];
+  public scriptReaders: ScriptReader[] = [];
+  public cardReaders: CardReader[] = [];
+  public messageHandlers: MessageHandler[] = [];
 
   private heapU8: Uint8Array;
   private heapView: DataView;
@@ -38,17 +38,7 @@ export class OcgcoreWrapper {
 
     this.scriptReaderFunc = this.createFunction((scriptPtr, lenPtr) => {
       const scriptPath = this.getUTF8String(scriptPtr);
-      let content: string | Uint8Array | null | undefined;
-      for (const reader of this.scriptReaders) {
-        try {
-          content = reader(scriptPath);
-        } catch {
-          content = null;
-        }
-        if (content != null) {
-          break;
-        }
-      }
+      const content = this.readScript(scriptPath);
       if (content == null) {
         return 0;
       }
@@ -59,8 +49,7 @@ export class OcgcoreWrapper {
         );
       }
 
-      const bytes =
-        typeof content === 'string' ? this.encoder.encode(content) : content;
+      const bytes = content;
       if (bytes.length > this.scriptBufferSize) {
         this.ocgcoreModule._free(this.scriptBufferPtr);
         this.scriptBufferPtr = this.ocgcoreModule._malloc(bytes.length);
@@ -74,17 +63,7 @@ export class OcgcoreWrapper {
     this.ocgcoreModule._set_script_reader(this.scriptReaderFunc);
 
     this.cardReaderFunc = this.createFunction((cardId, cardDataPtr) => {
-      let data: CardDataInput | null | undefined;
-      for (const reader of this.cardReaders) {
-        try {
-          data = reader(cardId);
-        } catch {
-          data = null;
-        }
-        if (data) {
-          break;
-        }
-      }
+      const data = this.readCard(cardId);
       if (!data) {
         return 0;
       }
@@ -137,15 +116,55 @@ export class OcgcoreWrapper {
           ? OcgcoreMessageType.DebugMessage
           : OcgcoreMessageType.ScriptError;
       const duel = this.getOrCreateDuel(duelPtr);
-      for (const handler of this.messageHandlers) {
-        try {
-          handler(duel, message, type);
-        } catch {
-          // ignore handler errors
-        }
-      }
+      this.handleMessage(duel, message, type);
     }, 'iii');
     this.ocgcoreModule._set_message_handler(this.messageHandlerFunc);
+  }
+
+  readScript(scriptPath: string): Uint8Array | null {
+    let content: string | Uint8Array | null | undefined;
+    for (const reader of this.scriptReaders) {
+      try {
+        content = reader(scriptPath);
+      } catch {
+        content = null;
+      }
+      if (content != null) {
+        break;
+      }
+    }
+    return typeof content === 'string'
+      ? this.encoder.encode(content)
+      : (content ?? null);
+  }
+
+  readCard(cardId: number): CardDataInput | null {
+    let data: CardDataInput | null | undefined;
+    for (const reader of this.cardReaders) {
+      try {
+        data = reader(cardId);
+      } catch {
+        data = null;
+      }
+      if (data) {
+        break;
+      }
+    }
+    return data ?? null;
+  }
+
+  handleMessage(
+    duel: OcgcoreDuel,
+    message: string,
+    type: OcgcoreMessageType,
+  ): void {
+    for (const handler of this.messageHandlers) {
+      try {
+        handler(duel, message, type);
+      } catch {
+        // ignore handler errors
+      }
+    }
   }
 
   getUTF8String(ptr: number): string {
