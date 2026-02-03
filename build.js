@@ -42,6 +42,7 @@ function vendorExternal() {
 function copyVendorAssets(outDir = DIST_DIR) {
   const srcVendor = path.join(process.cwd(), 'src', 'vendor');
   const distVendor = path.join(process.cwd(), outDir, 'vendor');
+  const distSrcVendor = path.join(process.cwd(), outDir, 'src', 'vendor');
   if (!fs.existsSync(srcVendor)) return;
   ensureDir(distVendor);
   fs.cpSync(path.join(srcVendor, 'wasm_cjs'), path.join(distVendor, 'wasm_cjs'), {
@@ -53,6 +54,7 @@ function copyVendorAssets(outDir = DIST_DIR) {
   const sharedDts = path.join(srcVendor, 'libocgcore.shared.d.ts');
   if (fs.existsSync(sharedDts)) {
     fs.copyFileSync(sharedDts, path.join(distVendor, 'libocgcore.shared.d.ts'));
+    fs.copyFileSync(sharedDts, path.join(distSrcVendor, 'libocgcore.shared.d.ts'));
   }
 }
 async function loadEsbuild() {
