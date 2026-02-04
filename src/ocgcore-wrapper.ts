@@ -1,7 +1,6 @@
 import { OcgcoreModule } from './vendor/libocgcore.shared';
 import { OcgcoreDuel } from './ocgcore-duel';
-import { CardDataInput } from './types/card-data';
-import { CardDataStruct } from './structs/card-data';
+import { CardData } from 'ygopro-msg-encode';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
 import { CardReader, MessageHandler, ScriptReader } from './types/callback';
 
@@ -68,38 +67,7 @@ export class OcgcoreWrapper {
         return 0;
       }
 
-      let buf: Uint8Array;
-      if (data instanceof CardDataStruct) {
-        buf = data.toBytes();
-      } else {
-        const cardData = new CardDataStruct();
-        cardData.code = data.code;
-        cardData.alias = data.alias;
-
-        // Initialize setcode array
-        const targetSetcode = new Uint16Array(16);
-        targetSetcode.fill(0);
-        if (data.setcode instanceof Uint16Array && data.setcode.length === 16) {
-          targetSetcode.set(data.setcode);
-        } else {
-          for (let i = 0; i < 16 && i < data.setcode.length; i++) {
-            targetSetcode[i] = data.setcode[i];
-          }
-        }
-        cardData.setcode = targetSetcode;
-
-        cardData.type = data.type;
-        cardData.level = data.level;
-        cardData.attribute = data.attribute;
-        cardData.race = data.race;
-        cardData.attack = data.attack;
-        cardData.defense = data.defense;
-        cardData.lscale = data.lscale;
-        cardData.rscale = data.rscale;
-        cardData.linkMarker = data.linkMarker;
-        buf = cardData.toBytes();
-      }
-
+      const buf = new CardData().fromPartial(data).toPayload();
       this.heapU8.set(buf, cardDataPtr);
       return 0;
     }, 'iii');
@@ -138,8 +106,8 @@ export class OcgcoreWrapper {
       : (content ?? null);
   }
 
-  readCard(cardId: number): CardDataInput | null {
-    let data: CardDataInput | null | undefined;
+  readCard(cardId: number): Partial<CardData> | null {
+    let data: Partial<CardData> | null | undefined;
     for (const reader of this.cardReaders) {
       try {
         data = reader(cardId);

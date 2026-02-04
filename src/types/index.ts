@@ -1,4 +1,3 @@
-export * from './card-data';
 export * from './callback';
 export * from './ocgcore-enums';
 export * from './ocgcore-params';

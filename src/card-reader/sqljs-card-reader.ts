@@ -1,6 +1,6 @@
 import type { Database } from 'sql.js';
 import { OcgcoreCommonConstants } from '../vendor';
-import type { CardData } from '../types/card-data';
+import type { CardData } from 'ygopro-msg-encode';
 import type { CardReader } from '../types/callback';
 
 type SqljsRow = {
@@ -15,22 +15,20 @@ type SqljsRow = {
   attribute: number;
 };
 
-function toUint16ArrayFromSetcode(value: number | bigint): Uint16Array {
+function toNumberArrayFromSetcode(value: number | bigint): number[] {
   let raw = typeof value === 'bigint' ? value : BigInt(value >>> 0);
-  const list = new Uint16Array(16);
-  let idx = 0;
-  while (raw !== 0n && idx < 16) {
+  const list: number[] = [];
+  while (raw !== 0n && list.length < 16) {
     const chunk = raw & 0xffffn;
     if (chunk !== 0n) {
-      list[idx] = Number(chunk);
-      idx++;
+      list.push(Number(chunk));
     }
     raw >>= 16n;
   }
   return list;
 }
 
-function mapRowToCardData(row: SqljsRow): CardData {
+function mapRowToCardData(row: SqljsRow): Partial<CardData> {
   const type = (row.type ?? 0) >>> 0;
   const attack = row.atk ?? 0;
   let defense = row.def ?? 0;
@@ -47,7 +45,7 @@ function mapRowToCardData(row: SqljsRow): CardData {
   return {
     code: row.id,
     alias: row.alias ?? 0,
-    setcode: toUint16ArrayFromSetcode(row.setcode ?? 0),
+    setcode: toNumberArrayFromSetcode(row.setcode ?? 0),
     type,
     level,
     attribute: (row.attribute ?? 0) >>> 0,
@@ -60,7 +58,7 @@ function mapRowToCardData(row: SqljsRow): CardData {
   };
 }
 
-function queryOne(db: Database, cardId: number): CardData | null {
+function queryOne(db: Database, cardId: number): Partial<CardData> | null {
   if (typeof db.prepare === 'function') {
     const stmt = db.prepare(
       'SELECT id, alias, setcode, type, atk, def, level, race, attribute FROM datas WHERE id = ?',

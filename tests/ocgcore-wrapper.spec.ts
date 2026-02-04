@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { createOcgcoreWrapper } from '../src/create-ocgcore-wrapper';
 import { DirScriptReader } from '../src/script-reader';
-import type { CardData } from '../src/types/card-data';
+import type { CardData } from 'ygopro-msg-encode';
 import { OcgcoreScriptConstants } from '../src/vendor';
 
 describe('ocgcore wasm flow', () => {
@@ -24,10 +24,10 @@ describe('ocgcore wasm flow', () => {
     wrapper.setScriptReader(DirScriptReader(baseDir));
 
     wrapper.setCardReader(
-      (cardId): CardData => ({
+      (cardId): Partial<CardData> => ({
         code: cardId,
         alias: 0,
-        setcode: new Uint16Array(16),
+        setcode: [],
         type: 0x1 | 0x20,
         level: 4,
         attribute: 1,
