@@ -4,6 +4,7 @@ import { OcgcoreDuel } from './ocgcore-duel';
 import { OcgcoreWrapper } from './ocgcore-wrapper';
 import { OcgcoreCommonConstants, OcgcoreScriptConstants } from './vendor';
 import { OcgcoreProcessResult } from './types';
+import { YGOProMsgRetry } from 'ygopro-msg-encode';
 
 const { LOCATION_DECK, LOCATION_EXTRA, POS_FACEDOWN_DEFENSE } =
   OcgcoreScriptConstants;
@@ -134,61 +135,23 @@ export function createDuelFromYrp(
   return { yrp, duel };
 }
 
-export function consumeResponseFromOcgcoreProcess(
-  duel: OcgcoreDuel,
-  result: OcgcoreProcessResult,
-  responses: Uint8Array[],
-) {
-  if (
-    result.raw.length > 0 &&
-    result.raw[0] === OcgcoreCommonConstants.MSG_RETRY
-  ) {
-    throw new Error('Got MSG_RETRY');
-  }
-
-  if (result.status === 0) {
-    return false;
-  }
-  if (result.status === 1) {
-    if (result.raw.length === 0) {
-      return false;
-    }
-    const response = responses.shift();
-    if (!response) {
-      return true;
-    }
-    duel.setResponse(response);
-    return false;
-  }
-  return true;
-}
-
-export function* processYrpDuelStep(duel: OcgcoreDuel, yrp: YGOProYrp) {
-  const responses = yrp.responses.slice();
-
-  while (true) {
-    const result = duel.process();
-    yield {
-      duel,
-      result,
-      responses,
-    };
-
-    if (consumeResponseFromOcgcoreProcess(duel, result, responses)) {
-      break;
-    }
-  }
-}
-
 export function* playYrpStep(
   ocgcoreWrapper: OcgcoreWrapper,
   yrpInput: YGOProYrp | Uint8Array,
 ) {
   const { yrp, duel } = createDuelFromYrp(ocgcoreWrapper, yrpInput);
 
+  const responses = yrp.responses.slice();
   try {
-    for (const stepResult of processYrpDuelStep(duel, yrp)) {
-      yield stepResult;
+    for (const result of duel.advance(() => responses.shift())) {
+      yield {
+        duel,
+        result,
+        responses,
+      };
+      if (result.message instanceof YGOProMsgRetry) {
+        throw new Error('Got MSG_RETRY');
+      }
     }
   } finally {
     duel.endDuel();

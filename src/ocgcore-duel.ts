@@ -33,7 +33,11 @@ import {
 import { normalizeStartDuelOptions } from './adapters/start-duel';
 import { OcgcoreWrapper } from './ocgcore-wrapper';
 import { decodeUtf8 } from './utility/utf8';
-import { YGOProMessages, YGOProMsgBase } from 'ygopro-msg-encode';
+import {
+  YGOProMessages,
+  YGOProMsgBase,
+  YGOProMsgRetry,
+} from 'ygopro-msg-encode';
 
 export class OcgcoreDuel {
   private returnPtr = 0;
@@ -112,6 +116,24 @@ export class OcgcoreDuel {
       status,
       message: parsedMessage,
     };
+  }
+
+  *advance(advancor?: () => Uint8Array | void | null | undefined) {
+    while (true) {
+      const res = this.process();
+      yield res;
+      if (res.status === 2 || res.message instanceof YGOProMsgRetry) {
+        break;
+      }
+
+      if (res.status === 1 && res.raw.length > 0) {
+        const response = advancor?.();
+        if (!response) {
+          break;
+        }
+        this.setResponse(response);
+      }
+    }
   }
 
   newCard(card: OcgcoreNewCardParams): void {
