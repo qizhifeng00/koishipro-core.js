@@ -36,8 +36,10 @@ import { decodeUtf8 } from './utility/utf8';
 import {
   YGOProMessages,
   YGOProMsgBase,
+  YGOProMsgResponseBase,
   YGOProMsgRetry,
 } from 'ygopro-msg-encode';
+import { Advancor } from './advancors';
 
 export class OcgcoreDuel {
   private returnPtr = 0;
@@ -118,7 +120,7 @@ export class OcgcoreDuel {
     };
   }
 
-  *advance(advancor?: () => Uint8Array | void | null | undefined) {
+  *advance(advancor?: Advancor) {
     while (true) {
       const res = this.process();
       yield res;
@@ -127,7 +129,7 @@ export class OcgcoreDuel {
       }
 
       if (res.status === 1 && res.raw.length > 0) {
-        const response = advancor?.();
+        const response = advancor?.(res.message as YGOProMsgResponseBase);
         if (!response) {
           break;
         }

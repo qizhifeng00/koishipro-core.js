@@ -19,3 +19,4 @@ export * from './src/script-reader';
 export * from './src/card-reader';
 export * from './src/play-yrp';
 export * from './src/test-card';
+export * from './src/advancors';
