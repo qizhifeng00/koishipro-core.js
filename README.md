@@ -162,6 +162,26 @@ Represents a single duel instance with full lifecycle management.
 - `endDuel(): void`  
   End the duel and clean up resources.
 
+**Advance Helpers (Advancors):**
+- `advance(advancor?: Advancor): Generator<OcgcoreProcessResult>`  
+  Advances the duel processing loop. It repeatedly calls `process()`, and when a response is required, it invokes your advancor. It stops when the duel ends, a retry is requested, or your advancor returns `undefined`.
+
+**Example (Advance + Advancor)**
+```ts
+import { createOcgcoreWrapper, SlientAdvancor } from 'koishipro-core.js';
+
+const wrapper = await createOcgcoreWrapper();
+// ...setScriptReader / setCardReader / create duel / start duel...
+
+const duel = wrapper.createDuel(1234);
+
+for (const result of duel.advance(SlientAdvancor())) {
+  if (result.message) {
+    console.log(result.message);
+  }
+}
+```
+
 **Card Management:**
 - `newCard(card: OcgcoreNewCardParams): void`  
   Add a card to the duel.
@@ -265,6 +285,61 @@ for (const { duel, result } of playYrpStep(wrapper, yrpBytes)) {
     queryFlag: QUERY_CODE 
   });
 }
+```
+
+
+### Advancors
+Advancors are small response producers. You pass them into `duel.advance(...)` and they auto-generate response bytes for the current message. If multiple advancors are combined, the first one that returns a response wins.
+
+**Type**
+```ts
+import { YGOProMsgResponseBase } from 'ygopro-msg-encode';
+
+export type Advancor<T extends YGOProMsgResponseBase = YGOProMsgResponseBase> =
+  (message: T) => Uint8Array | null | undefined;
+```
+
+#### `SlientAdvancor()`
+Calls `defaultResponse()` for any message. In practice, this auto-answers optional effect prompts with “do not activate” and is ideal for fast-forwarding.
+
+#### `NoEffectAdvancor()`
+Only responds to `SelectChain` when there are **no** chains available, allowing the duel to continue. It does not auto-decline effect prompts. Use this when you want to handle effect prompts yourself.
+
+#### `SummonPlaceAdvancor(placeAndPosition?)`
+Auto-selects summon placement (`SelectPlace`) and position (`SelectPosition`). You can pass a partial filter to constrain player/location/sequence/position.
+
+#### `SelectCardAdvancor(...filters)`
+Selects cards by matching filters (e.g., code, location, controller). Supports several message types like `SelectCard`, `SelectUnselectCard`, `SelectSum`, `SelectTribute`.
+
+#### `StaticAdvancor(items)`
+Returns a fixed sequence of responses you provide. Each call consumes one item.
+
+#### `CombinedAdvancor(...advancors)`
+Runs advancors in order and returns the first non-`undefined` response. This is the same combiner used by `advance(...)` internally.
+
+#### `MapAdvancor(...handlers)`
+Dispatches by message class. Each handler maps a message type to an advancor function.
+
+#### `MapAdvancorHandler(msgClass, cb)`
+Helper for building `MapAdvancor` handler objects.
+
+#### `LimitAdvancor(advancor, limit)`
+Wraps an advancor and only allows it to return a response `limit` times.
+
+#### `OnceAdvancor(advancor)`
+Shorthand for `LimitAdvancor(advancor, 1)`.
+
+#### `PlayerViewAdvancor(player, advancor)`
+Runs the inner advancor only when `responsePlayer()` matches the specified player.
+
+#### Composition
+You can combine advancors to form a pipeline:
+```ts
+duel.advance(
+  SlientAdvancor(),
+  SummonPlaceAdvancor(),
+  SelectCardAdvancor({ code: 28985331 }),
+);
 ```
 
 ### Card Reader

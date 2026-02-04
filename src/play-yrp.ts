@@ -2,8 +2,7 @@ import { YGOProYrp } from 'ygopro-yrp-encode';
 
 import { OcgcoreDuel } from './ocgcore-duel';
 import { OcgcoreWrapper } from './ocgcore-wrapper';
-import { OcgcoreCommonConstants, OcgcoreScriptConstants } from './vendor';
-import { OcgcoreProcessResult } from './types';
+import { OcgcoreScriptConstants } from './vendor';
 import { YGOProMsgRetry } from 'ygopro-msg-encode';
 
 const { LOCATION_DECK, LOCATION_EXTRA, POS_FACEDOWN_DEFENSE } =
