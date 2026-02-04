@@ -13,7 +13,7 @@ describe('ocgcore wasm flow', () => {
     const wrapper = await createOcgcoreWrapper();
     let baseDir = path.join(process.cwd(), 'ygopro-scripts');
     if (!fs.existsSync(baseDir)) {
-      const fallback = '/home/nanahira/ygo/ygopro/script';
+      const fallback = process.env.HOME + '/ygo/ygopro/script';
       if (fs.existsSync(fallback)) {
         baseDir = fallback;
       } else {

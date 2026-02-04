@@ -12,7 +12,7 @@ describe('dir readers', () => {
   jest.setTimeout(60000);
 
   test('plays a replay using DirScriptReaderEx + DirCardReader', async () => {
-    const baseDir = '/home/nanahira/ygo/ygopro';
+    const baseDir = process.env.HOME + '/ygo/ygopro';
     if (!fs.existsSync(baseDir)) {
       throw new Error(`Missing ygopro dir: ${baseDir}`);
     }
