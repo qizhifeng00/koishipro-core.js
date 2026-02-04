@@ -6,4 +6,5 @@ export * from './limit-advancor';
 export * from './map-advancor';
 export * from './player-view-advancor';
 export * from './summon-place-advancor';
+export * from './select-card-advancor';
 export * from './types';
