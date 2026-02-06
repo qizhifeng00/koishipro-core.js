@@ -5,7 +5,7 @@ import { getNodeFs } from '../utility/node-fs';
 import { getNodePath } from '../utility/node-path';
 import { searchZips } from '../utility/search-zips';
 import { SqljsCardReader } from './sqljs-card-reader';
-import type { SqlJsStatic } from 'sql.js';
+import type { Database, SqlJsStatic } from 'sql.js';
 
 type NodeFs = NonNullable<ReturnType<typeof getNodeFs>>;
 type NodePath = NonNullable<ReturnType<typeof getNodePath>>;
@@ -85,7 +85,8 @@ export async function DirCardReader(
   const fs = getNodeModuleOrThrow(getNodeFs(), 'DirCardReader');
   const pathMod = getNodeModuleOrThrow(getNodePath(), 'DirCardReader');
 
-  const dbs: unknown[] = [];
+  const dbs: Database[] = [];
+
   for (const baseDir of baseDirs) {
     const dbPaths = await collectFsDbPaths(fs, pathMod, baseDir);
     for (const dbPath of dbPaths) {

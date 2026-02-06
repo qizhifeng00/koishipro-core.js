@@ -1,6 +1,6 @@
 import type {
-  YGOProMsgBase,
   CardQuery,
+  YGOProMsgBase,
   YGOProMsgReloadField,
 } from 'ygopro-msg-encode';
 
