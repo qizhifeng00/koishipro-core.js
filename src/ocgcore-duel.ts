@@ -18,10 +18,10 @@ import {
   OcgcoreStartDuelOptions,
 } from './types/ocgcore-params';
 import {
-  LEN_HEADER,
   MESSAGE_BUFFER_SIZE,
   QUERY_BUFFER_SIZE,
   REGISTRY_BUFFER_SIZE,
+  LEN_HEADER,
 } from './constants';
 import {
   parseCardQuery,

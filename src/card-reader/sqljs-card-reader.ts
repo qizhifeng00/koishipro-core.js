@@ -2,7 +2,6 @@ import type { Database } from 'sql.js';
 import { OcgcoreCommonConstants } from '../vendor';
 import type { CardData } from 'ygopro-msg-encode';
 import type { CardReader } from '../types/callback';
-import { MapCardReader } from './map-card-reader';
 
 type SqljsRow = {
   id: number;
@@ -59,16 +58,40 @@ function mapRowToCardData(row: SqljsRow): Partial<CardData> {
   };
 }
 
-function mapRowArrayToCardData(row: unknown[]): Partial<CardData> | null {
-  if (!row || row.length < 9) {
+function queryOne(db: Database, cardId: number): Partial<CardData> | null {
+  if (typeof db.prepare === 'function') {
+    const stmt = db.prepare(
+      'SELECT id, alias, setcode, type, atk, def, level, race, attribute FROM datas WHERE id = ?',
+    );
+    try {
+      stmt.bind([cardId]);
+      if (!stmt.step()) {
+        return null;
+      }
+      const row = stmt.getAsObject() as unknown as SqljsRow;
+      if (!row || row.id == null) {
+        return null;
+      }
+      return mapRowToCardData(row);
+    } finally {
+      stmt.free();
+    }
+  }
+
+  const res = db.exec(
+    `SELECT id, alias, setcode, type, atk, def, level, race, attribute FROM datas WHERE id = ${cardId}`,
+  );
+  if (
+    !res ||
+    res.length === 0 ||
+    !res[0].values ||
+    res[0].values.length === 0
+  ) {
     return null;
   }
-  const id = row[0] as number;
-  if (id == null) {
-    return null;
-  }
+  const row = res[0].values[0] as unknown[];
   return mapRowToCardData({
-    id,
+    id: row[0] as number,
     alias: row[1] as number,
     setcode: row[2] as number,
     type: row[3] as number,
@@ -81,49 +104,15 @@ function mapRowArrayToCardData(row: unknown[]): Partial<CardData> | null {
 }
 
 export function SqljsCardReader(...dbs: Database[]): CardReader {
-  const cardMap = new Map<number, Partial<CardData>>();
-  const columns = 'id, alias, setcode, type, atk, def, level, race, attribute';
-
-  for (const db of dbs) {
-    try {
-      if (typeof db.prepare === 'function') {
-        const stmt = db.prepare(`SELECT ${columns} FROM datas`);
-        try {
-          while (stmt.step()) {
-            const row = stmt.getAsObject() as unknown as SqljsRow;
-            if (!row || row.id == null || cardMap.has(row.id)) {
-              continue;
-            }
-            cardMap.set(row.id, mapRowToCardData(row));
-          }
-        } finally {
-          stmt.free();
-        }
-      } else {
-        const res = db.exec(`SELECT ${columns} FROM datas`);
-        if (res && res.length > 0 && res[0].values) {
-          for (const row of res[0].values) {
-            const data = mapRowArrayToCardData(row as unknown[]);
-            const cardId = data?.code ?? null;
-            if (cardId == null || cardMap.has(cardId)) {
-              continue;
-            }
-            cardMap.set(cardId, data);
-          }
-        }
+  return (cardId: number) => {
+    for (const db of dbs) {
+      const data = queryOne(db, cardId);
+      if (data) {
+        return data;
       }
-    } finally {
-      // if (typeof db.close === 'function') {
-      //   try {
-      //     db.close();
-      //   } catch {
-      //     // ignore close errors
-      //   }
-      // }
     }
-  }
-
-  return MapCardReader(cardMap);
+    return null;
+  };
 }
 
 /** @deprecated Use SqljsCardReader instead. */
