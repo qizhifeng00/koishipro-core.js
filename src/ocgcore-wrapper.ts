@@ -2,7 +2,15 @@ import { OcgcoreModule } from './vendor/libocgcore.shared';
 import { OcgcoreDuel } from './ocgcore-duel';
 import { CardData } from 'ygopro-msg-encode';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
-import { CardReader, MessageHandler, ScriptReader } from './types/callback';
+import {
+  CardReader,
+  CardReaderFn,
+  MessageHandler,
+  MessageHandlerFn,
+  ScriptReader,
+  ScriptReaderFn,
+  WithFinalizer,
+} from './types/callback';
 
 export class OcgcoreWrapper {
   private scriptBufferPtr = 0;
@@ -93,7 +101,7 @@ export class OcgcoreWrapper {
     let content: string | Uint8Array | null | undefined;
     for (const reader of this.scriptReaders) {
       try {
-        content = reader(scriptPath);
+        content = this.applyCallback<ScriptReaderFn>(reader, scriptPath);
       } catch {
         content = null;
       }
@@ -110,7 +118,7 @@ export class OcgcoreWrapper {
     let data: Partial<CardData> | null | undefined;
     for (const reader of this.cardReaders) {
       try {
-        data = reader(cardId);
+        data = this.applyCallback<CardReaderFn>(reader, cardId);
       } catch {
         data = null;
       }
@@ -128,7 +136,7 @@ export class OcgcoreWrapper {
   ): void {
     for (const handler of this.messageHandlers) {
       try {
-        handler(duel, message, type);
+        this.applyCallback<MessageHandlerFn>(handler, duel, message, type);
       } catch {
         // ignore handler errors
       }
@@ -273,6 +281,16 @@ export class OcgcoreWrapper {
   }
 
   finalize(): void {
+    for (const reader of this.scriptReaders) {
+      this.finalizeCallback(reader);
+    }
+    for (const reader of this.cardReaders) {
+      this.finalizeCallback(reader);
+    }
+    for (const handler of this.messageHandlers) {
+      this.finalizeCallback(handler);
+    }
+
     if (this.scriptReaderFunc) {
       this.ocgcoreModule.removeFunction(this.scriptReaderFunc);
       this.scriptReaderFunc = 0;
@@ -300,6 +318,29 @@ export class OcgcoreWrapper {
       this.ocgcoreModule._free(this.tmpStringBufferPtr);
       this.tmpStringBufferPtr = 0;
       this.tmpStringBufferSize = 0;
+    }
+  }
+
+  private applyCallback<F extends (...args: any[]) => any>(
+    cb: WithFinalizer<F>,
+    ...args: Parameters<F>
+  ): ReturnType<F> {
+    if (typeof cb === 'function') {
+      return cb(...args);
+    }
+    return cb.apply(...args);
+  }
+
+  private finalizeCallback<F extends (...args: any[]) => any>(
+    cb: WithFinalizer<F>,
+  ): void {
+    if (typeof cb === 'function') {
+      return;
+    }
+    try {
+      cb.finalize?.();
+    } catch {
+      // ignore finalizer errors
     }
   }
 }

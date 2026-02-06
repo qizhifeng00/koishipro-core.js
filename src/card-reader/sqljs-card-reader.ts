@@ -1,4 +1,4 @@
-import type { Database } from 'sql.js';
+import type { Database, SqlJsStatic } from 'sql.js';
 import { OcgcoreCommonConstants } from '../vendor';
 import type { CardData } from 'ygopro-msg-encode';
 import type { CardReader } from '../types/callback';
@@ -103,7 +103,7 @@ function queryOne(db: Database, cardId: number): Partial<CardData> | null {
   });
 }
 
-export function SqljsCardReader(...dbs: Database[]): CardReader {
+function createReader(dbs: Database[]): CardReader {
   return (cardId: number) => {
     for (const db of dbs) {
       const data = queryOne(db, cardId);
@@ -115,7 +115,51 @@ export function SqljsCardReader(...dbs: Database[]): CardReader {
   };
 }
 
+function isSqlJsStatic(value: unknown): value is SqlJsStatic {
+  return !!value && typeof (value as SqlJsStatic).Database === 'function';
+}
+
+export function SqljsCardReader(...dbs: Database[]): CardReader;
+export function SqljsCardReader(
+  sqljs: SqlJsStatic,
+  ...dbs: Uint8Array[]
+): CardReader;
+export function SqljsCardReader(
+  first: SqlJsStatic | Database,
+  ...rest: Array<Database | Uint8Array>
+): CardReader {
+  if (isSqlJsStatic(first)) {
+    const sqljs = first;
+    const created = (rest as Uint8Array[]).map((bytes) => new sqljs.Database(bytes));
+    const reader = createReader(created);
+    return {
+      apply: reader,
+      finalize: () => {
+        for (const db of created) {
+          try {
+            db.close();
+          } catch {
+            // ignore close errors
+          }
+        }
+      },
+    };
+  }
+
+  return createReader([first as Database, ...(rest as Database[])]);
+}
+
 /** @deprecated Use SqljsCardReader instead. */
-export function createSqljsCardReader(...dbs: Database[]): CardReader {
-  return SqljsCardReader(...dbs);
+export function createSqljsCardReader(...dbs: Database[]): CardReader;
+/** @deprecated Use SqljsCardReader instead. */
+export function createSqljsCardReader(
+  sqljs: SqlJsStatic,
+  ...dbs: Uint8Array[]
+): CardReader;
+/** @deprecated Use SqljsCardReader instead. */
+export function createSqljsCardReader(
+  first: SqlJsStatic | Database,
+  ...rest: Array<Database | Uint8Array>
+): CardReader {
+  return SqljsCardReader(first as SqlJsStatic & Database, ...(rest as any[]));
 }
