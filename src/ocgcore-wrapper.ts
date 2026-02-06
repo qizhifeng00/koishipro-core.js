@@ -1,6 +1,6 @@
 import { OcgcoreModule } from './vendor/libocgcore.shared';
 import { OcgcoreDuel } from './ocgcore-duel';
-import { CardData } from 'ygopro-msg-encode';
+import { CardDataWithText } from './types/card-data-with-text';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
 import {
   CardReader,
@@ -75,7 +75,7 @@ export class OcgcoreWrapper {
         return 0;
       }
 
-      const buf = new CardData().fromPartial(data).toPayload();
+      const buf = data.toPayload();
       this.heapU8.set(buf, cardDataPtr);
       return 0;
     }, 'iii');
@@ -114,8 +114,8 @@ export class OcgcoreWrapper {
       : (content ?? null);
   }
 
-  readCard(cardId: number): Partial<CardData> | null {
-    let data: Partial<CardData> | null | undefined;
+  readCard(cardId: number): CardDataWithText | null {
+    let data: Partial<CardDataWithText> | null | undefined;
     for (const reader of this.cardReaders) {
       try {
         data = this.applyCallback<CardReaderFn>(reader, cardId);
@@ -126,7 +126,13 @@ export class OcgcoreWrapper {
         break;
       }
     }
-    return data ?? null;
+    if (!data) {
+      return null;
+    }
+    if (data instanceof CardDataWithText) {
+      return data;
+    }
+    return new CardDataWithText().fromPartial(data);
   }
 
   handleMessage(
