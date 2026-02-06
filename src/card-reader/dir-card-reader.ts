@@ -123,5 +123,13 @@ export async function DirCardReader(
     }
   }
 
-  return SqljsCardReader(...(dbs as Parameters<typeof SqljsCardReader>));
+  const reader = SqljsCardReader(
+    ...(dbs as Parameters<typeof SqljsCardReader>),
+  );
+  for (const db of dbs) {
+    try {
+      db.close();
+    } catch {}
+  }
+  return reader;
 }
