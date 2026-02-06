@@ -3,6 +3,7 @@ import { DirScriptReader, ZipScriptReader } from './script-readers';
 import { getNodeFs } from '../utility/node-fs';
 import { getNodePath } from '../utility/node-path';
 import { searchZips } from '../utility/search-zips';
+import type { ScriptReaderFn, WithFinalizer } from '../types/callback';
 
 function getNodeModuleOrThrow<T>(value: T | null, label: string): T {
   if (!value) {
@@ -35,5 +36,24 @@ export async function DirScriptReaderEx(
   }
 
   const zipReader = await ZipScriptReader(...zipInputs);
-  return (path) => fsReader(path) ?? zipReader(path);
+  const applyReader = (reader: WithFinalizer<ScriptReaderFn>, path: string) =>
+    typeof reader === 'function' ? reader(path) : reader.apply(path);
+  const finalizeReader = (reader: WithFinalizer<ScriptReaderFn>) => {
+    if (typeof reader === 'function') {
+      return;
+    }
+    try {
+      reader.finalize?.();
+    } catch {
+      // ignore finalizer errors
+    }
+  };
+
+  return {
+    apply: (path) => applyReader(fsReader, path) ?? applyReader(zipReader, path),
+    finalize: () => {
+      finalizeReader(fsReader);
+      finalizeReader(zipReader);
+    },
+  };
 }

@@ -1,7 +1,7 @@
 import type { Database, SqlJsStatic } from 'sql.js';
 import { OcgcoreCommonConstants } from '../vendor';
 import type { CardData } from 'ygopro-msg-encode';
-import type { CardReader } from '../types/callback';
+import type { CardReader, CardReaderFn } from '../types/callback';
 
 type SqljsRow = {
   id: number;
@@ -103,7 +103,7 @@ function queryOne(db: Database, cardId: number): Partial<CardData> | null {
   });
 }
 
-function createReader(dbs: Database[]): CardReader {
+function createReader(dbs: Database[]): CardReaderFn {
   return (cardId: number) => {
     for (const db of dbs) {
       const data = queryOne(db, cardId);
@@ -119,7 +119,7 @@ function isSqlJsStatic(value: unknown): value is SqlJsStatic {
   return !!value && typeof (value as SqlJsStatic).Database === 'function';
 }
 
-export function SqljsCardReader(...dbs: Database[]): CardReader;
+export function SqljsCardReader(...dbs: Database[]): CardReaderFn;
 export function SqljsCardReader(
   sqljs: SqlJsStatic,
   ...dbs: Uint8Array[]
@@ -150,7 +150,7 @@ export function SqljsCardReader(
 }
 
 /** @deprecated Use SqljsCardReader instead. */
-export function createSqljsCardReader(...dbs: Database[]): CardReader;
+export function createSqljsCardReader(...dbs: Database[]): CardReaderFn;
 /** @deprecated Use SqljsCardReader instead. */
 export function createSqljsCardReader(
   sqljs: SqlJsStatic,
@@ -161,5 +161,8 @@ export function createSqljsCardReader(
   first: SqlJsStatic | Database,
   ...rest: Array<Database | Uint8Array>
 ): CardReader {
-  return SqljsCardReader(first as SqlJsStatic & Database, ...(rest as any[]));
+  if (isSqlJsStatic(first)) {
+    return SqljsCardReader(first, ...(rest as Uint8Array[]));
+  }
+  return SqljsCardReader(first as Database, ...(rest as Database[]));
 }
