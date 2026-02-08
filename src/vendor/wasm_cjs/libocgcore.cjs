@@ -32,198 +32,6 @@ Module['ready'] = new Promise(function(resolve, reject) {
   readyPromiseReject = reject;
 });
 
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_malloc')) {
-        Object.defineProperty(Module['ready'], '_malloc', { configurable: true, get: function() { abort('You are getting _malloc on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_malloc', { configurable: true, set: function() { abort('You are setting _malloc on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_free')) {
-        Object.defineProperty(Module['ready'], '_free', { configurable: true, get: function() { abort('You are getting _free on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_free', { configurable: true, set: function() { abort('You are setting _free on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_ocgcore_shutdown')) {
-        Object.defineProperty(Module['ready'], '_ocgcore_shutdown', { configurable: true, get: function() { abort('You are getting _ocgcore_shutdown on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_ocgcore_shutdown', { configurable: true, set: function() { abort('You are setting _ocgcore_shutdown on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_set_script_reader')) {
-        Object.defineProperty(Module['ready'], '_set_script_reader', { configurable: true, get: function() { abort('You are getting _set_script_reader on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_set_script_reader', { configurable: true, set: function() { abort('You are setting _set_script_reader on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_set_card_reader')) {
-        Object.defineProperty(Module['ready'], '_set_card_reader', { configurable: true, get: function() { abort('You are getting _set_card_reader on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_set_card_reader', { configurable: true, set: function() { abort('You are setting _set_card_reader on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_set_message_handler')) {
-        Object.defineProperty(Module['ready'], '_set_message_handler', { configurable: true, get: function() { abort('You are getting _set_message_handler on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_set_message_handler', { configurable: true, set: function() { abort('You are setting _set_message_handler on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_default_script_reader')) {
-        Object.defineProperty(Module['ready'], '_default_script_reader', { configurable: true, get: function() { abort('You are getting _default_script_reader on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_default_script_reader', { configurable: true, set: function() { abort('You are setting _default_script_reader on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_create_duel')) {
-        Object.defineProperty(Module['ready'], '_create_duel', { configurable: true, get: function() { abort('You are getting _create_duel on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_create_duel', { configurable: true, set: function() { abort('You are setting _create_duel on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_create_duel_v2')) {
-        Object.defineProperty(Module['ready'], '_create_duel_v2', { configurable: true, get: function() { abort('You are getting _create_duel_v2 on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_create_duel_v2', { configurable: true, set: function() { abort('You are setting _create_duel_v2 on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_start_duel')) {
-        Object.defineProperty(Module['ready'], '_start_duel', { configurable: true, get: function() { abort('You are getting _start_duel on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_start_duel', { configurable: true, set: function() { abort('You are setting _start_duel on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_end_duel')) {
-        Object.defineProperty(Module['ready'], '_end_duel', { configurable: true, get: function() { abort('You are getting _end_duel on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_end_duel', { configurable: true, set: function() { abort('You are setting _end_duel on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_set_player_info')) {
-        Object.defineProperty(Module['ready'], '_set_player_info', { configurable: true, get: function() { abort('You are getting _set_player_info on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_set_player_info', { configurable: true, set: function() { abort('You are setting _set_player_info on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_get_log_message')) {
-        Object.defineProperty(Module['ready'], '_get_log_message', { configurable: true, get: function() { abort('You are getting _get_log_message on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_get_log_message', { configurable: true, set: function() { abort('You are setting _get_log_message on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_get_message')) {
-        Object.defineProperty(Module['ready'], '_get_message', { configurable: true, get: function() { abort('You are getting _get_message on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_get_message', { configurable: true, set: function() { abort('You are setting _get_message on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_process')) {
-        Object.defineProperty(Module['ready'], '_process', { configurable: true, get: function() { abort('You are getting _process on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_process', { configurable: true, set: function() { abort('You are setting _process on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_new_card')) {
-        Object.defineProperty(Module['ready'], '_new_card', { configurable: true, get: function() { abort('You are getting _new_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_new_card', { configurable: true, set: function() { abort('You are setting _new_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_new_tag_card')) {
-        Object.defineProperty(Module['ready'], '_new_tag_card', { configurable: true, get: function() { abort('You are getting _new_tag_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_new_tag_card', { configurable: true, set: function() { abort('You are setting _new_tag_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_query_card')) {
-        Object.defineProperty(Module['ready'], '_query_card', { configurable: true, get: function() { abort('You are getting _query_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_query_card', { configurable: true, set: function() { abort('You are setting _query_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_query_field_count')) {
-        Object.defineProperty(Module['ready'], '_query_field_count', { configurable: true, get: function() { abort('You are getting _query_field_count on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_query_field_count', { configurable: true, set: function() { abort('You are setting _query_field_count on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_query_field_card')) {
-        Object.defineProperty(Module['ready'], '_query_field_card', { configurable: true, get: function() { abort('You are getting _query_field_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_query_field_card', { configurable: true, set: function() { abort('You are setting _query_field_card on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_query_field_info')) {
-        Object.defineProperty(Module['ready'], '_query_field_info', { configurable: true, get: function() { abort('You are getting _query_field_info on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_query_field_info', { configurable: true, set: function() { abort('You are setting _query_field_info on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_set_responsei')) {
-        Object.defineProperty(Module['ready'], '_set_responsei', { configurable: true, get: function() { abort('You are getting _set_responsei on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_set_responsei', { configurable: true, set: function() { abort('You are setting _set_responsei on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_set_responseb')) {
-        Object.defineProperty(Module['ready'], '_set_responseb', { configurable: true, get: function() { abort('You are getting _set_responseb on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_set_responseb', { configurable: true, set: function() { abort('You are setting _set_responseb on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_preload_script')) {
-        Object.defineProperty(Module['ready'], '_preload_script', { configurable: true, get: function() { abort('You are getting _preload_script on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_preload_script', { configurable: true, set: function() { abort('You are setting _preload_script on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_get_registry_value')) {
-        Object.defineProperty(Module['ready'], '_get_registry_value', { configurable: true, get: function() { abort('You are getting _get_registry_value on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_get_registry_value', { configurable: true, set: function() { abort('You are setting _get_registry_value on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_set_registry_value')) {
-        Object.defineProperty(Module['ready'], '_set_registry_value', { configurable: true, get: function() { abort('You are getting _set_registry_value on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_set_registry_value', { configurable: true, set: function() { abort('You are setting _set_registry_value on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_get_registry_keys')) {
-        Object.defineProperty(Module['ready'], '_get_registry_keys', { configurable: true, get: function() { abort('You are getting _get_registry_keys on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_get_registry_keys', { configurable: true, set: function() { abort('You are setting _get_registry_keys on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_clear_registry')) {
-        Object.defineProperty(Module['ready'], '_clear_registry', { configurable: true, get: function() { abort('You are getting _clear_registry on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_clear_registry', { configurable: true, set: function() { abort('You are setting _clear_registry on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_dump_registry')) {
-        Object.defineProperty(Module['ready'], '_dump_registry', { configurable: true, get: function() { abort('You are getting _dump_registry on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_dump_registry', { configurable: true, set: function() { abort('You are setting _dump_registry on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '_load_registry')) {
-        Object.defineProperty(Module['ready'], '_load_registry', { configurable: true, get: function() { abort('You are getting _load_registry on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '_load_registry', { configurable: true, set: function() { abort('You are setting _load_registry on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], '___stdio_exit')) {
-        Object.defineProperty(Module['ready'], '___stdio_exit', { configurable: true, get: function() { abort('You are getting ___stdio_exit on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], '___stdio_exit', { configurable: true, set: function() { abort('You are setting ___stdio_exit on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
-      if (!Object.getOwnPropertyDescriptor(Module['ready'], 'onRuntimeInitialized')) {
-        Object.defineProperty(Module['ready'], 'onRuntimeInitialized', { configurable: true, get: function() { abort('You are getting onRuntimeInitialized on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-        Object.defineProperty(Module['ready'], 'onRuntimeInitialized', { configurable: true, set: function() { abort('You are setting onRuntimeInitialized on the Promise object, instead of the instance. Use .then() to get called back with the instance, see the MODULARIZE docs in src/settings.js') } });
-      }
-    
-
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
 // {{PRE_JSES}}
@@ -252,10 +60,6 @@ var ENVIRONMENT_IS_WORKER = typeof importScripts == 'function';
 var ENVIRONMENT_IS_NODE = typeof process == 'object' && typeof process.versions == 'object' && typeof process.versions.node == 'string';
 var ENVIRONMENT_IS_SHELL = !ENVIRONMENT_IS_WEB && !ENVIRONMENT_IS_NODE && !ENVIRONMENT_IS_WORKER;
 
-if (Module['ENVIRONMENT']) {
-  throw new Error('Module.ENVIRONMENT has been deprecated. To force the environment, use the ENVIRONMENT compile-time option (for example, -s ENVIRONMENT=web or -s ENVIRONMENT=node)');
-}
-
 // `/` should be present at the end if `scriptDirectory` is not empty
 var scriptDirectory = '';
 function locateFile(path) {
@@ -281,9 +85,6 @@ var read_,
 function logExceptionOnExit(e) {
   if (e instanceof ExitStatus) return;
   let toLog = e;
-  if (e && typeof e == 'object' && e.stack) {
-    toLog = [e, e.stack];
-  }
   err('exiting due to exception: ' + toLog);
 }
 
@@ -292,7 +93,6 @@ var nodePath;
 var requireNodeFS;
 
 if (ENVIRONMENT_IS_NODE) {
-  if (!(typeof process == 'object' && typeof require == 'function')) throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
   if (ENVIRONMENT_IS_WORKER) {
     scriptDirectory = require('path').dirname(scriptDirectory) + '/';
   } else {
@@ -323,7 +123,6 @@ readBinary = (filename) => {
   if (!ret.buffer) {
     ret = new Uint8Array(ret);
   }
-  assert(ret.buffer);
   return ret;
 };
 
@@ -371,65 +170,6 @@ readAsync = (filename, onload, onerror) => {
   Module['inspect'] = function () { return '[Emscripten Module object]'; };
 
 } else
-if (ENVIRONMENT_IS_SHELL) {
-
-  if ((typeof process == 'object' && typeof require === 'function') || typeof window == 'object' || typeof importScripts == 'function') throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
-
-  if (typeof read != 'undefined') {
-    read_ = function shell_read(f) {
-      return read(f);
-    };
-  }
-
-  readBinary = function readBinary(f) {
-    let data;
-    if (typeof readbuffer == 'function') {
-      return new Uint8Array(readbuffer(f));
-    }
-    data = read(f, 'binary');
-    assert(typeof data == 'object');
-    return data;
-  };
-
-  readAsync = function readAsync(f, onload, onerror) {
-    setTimeout(() => onload(readBinary(f)), 0);
-  };
-
-  if (typeof scriptArgs != 'undefined') {
-    arguments_ = scriptArgs;
-  } else if (typeof arguments != 'undefined') {
-    arguments_ = arguments;
-  }
-
-  if (typeof quit == 'function') {
-    quit_ = (status, toThrow) => {
-      // Unlike node which has process.exitCode, d8 has no such mechanism. So we
-      // have no way to set the exit code and then let the program exit with
-      // that code when it naturally stops running (say, when all setTimeouts
-      // have completed). For that reason we must call `quit` - the only way to
-      // set the exit code - but quit also halts immediately, so we need to be
-      // careful of whether the runtime is alive or not, which is why this code
-      // path looks different than node. It also has the downside that it will
-      // halt the entire program when no code remains to run, which means this
-      // is not friendly for bundling this code into a larger codebase, and for
-      // that reason the "shell" environment is mainly useful for testing whole
-      // programs by themselves, basically.
-      if (runtimeKeepaliveCounter) {
-        throw toThrow;
-      }
-      logExceptionOnExit(toThrow);
-      quit(status);
-    };
-  }
-
-  if (typeof print != 'undefined') {
-    // Prefer to use print/printErr where they exist, as they usually work better.
-    if (typeof console == 'undefined') console = /** @type{!Console} */({});
-    console.log = /** @type{!function(this:Console, ...*): undefined} */ (print);
-    console.warn = console.error = /** @type{!function(this:Console, ...*): undefined} */ (typeof printErr != 'undefined' ? printErr : print);
-  }
-
-} else
 
 // Note that this includes Node.js workers when relevant (pthreads is enabled).
 // Node.js workers are detected as a combination of ENVIRONMENT_IS_WORKER and
@@ -456,8 +196,6 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   } else {
     scriptDirectory = '';
   }
-
-  if (!(typeof window == 'object' || typeof importScripts == 'function')) throw new Error('not compiled for this environment (did you build to HTML and try to run it not on the web, or set ENVIRONMENT to something - like node - and run it someplace else - like on the web?)');
 
   // Differentiate the Web Worker from the Node Worker case, as reading must
   // be done differently.
@@ -503,7 +241,6 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   setWindowTitle = (title) => document.title = title;
 } else
 {
-  throw new Error('environment detection error');
 }
 
 var out = Module['print'] || console.log.bind(console);
@@ -514,41 +251,19 @@ Object.assign(Module, moduleOverrides);
 // Free the object hierarchy contained in the overrides, this lets the GC
 // reclaim data used e.g. in memoryInitializerRequest, which is a large typed array.
 moduleOverrides = null;
-checkIncomingModuleAPI();
 
 // Emit code to handle expected values on the Module object. This applies Module.x
 // to the proper local x. This has two benefits: first, we only emit it if it is
 // expected to arrive, and second, by using a local everywhere else that can be
 // minified.
 
-if (Module['arguments']) arguments_ = Module['arguments'];legacyModuleProp('arguments', 'arguments_');
+if (Module['arguments']) arguments_ = Module['arguments'];
 
-if (Module['thisProgram']) thisProgram = Module['thisProgram'];legacyModuleProp('thisProgram', 'thisProgram');
+if (Module['thisProgram']) thisProgram = Module['thisProgram'];
 
-if (Module['quit']) quit_ = Module['quit'];legacyModuleProp('quit', 'quit_');
+if (Module['quit']) quit_ = Module['quit'];
 
 // perform assertions in shell.js after we set up out() and err(), as otherwise if an assertion fails it cannot print the message
-// Assertions on removed incoming Module JS APIs.
-assert(typeof Module['memoryInitializerPrefixURL'] == 'undefined', 'Module.memoryInitializerPrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['pthreadMainPrefixURL'] == 'undefined', 'Module.pthreadMainPrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['cdInitializerPrefixURL'] == 'undefined', 'Module.cdInitializerPrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['filePackagePrefixURL'] == 'undefined', 'Module.filePackagePrefixURL option was removed, use Module.locateFile instead');
-assert(typeof Module['read'] == 'undefined', 'Module.read option was removed (modify read_ in JS)');
-assert(typeof Module['readAsync'] == 'undefined', 'Module.readAsync option was removed (modify readAsync in JS)');
-assert(typeof Module['readBinary'] == 'undefined', 'Module.readBinary option was removed (modify readBinary in JS)');
-assert(typeof Module['setWindowTitle'] == 'undefined', 'Module.setWindowTitle option was removed (modify setWindowTitle in JS)');
-assert(typeof Module['TOTAL_MEMORY'] == 'undefined', 'Module.TOTAL_MEMORY has been renamed Module.INITIAL_MEMORY');
-legacyModuleProp('read', 'read_');
-legacyModuleProp('readAsync', 'readAsync');
-legacyModuleProp('readBinary', 'readBinary');
-legacyModuleProp('setWindowTitle', 'setWindowTitle');
-var IDBFS = 'IDBFS is no longer included by default; build with -lidbfs.js';
-var PROXYFS = 'PROXYFS is no longer included by default; build with -lproxyfs.js';
-var WORKERFS = 'WORKERFS is no longer included by default; build with -lworkerfs.js';
-var NODEFS = 'NODEFS is no longer included by default; build with -lnodefs.js';
-
-
-assert(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at build time.  Add 'shell' to `-s ENVIRONMENT` to enable.");
 
 
 
@@ -711,7 +426,6 @@ function updateTableMap(offset, count) {
  * @param {string=} sig
  */
 function addFunction(func, sig) {
-  assert(typeof func != 'undefined');
 
   // Check if the function is already in the table, to ensure each function
   // gets a unique index. First, create the map if this is the first use.
@@ -735,7 +449,6 @@ function addFunction(func, sig) {
     if (!(err instanceof TypeError)) {
       throw err;
     }
-    assert(typeof sig != 'undefined', 'Missing signature argument to addFunction: ' + func);
     var wrapped = convertJsFunctionToWasm(func, sig);
     setWasmTableEntry(ret, wrapped);
   }
@@ -753,48 +466,6 @@ function removeFunction(index) {
 // end include: runtime_functions.js
 // include: runtime_debug.js
 
-
-function legacyModuleProp(prop, newName) {
-  if (!Object.getOwnPropertyDescriptor(Module, prop)) {
-    Object.defineProperty(Module, prop, {
-      configurable: true,
-      get: function() {
-        abort('Module.' + prop + ' has been replaced with plain ' + newName + ' (the initial value can be provided on Module, but after startup the value is only looked for on a local variable of that name)');
-      }
-    });
-  }
-}
-
-function ignoredModuleProp(prop) {
-  if (Object.getOwnPropertyDescriptor(Module, prop)) {
-    abort('`Module.' + prop + '` was supplied but `' + prop + '` not included in INCOMING_MODULE_JS_API');
-  }
-}
-
-function unexportedMessage(sym, isFSSybol) {
-  var msg = "'" + sym + "' was not exported. add it to EXPORTED_RUNTIME_METHODS (see the FAQ)";
-  if (isFSSybol) {
-    msg += '. Alternatively, forcing filesystem support (-s FORCE_FILESYSTEM=1) can export this for you';
-  }
-  return msg;
-}
-
-function unexportedRuntimeSymbol(sym, isFSSybol) {
-  if (!Object.getOwnPropertyDescriptor(Module, sym)) {
-    Object.defineProperty(Module, sym, {
-      configurable: true,
-      get: function() {
-        abort(unexportedMessage(sym, isFSSybol));
-      }
-    });
-  }
-}
-
-function unexportedRuntimeFunction(sym, isFSSybol) {
-  if (!Object.getOwnPropertyDescriptor(Module, sym)) {
-    Module[sym] = () => abort(unexportedMessage(sym, isFSSybol));
-  }
-}
 
 // end include: runtime_debug.js
 var tempRet0 = 0;
@@ -814,8 +485,8 @@ var getTempRet0 = () => tempRet0;
 //    is up at http://kripken.github.io/emscripten-site/docs/api_reference/preamble.js.html
 
 var wasmBinary;
-if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];legacyModuleProp('wasmBinary', 'wasmBinary');
-var noExitRuntime = Module['noExitRuntime'] || false;legacyModuleProp('noExitRuntime', 'noExitRuntime');
+if (Module['wasmBinary']) wasmBinary = Module['wasmBinary'];
+var noExitRuntime = Module['noExitRuntime'] || false;
 
 if (typeof WebAssembly != 'object') {
   abort('no native wasm support detected');
@@ -884,14 +555,16 @@ var EXITSTATUS;
 /** @type {function(*, string=)} */
 function assert(condition, text) {
   if (!condition) {
-    abort('Assertion failed' + (text ? ': ' + text : ''));
+    // This build was created without ASSERTIONS defined.  `assert()` should not
+    // ever be called in this configuration but in case there are callers in
+    // the wild leave this simple abort() implemenation here for now.
+    abort(text);
   }
 }
 
 // Returns the C function with a specified identifier (for C++, you need to do manual name mangling)
 function getCFunc(ident) {
   var func = Module['_' + ident]; // closure exported function
-  assert(func, 'Cannot call unknown function ' + ident + ', make sure it is exported');
   return func;
 }
 
@@ -929,7 +602,6 @@ function ccall(ident, returnType, argTypes, args, opts) {
   var func = getCFunc(ident);
   var cArgs = [];
   var stack = 0;
-  assert(returnType !== 'array', 'Return type should not be "array".');
   if (args) {
     for (var i = 0; i < args.length; i++) {
       var converter = toC[argTypes[i]];
@@ -955,13 +627,18 @@ function ccall(ident, returnType, argTypes, args, opts) {
     @param {Array=} argTypes
     @param {Object=} opts */
 function cwrap(ident, returnType, argTypes, opts) {
+  argTypes = argTypes || [];
+  // When the function takes numbers and returns a number, we can just return
+  // the original function
+  var numericArgs = argTypes.every(function(type){ return type === 'number'});
+  var numericRet = returnType !== 'string';
+  if (numericRet && numericArgs && !opts) {
+    return getCFunc(ident);
+  }
   return function() {
     return ccall(ident, returnType, argTypes, arguments, opts);
   }
 }
-
-// We used to include malloc/free by default in the past. Show a helpful error in
-// builds with assertions.
 
 // include: runtime_legacy.js
 
@@ -980,8 +657,6 @@ var ALLOC_STACK = 1; // Lives for the duration of the current function call
  */
 function allocate(slab, allocator) {
   var ret;
-  assert(typeof allocator == 'number', 'allocate no longer takes a type argument')
-  assert(typeof slab != 'number', 'allocate no longer takes a number as arg0')
 
   if (allocator == ALLOC_STACK) {
     ret = stackAlloc(slab.length);
@@ -1038,7 +713,6 @@ function UTF8ArrayToString(heap, idx, maxBytesToRead) {
       if ((u0 & 0xF0) == 0xE0) {
         u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
       } else {
-        if ((u0 & 0xF8) != 0xF0) warnOnce('Invalid UTF-8 leading byte 0x' + u0.toString(16) + ' encountered when deserializing a UTF-8 string in wasm memory to a JS string!');
         u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heap[idx++] & 63);
       }
 
@@ -1115,7 +789,6 @@ function stringToUTF8Array(str, heap, outIdx, maxBytesToWrite) {
       heap[outIdx++] = 0x80 | (u & 63);
     } else {
       if (outIdx + 3 >= endIdx) break;
-      if (u > 0x10FFFF) warnOnce('Invalid Unicode code point 0x' + u.toString(16) + ' encountered when serializing a JS string to a UTF-8 string in wasm memory! (Valid unicode code points should be in range 0-0x10FFFF).');
       heap[outIdx++] = 0xF0 | (u >> 18);
       heap[outIdx++] = 0x80 | ((u >> 12) & 63);
       heap[outIdx++] = 0x80 | ((u >> 6) & 63);
@@ -1133,7 +806,6 @@ function stringToUTF8Array(str, heap, outIdx, maxBytesToWrite) {
 // Returns the number of bytes written, EXCLUDING the null terminator.
 
 function stringToUTF8(str, outPtr, maxBytesToWrite) {
-  assert(typeof maxBytesToWrite == 'number', 'stringToUTF8(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!');
   return stringToUTF8Array(str, HEAPU8,outPtr, maxBytesToWrite);
 }
 
@@ -1184,7 +856,6 @@ function stringToAscii(str, outPtr) {
 var UTF16Decoder = typeof TextDecoder != 'undefined' ? new TextDecoder('utf-16le') : undefined;
 
 function UTF16ToString(ptr, maxBytesToRead) {
-  assert(ptr % 2 == 0, 'Pointer passed to UTF16ToString must be aligned to two bytes!');
   var endPtr = ptr;
   // TextDecoder needs to know the byte length in advance, it doesn't stop on null terminator by itself.
   // Also, use the length info to avoid running tiny strings through TextDecoder, since .subarray() allocates garbage.
@@ -1225,8 +896,6 @@ function UTF16ToString(ptr, maxBytesToRead) {
 // Returns the number of bytes written, EXCLUDING the null terminator.
 
 function stringToUTF16(str, outPtr, maxBytesToWrite) {
-  assert(outPtr % 2 == 0, 'Pointer passed to stringToUTF16 must be aligned to two bytes!');
-  assert(typeof maxBytesToWrite == 'number', 'stringToUTF16(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!');
   // Backwards compatibility: if max bytes is not specified, assume unsafe unbounded write is allowed.
   if (maxBytesToWrite === undefined) {
     maxBytesToWrite = 0x7FFFFFFF;
@@ -1253,7 +922,6 @@ function lengthBytesUTF16(str) {
 }
 
 function UTF32ToString(ptr, maxBytesToRead) {
-  assert(ptr % 4 == 0, 'Pointer passed to UTF32ToString must be aligned to four bytes!');
   var i = 0;
 
   var str = '';
@@ -1287,8 +955,6 @@ function UTF32ToString(ptr, maxBytesToRead) {
 // Returns the number of bytes written, EXCLUDING the null terminator.
 
 function stringToUTF32(str, outPtr, maxBytesToWrite) {
-  assert(outPtr % 4 == 0, 'Pointer passed to stringToUTF32 must be aligned to four bytes!');
-  assert(typeof maxBytesToWrite == 'number', 'stringToUTF32(str, outPtr, maxBytesToWrite) is missing the third parameter that specifies the length of the output buffer!');
   // Backwards compatibility: if max bytes is not specified, assume unsafe unbounded write is allowed.
   if (maxBytesToWrite === undefined) {
     maxBytesToWrite = 0x7FFFFFFF;
@@ -1367,14 +1033,12 @@ function writeStringToMemory(string, buffer, dontAddNull) {
 }
 
 function writeArrayToMemory(array, buffer) {
-  assert(array.length >= 0, 'writeArrayToMemory array must have a length (should be an array or typed array)')
   HEAP8.set(array, buffer);
 }
 
 /** @param {boolean=} dontAddNull */
 function writeAsciiToMemory(str, buffer, dontAddNull) {
   for (var i = 0; i < str.length; ++i) {
-    assert(str.charCodeAt(i) === (str.charCodeAt(i) & 0xff));
     HEAP8[((buffer++)>>0)] = str.charCodeAt(i);
   }
   // Null-terminate the pointer to the HEAP.
@@ -1417,19 +1081,8 @@ function updateGlobalBufferAndViews(buf) {
 }
 
 var TOTAL_STACK = 5242880;
-if (Module['TOTAL_STACK']) assert(TOTAL_STACK === Module['TOTAL_STACK'], 'the stack size can no longer be determined at runtime')
 
-var INITIAL_MEMORY = Module['INITIAL_MEMORY'] || 16777216;legacyModuleProp('INITIAL_MEMORY', 'INITIAL_MEMORY');
-
-assert(INITIAL_MEMORY >= TOTAL_STACK, 'INITIAL_MEMORY should be larger than TOTAL_STACK, was ' + INITIAL_MEMORY + '! (TOTAL_STACK=' + TOTAL_STACK + ')');
-
-// check for full engine support (use string 'subarray' to avoid closure compiler confusion)
-assert(typeof Int32Array != 'undefined' && typeof Float64Array !== 'undefined' && Int32Array.prototype.subarray != undefined && Int32Array.prototype.set != undefined,
-       'JS engine does not provide full typed array support');
-
-// If memory is defined in wasm, the user can't provide it.
-assert(!Module['wasmMemory'], 'Use of `wasmMemory` detected.  Use -s IMPORTED_MEMORY to define wasmMemory externally');
-assert(INITIAL_MEMORY == 16777216, 'Detected runtime INITIAL_MEMORY setting.  Use -s IMPORTED_MEMORY to define wasmMemory dynamically');
+var INITIAL_MEMORY = Module['INITIAL_MEMORY'] || 16777216;
 
 // include: runtime_init_table.js
 // In regular non-RELOCATABLE mode the table is exported
@@ -1441,40 +1094,9 @@ var wasmTable;
 // include: runtime_stack_check.js
 
 
-// Initializes the stack cookie. Called at the startup of main and at the startup of each thread in pthreads mode.
-function writeStackCookie() {
-  var max = _emscripten_stack_get_end();
-  assert((max & 3) == 0);
-  // The stack grows downwards
-  HEAP32[((max + 4)>>2)] = 0x2135467;
-  HEAP32[((max + 8)>>2)] = 0x89BACDFE;
-  // Also test the global address 0 for integrity.
-  HEAP32[0] = 0x63736d65; /* 'emsc' */
-}
-
-function checkStackCookie() {
-  if (ABORT) return;
-  var max = _emscripten_stack_get_end();
-  var cookie1 = HEAPU32[((max + 4)>>2)];
-  var cookie2 = HEAPU32[((max + 8)>>2)];
-  if (cookie1 != 0x2135467 || cookie2 != 0x89BACDFE) {
-    abort('Stack overflow! Stack cookie has been overwritten, expected hex dwords 0x89BACDFE and 0x2135467, but received 0x' + cookie2.toString(16) + ' 0x' + cookie1.toString(16));
-  }
-  // Also test the global address 0 for integrity.
-  if (HEAP32[0] !== 0x63736d65 /* 'emsc' */) abort('Runtime error: The application has corrupted its heap memory area (address zero)!');
-}
-
 // end include: runtime_stack_check.js
 // include: runtime_assertions.js
 
-
-// Endianness check
-(function() {
-  var h16 = new Int16Array(1);
-  var h8 = new Int8Array(h16.buffer);
-  h16[0] = 0x6373;
-  if (h8[0] !== 0x73 || h8[1] !== 0x63) throw 'Runtime error: expected the system to be little-endian! (Run with -s SUPPORT_BIG_ENDIAN=1 to bypass)';
-})();
 
 // end include: runtime_assertions.js
 var __ATPRERUN__  = []; // functions called before the runtime is initialized
@@ -1503,8 +1125,6 @@ function preRun() {
 }
 
 function initRuntime() {
-  checkStackCookie();
-  assert(!runtimeInitialized);
   runtimeInitialized = true;
 
   
@@ -1517,7 +1137,6 @@ TTY.init();
 }
 
 function exitRuntime() {
-  checkStackCookie();
   ___funcs_on_exit(); // Native atexit() functions
   callRuntimeCallbacks(__ATEXIT__);
   FS.quit();
@@ -1526,7 +1145,6 @@ TTY.shutdown();
 }
 
 function postRun() {
-  checkStackCookie();
 
   if (Module['postRun']) {
     if (typeof Module['postRun'] == 'function') Module['postRun'] = [Module['postRun']];
@@ -1565,11 +1183,6 @@ function addOnPostRun(cb) {
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/trunc
 
-assert(Math.imul, 'This browser does not support Math.imul(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
-assert(Math.fround, 'This browser does not support Math.fround(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
-assert(Math.clz32, 'This browser does not support Math.clz32(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
-assert(Math.trunc, 'This browser does not support Math.trunc(), build with LEGACY_VM_SUPPORT or POLYFILL_OLD_MATH_FUNCTIONS to add in a polyfill');
-
 // end include: runtime_math.js
 // A counter of dependencies for calling run(). If we need to
 // do asynchronous work before running, increment this and
@@ -1581,14 +1194,9 @@ assert(Math.trunc, 'This browser does not support Math.trunc(), build with LEGAC
 var runDependencies = 0;
 var runDependencyWatcher = null;
 var dependenciesFulfilled = null; // overridden to take different actions when all run dependencies are fulfilled
-var runDependencyTracking = {};
 
 function getUniqueRunDependency(id) {
-  var orig = id;
-  while (1) {
-    if (!runDependencyTracking[id]) return id;
-    id = orig + Math.random();
-  }
+  return id;
 }
 
 function addRunDependency(id) {
@@ -1598,33 +1206,6 @@ function addRunDependency(id) {
     Module['monitorRunDependencies'](runDependencies);
   }
 
-  if (id) {
-    assert(!runDependencyTracking[id]);
-    runDependencyTracking[id] = 1;
-    if (runDependencyWatcher === null && typeof setInterval != 'undefined') {
-      // Check for missing dependencies every few seconds
-      runDependencyWatcher = setInterval(function() {
-        if (ABORT) {
-          clearInterval(runDependencyWatcher);
-          runDependencyWatcher = null;
-          return;
-        }
-        var shown = false;
-        for (var dep in runDependencyTracking) {
-          if (!shown) {
-            shown = true;
-            err('still waiting on run dependencies:');
-          }
-          err('dependency: ' + dep);
-        }
-        if (shown) {
-          err('(end of list)');
-        }
-      }, 10000);
-    }
-  } else {
-    err('warning: run dependency added without ID');
-  }
 }
 
 function removeRunDependency(id) {
@@ -1634,12 +1215,6 @@ function removeRunDependency(id) {
     Module['monitorRunDependencies'](runDependencies);
   }
 
-  if (id) {
-    assert(runDependencyTracking[id]);
-    delete runDependencyTracking[id];
-  } else {
-    err('warning: run dependency removed without ID');
-  }
   if (runDependencies == 0) {
     if (runDependencyWatcher !== null) {
       clearInterval(runDependencyWatcher);
@@ -1671,6 +1246,8 @@ function abort(what) {
 
   ABORT = true;
   EXITSTATUS = 1;
+
+  what += '. Build with -s ASSERTIONS=1 for more info.';
 
   // Use a wasm runtime error, because a JS error might be seen as a foreign
   // exception, which means we'd run destructors on it. We need the error to
@@ -1715,23 +1292,6 @@ function isFileURI(filename) {
 }
 
 // end include: URIUtils.js
-/** @param {boolean=} fixedasm */
-function createExportWrapper(name, fixedasm) {
-  return function() {
-    var displayName = name;
-    var asm = fixedasm;
-    if (!fixedasm) {
-      asm = Module['asm'];
-    }
-    assert(runtimeInitialized, 'native function `' + displayName + '` called before runtime initialization');
-    assert(!runtimeExited, 'native function `' + displayName + '` called after runtime exit (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-    if (!asm[name]) {
-      assert(asm[name], 'exported native function `' + displayName + '` not found');
-    }
-    return asm[name].apply(null, arguments);
-  };
-}
-
 var wasmBinaryFile;
   wasmBinaryFile = 'libocgcore.wasm';
   if (!isDataURI(wasmBinaryFile)) {
@@ -1796,15 +1356,9 @@ function createWasm() {
     Module['asm'] = exports;
 
     wasmMemory = Module['asm']['memory'];
-    assert(wasmMemory, "memory not found in wasm exports");
-    // This assertion doesn't hold when emscripten is run in --post-link
-    // mode.
-    // TODO(sbc): Read INITIAL_MEMORY out of the wasm file in post-link mode.
-    //assert(wasmMemory.buffer.byteLength === 16777216);
     updateGlobalBufferAndViews(wasmMemory.buffer);
 
     wasmTable = Module['asm']['__indirect_function_table'];
-    assert(wasmTable, "table not found in wasm exports");
 
     addOnInit(Module['asm']['__wasm_call_ctors']);
 
@@ -1814,15 +1368,9 @@ function createWasm() {
   addRunDependency('wasm-instantiate');
 
   // Prefer streaming instantiation if available.
-  // Async compilation can be confusing when an error on the page overwrites Module
-  // (for example, if the order of elements is wrong, and the one defining Module is
-  // later), so we save Module and check it later.
-  var trueModule = Module;
   function receiveInstantiationResult(result) {
     // 'result' is a ResultObject object which has both the module and instance.
     // receiveInstance() will swap in the exports (to Module.asm) so they can be called
-    assert(Module === trueModule, 'the Module object should not be replaced during async compilation - perhaps the order of HTML elements is wrong?');
-    trueModule = null;
     // TODO: Due to Closure regression https://github.com/google/closure-compiler/issues/3193, the above line no longer optimizes out down to the following line.
     // When the regression is fixed, can restore the above USE_PTHREADS-enabled path.
     receiveInstance(result['instance']);
@@ -1836,10 +1384,6 @@ function createWasm() {
     }).then(receiver, function(reason) {
       err('failed to asynchronously prepare wasm: ' + reason);
 
-      // Warn on some common problems.
-      if (isFileURI(wasmBinaryFile)) {
-        err('warning: Loading from a file URI (' + wasmBinaryFile + ') is not supported in most browsers. See https://emscripten.org/docs/getting_started/FAQ.html#how-do-i-run-a-local-webserver-for-testing-why-does-my-program-stall-in-downloading-or-preparing');
-      }
       abort(reason);
     });
   }
@@ -1932,7 +1476,6 @@ var ASM_CONSTS = {
       return ret;
     }
   function demangle(func) {
-      warnOnce('warning: build with  -s DEMANGLE_SUPPORT=1  to link in libcxxabi demangling');
       return func;
     }
 
@@ -1953,7 +1496,6 @@ var ASM_CONSTS = {
         if (funcPtr >= wasmTableMirror.length) wasmTableMirror.length = funcPtr + 1;
         wasmTableMirror[funcPtr] = func = wasmTable.get(funcPtr);
       }
-      assert(wasmTable.get(funcPtr) == func, "JavaScript-side Wasm function table mirror is out of date!");
       return func;
     }
 
@@ -2097,7 +1639,6 @@ var ASM_CONSTS = {
       this.release_ref = function() {
         var prev = HEAP32[((this.ptr)>>2)];
         HEAP32[((this.ptr)>>2)] = prev - 1;
-        assert(prev > 0);
         return prev === 1;
       };
     }
@@ -2111,7 +1652,7 @@ var ASM_CONSTS = {
       info.init(type, destructor);
       exceptionLast = ptr;
       uncaughtExceptionCount++;
-      throw ptr + " - Exception catching is disabled, this exception cannot be caught. Compile with -s NO_DISABLE_EXCEPTION_CATCHING or -s EXCEPTION_CATCHING_ALLOWED=[..] to catch.";
+      throw ptr;
     }
 
   var PATH = {splitPath:function(filename) {
@@ -2200,7 +1741,7 @@ var ASM_CONSTS = {
         }
       }
       // we couldn't find a proper implementation, as Math.random() is not suitable for /dev/random, see emscripten-core/emscripten/pull/7096
-      return function() { abort("no cryptographic support found for randomDevice. consider polyfilling it if you want to use something insecure like Math.random(), e.g. put this in a --pre-js: var crypto = { getRandomValues: function(array) { for (var i = 0; i < array.length; i++) array[i] = (Math.random()*256)|0 } };"); };
+      return function() { abort("randomDevice"); };
     }
   
   var PATH_FS = {resolve:function() {
@@ -2403,11 +1944,10 @@ var ASM_CONSTS = {
     }
   
   function alignMemory(size, alignment) {
-      assert(alignment, "alignment argument is required");
       return Math.ceil(size / alignment) * alignment;
     }
   function mmapAlloc(size) {
-      abort('internal error: mmapAlloc called but `emscripten_builtin_memalign` native symbol not exported');
+      abort();
     }
   var MEMFS = {ops_table:null,mount:function(mount) {
         return MEMFS.createNode(null, '/', 16384 | 511 /* 0777 */, 0);
@@ -2615,7 +2155,6 @@ var ASM_CONSTS = {
           var contents = stream.node.contents;
           if (position >= stream.node.usedBytes) return 0;
           var size = Math.min(stream.node.usedBytes - position, length);
-          assert(size >= 0);
           if (size > 8 && contents.subarray) { // non-trivial, and typed array
             buffer.set(contents.subarray(position, position + size), offset);
           } else {
@@ -2623,8 +2162,6 @@ var ASM_CONSTS = {
           }
           return size;
         },write:function(stream, buffer, offset, length, position, canOwn) {
-          // The data buffer should be a typed array view
-          assert(!(buffer instanceof ArrayBuffer));
           // If the buffer is located in main memory (HEAP), and if
           // memory can grow, we can't hold on to references of the
           // memory buffer, as they may get invalidated. That means we
@@ -2639,7 +2176,6 @@ var ASM_CONSTS = {
   
           if (buffer.subarray && (!node.contents || node.contents.subarray)) { // This write is from a typed array to a typed array?
             if (canOwn) {
-              assert(position === 0, 'canOwn must imply no weird position inside the file');
               node.contents = buffer.subarray(offset, offset + length);
               node.usedBytes = length;
               return length;
@@ -2745,10 +2281,6 @@ var ASM_CONSTS = {
       });
       if (dep) addRunDependency(dep);
     }
-  
-  var ERRNO_MESSAGES = {0:"Success",1:"Arg list too long",2:"Permission denied",3:"Address already in use",4:"Address not available",5:"Address family not supported by protocol family",6:"No more processes",7:"Socket already connected",8:"Bad file number",9:"Trying to read unreadable message",10:"Mount device busy",11:"Operation canceled",12:"No children",13:"Connection aborted",14:"Connection refused",15:"Connection reset by peer",16:"File locking deadlock error",17:"Destination address required",18:"Math arg out of domain of func",19:"Quota exceeded",20:"File exists",21:"Bad address",22:"File too large",23:"Host is unreachable",24:"Identifier removed",25:"Illegal byte sequence",26:"Connection already in progress",27:"Interrupted system call",28:"Invalid argument",29:"I/O error",30:"Socket is already connected",31:"Is a directory",32:"Too many symbolic links",33:"Too many open files",34:"Too many links",35:"Message too long",36:"Multihop attempted",37:"File or path name too long",38:"Network interface is not configured",39:"Connection reset by network",40:"Network is unreachable",41:"Too many open files in system",42:"No buffer space available",43:"No such device",44:"No such file or directory",45:"Exec format error",46:"No record locks available",47:"The link has been severed",48:"Not enough core",49:"No message of desired type",50:"Protocol not available",51:"No space left on device",52:"Function not implemented",53:"Socket is not connected",54:"Not a directory",55:"Directory not empty",56:"State not recoverable",57:"Socket operation on non-socket",59:"Not a typewriter",60:"No such device or address",61:"Value too large for defined data type",62:"Previous owner died",63:"Not super-user",64:"Broken pipe",65:"Protocol error",66:"Unknown protocol",67:"Protocol wrong type for socket",68:"Math result not representable",69:"Read only file system",70:"Illegal seek",71:"No such process",72:"Stale file handle",73:"Connection timed out",74:"Text file busy",75:"Cross-device link",100:"Device not a stream",101:"Bad font file fmt",102:"Invalid slot",103:"Invalid request code",104:"No anode",105:"Block device required",106:"Channel number out of range",107:"Level 3 halted",108:"Level 3 reset",109:"Link number out of range",110:"Protocol driver not attached",111:"No CSI structure available",112:"Level 2 halted",113:"Invalid exchange",114:"Invalid request descriptor",115:"Exchange full",116:"No data (for no delay io)",117:"Timer expired",118:"Out of streams resources",119:"Machine is not on the network",120:"Package not installed",121:"The object is remote",122:"Advertise error",123:"Srmount error",124:"Communication error on send",125:"Cross mount point (not really error)",126:"Given log. name not unique",127:"f.d. invalid for this operation",128:"Remote address changed",129:"Can   access a needed shared lib",130:"Accessing a corrupted shared lib",131:".lib section in a.out corrupted",132:"Attempting to link in too many libs",133:"Attempting to exec a shared library",135:"Streams pipe error",136:"Too many users",137:"Socket type not supported",138:"Not supported",139:"Protocol family not supported",140:"Can't send after socket shutdown",141:"Too many references",142:"Host is down",148:"No medium (in tape drive)",156:"Level 2 not synchronized"};
-  
-  var ERRNO_CODES = {};
   var FS = {root:null,mounts:[],devices:{},streams:[],nextInode:1,nameTable:null,currentPath:"/",initialized:false,ignorePermissions:true,ErrnoError:null,genericErrors:{},filesystems:null,syncFSRequests:0,lookupPath:(path, opts = {}) => {
         path = PATH_FS.resolve(FS.cwd(), path);
   
@@ -2862,7 +2394,6 @@ var ASM_CONSTS = {
         // if we failed to find it in the cache, call into the VFS
         return FS.lookup(parent, name);
       },createNode:(parent, name, mode, rdev) => {
-        assert(typeof parent == 'object')
         var node = new FS.FSNode(parent, name, mode, rdev);
   
         FS.hashAddNode(node);
@@ -3037,7 +2568,6 @@ var ASM_CONSTS = {
         var completed = 0;
   
         function doCallback(errCode) {
-          assert(FS.syncFSRequests > 0);
           FS.syncFSRequests--;
           return callback(errCode);
         }
@@ -3063,11 +2593,6 @@ var ASM_CONSTS = {
           mount.type.syncfs(mount, populate, done);
         });
       },mount:(type, opts, mountpoint) => {
-        if (typeof type == 'string') {
-          // The filesystem was not included, and instead we have an error
-          // message stored in the variable.
-          throw type;
-        }
         var root = mountpoint === '/';
         var pseudo = !mountpoint;
         var node;
@@ -3145,7 +2670,6 @@ var ASM_CONSTS = {
   
         // remove this mount from the child mounts
         var idx = node.mount.mounts.indexOf(mount);
-        assert(idx !== -1);
         node.mount.mounts.splice(idx, 1);
       },lookup:(parent, name) => {
         return parent.node_ops.lookup(parent, name);
@@ -3797,32 +3321,16 @@ var ASM_CONSTS = {
         var stdin = FS.open('/dev/stdin', 0);
         var stdout = FS.open('/dev/stdout', 1);
         var stderr = FS.open('/dev/stderr', 1);
-        assert(stdin.fd === 0, 'invalid handle for stdin (' + stdin.fd + ')');
-        assert(stdout.fd === 1, 'invalid handle for stdout (' + stdout.fd + ')');
-        assert(stderr.fd === 2, 'invalid handle for stderr (' + stderr.fd + ')');
       },ensureErrnoError:() => {
         if (FS.ErrnoError) return;
         FS.ErrnoError = /** @this{Object} */ function ErrnoError(errno, node) {
           this.node = node;
           this.setErrno = /** @this{Object} */ function(errno) {
             this.errno = errno;
-            for (var key in ERRNO_CODES) {
-              if (ERRNO_CODES[key] === errno) {
-                this.code = key;
-                break;
-              }
-            }
           };
           this.setErrno(errno);
-          this.message = ERRNO_MESSAGES[errno];
+          this.message = 'FS error';
   
-          // Try to get a maximally helpful stack trace. On Node.js, getting Error.stack
-          // now ensures it shows what we want.
-          if (this.stack) {
-            // Define the stack property for Node.js 4, which otherwise errors on the next line.
-            Object.defineProperty(this, "stack", { value: (new Error).stack, writable: true });
-            this.stack = demangleAll(this.stack);
-          }
         };
         FS.ErrnoError.prototype = new Error();
         FS.ErrnoError.prototype.constructor = FS.ErrnoError;
@@ -3846,7 +3354,6 @@ var ASM_CONSTS = {
           'MEMFS': MEMFS,
         };
       },init:(input, output, error) => {
-        assert(!FS.init.initialized, 'FS.init was previously called. If you want to initialize later with custom parameters, remove any earlier calls (note that one is automatically added to the generated code)');
         FS.init.initialized = true;
   
         FS.ensureErrnoError();
@@ -4161,7 +3668,6 @@ var ASM_CONSTS = {
           if (position >= contents.length)
             return 0;
           var size = Math.min(contents.length - position, length);
-          assert(size >= 0);
           if (contents.slice) { // normal array
             for (var i = 0; i < size; i++) {
               buffer[offset + i] = contents[position + i];
@@ -4275,18 +3781,6 @@ var ASM_CONSTS = {
           transaction.onerror = onerror;
         };
         openRequest.onerror = onerror;
-      },absolutePath:() => {
-        abort('FS.absolutePath has been removed; use PATH_FS.resolve instead');
-      },createFolder:() => {
-        abort('FS.createFolder has been removed; use FS.mkdir instead');
-      },createLink:() => {
-        abort('FS.createLink has been removed; use FS.symlink instead');
-      },joinPath:() => {
-        abort('FS.joinPath has been removed; use PATH.join instead');
-      },mmapAlloc:() => {
-        abort('FS.mmapAlloc has been replaced by the top level function mmapAlloc');
-      },standardizePath:() => {
-        abort('FS.standardizePath has been removed; use PATH.normalize instead');
       }};
   var SYSCALLS = {DEFAULT_POLLMASK:5,calculateAt:function(dirfd, path, allowEmpty) {
         if (path[0] === '/') {
@@ -4417,7 +3911,6 @@ var ASM_CONSTS = {
         }
         return ret;
       },varargs:undefined,get:function() {
-        assert(SYSCALLS.varargs != undefined);
         SYSCALLS.varargs += 4;
         var ret = HEAP32[(((SYSCALLS.varargs)-(4))>>2)];
         return ret;
@@ -4429,15 +3922,12 @@ var ASM_CONSTS = {
         if (!stream) throw new FS.ErrnoError(8);
         return stream;
       },get64:function(low, high) {
-        if (low >= 0) assert(high === 0);
-        else assert(high === -1);
         return low;
       }};
   function ___syscall_dup3(fd, suggestFD, flags) {
   try {
   
       var old = SYSCALLS.getStreamFromFD(fd);
-      assert(!flags);
       if (old.fd === suggestFD) return -28;
       return SYSCALLS.doDup(old.path, old.flags, suggestFD);
     } catch (e) {
@@ -4588,7 +4078,7 @@ var ASM_CONSTS = {
   function __emscripten_throw_longjmp() { throw Infinity; }
 
   function _abort() {
-      abort('native code called abort()');
+      abort('');
     }
 
   function _clock() {
@@ -4621,7 +4111,6 @@ var ASM_CONSTS = {
         updateGlobalBufferAndViews(wasmMemory.buffer);
         return 1 /*success*/;
       } catch(e) {
-        err('emscripten_realloc_buffer: Attempted to grow heap from ' + buffer.byteLength  + ' bytes to ' + size + ' bytes, but got error: ' + e);
       }
       // implicit 0 return to save code size (caller will cast "undefined" into 0
       // anyhow)
@@ -4631,7 +4120,6 @@ var ASM_CONSTS = {
       requestedSize = requestedSize >>> 0;
       // With pthreads, races can happen (another thread might increase the size
       // in between), so return a failure, and let the caller retry.
-      assert(requestedSize > oldSize);
   
       // Memory resize rules:
       // 1.  Always increase heap size to at least the requested size, rounded up
@@ -4654,7 +4142,6 @@ var ASM_CONSTS = {
       // (the wasm binary specifies it, so if we tried, we'd fail anyhow).
       var maxHeapSize = _emscripten_get_heap_max();
       if (requestedSize > maxHeapSize) {
-        err('Cannot enlarge memory, asked to go up to ' + requestedSize + ' bytes, but the limit is ' + maxHeapSize + ' bytes!');
         return false;
       }
   
@@ -4676,7 +4163,6 @@ var ASM_CONSTS = {
           return true;
         }
       }
-      err('Failed to grow the heap from ' + oldSize + ' bytes to ' + newSize + ' bytes, not enough memory!');
       return false;
     }
 
@@ -4807,130 +4293,7 @@ var ASM_CONSTS = {
   });
   FS.FSNode = FSNode;
   FS.staticInit();;
-ERRNO_CODES = {
-      'EPERM': 63,
-      'ENOENT': 44,
-      'ESRCH': 71,
-      'EINTR': 27,
-      'EIO': 29,
-      'ENXIO': 60,
-      'E2BIG': 1,
-      'ENOEXEC': 45,
-      'EBADF': 8,
-      'ECHILD': 12,
-      'EAGAIN': 6,
-      'EWOULDBLOCK': 6,
-      'ENOMEM': 48,
-      'EACCES': 2,
-      'EFAULT': 21,
-      'ENOTBLK': 105,
-      'EBUSY': 10,
-      'EEXIST': 20,
-      'EXDEV': 75,
-      'ENODEV': 43,
-      'ENOTDIR': 54,
-      'EISDIR': 31,
-      'EINVAL': 28,
-      'ENFILE': 41,
-      'EMFILE': 33,
-      'ENOTTY': 59,
-      'ETXTBSY': 74,
-      'EFBIG': 22,
-      'ENOSPC': 51,
-      'ESPIPE': 70,
-      'EROFS': 69,
-      'EMLINK': 34,
-      'EPIPE': 64,
-      'EDOM': 18,
-      'ERANGE': 68,
-      'ENOMSG': 49,
-      'EIDRM': 24,
-      'ECHRNG': 106,
-      'EL2NSYNC': 156,
-      'EL3HLT': 107,
-      'EL3RST': 108,
-      'ELNRNG': 109,
-      'EUNATCH': 110,
-      'ENOCSI': 111,
-      'EL2HLT': 112,
-      'EDEADLK': 16,
-      'ENOLCK': 46,
-      'EBADE': 113,
-      'EBADR': 114,
-      'EXFULL': 115,
-      'ENOANO': 104,
-      'EBADRQC': 103,
-      'EBADSLT': 102,
-      'EDEADLOCK': 16,
-      'EBFONT': 101,
-      'ENOSTR': 100,
-      'ENODATA': 116,
-      'ETIME': 117,
-      'ENOSR': 118,
-      'ENONET': 119,
-      'ENOPKG': 120,
-      'EREMOTE': 121,
-      'ENOLINK': 47,
-      'EADV': 122,
-      'ESRMNT': 123,
-      'ECOMM': 124,
-      'EPROTO': 65,
-      'EMULTIHOP': 36,
-      'EDOTDOT': 125,
-      'EBADMSG': 9,
-      'ENOTUNIQ': 126,
-      'EBADFD': 127,
-      'EREMCHG': 128,
-      'ELIBACC': 129,
-      'ELIBBAD': 130,
-      'ELIBSCN': 131,
-      'ELIBMAX': 132,
-      'ELIBEXEC': 133,
-      'ENOSYS': 52,
-      'ENOTEMPTY': 55,
-      'ENAMETOOLONG': 37,
-      'ELOOP': 32,
-      'EOPNOTSUPP': 138,
-      'EPFNOSUPPORT': 139,
-      'ECONNRESET': 15,
-      'ENOBUFS': 42,
-      'EAFNOSUPPORT': 5,
-      'EPROTOTYPE': 67,
-      'ENOTSOCK': 57,
-      'ENOPROTOOPT': 50,
-      'ESHUTDOWN': 140,
-      'ECONNREFUSED': 14,
-      'EADDRINUSE': 3,
-      'ECONNABORTED': 13,
-      'ENETUNREACH': 40,
-      'ENETDOWN': 38,
-      'ETIMEDOUT': 73,
-      'EHOSTDOWN': 142,
-      'EHOSTUNREACH': 23,
-      'EINPROGRESS': 26,
-      'EALREADY': 7,
-      'EDESTADDRREQ': 17,
-      'EMSGSIZE': 35,
-      'EPROTONOSUPPORT': 66,
-      'ESOCKTNOSUPPORT': 137,
-      'EADDRNOTAVAIL': 4,
-      'ENETRESET': 39,
-      'EISCONN': 30,
-      'ENOTCONN': 53,
-      'ETOOMANYREFS': 141,
-      'EUSERS': 136,
-      'EDQUOT': 19,
-      'ESTALE': 72,
-      'ENOTSUP': 138,
-      'ENOMEDIUM': 148,
-      'EILSEQ': 25,
-      'EOVERFLOW': 61,
-      'ECANCELED': 11,
-      'ENOTRECOVERABLE': 56,
-      'EOWNERDEAD': 62,
-      'ESTRPIPE': 135,
-    };;
-var ASSERTIONS = true;
+var ASSERTIONS = false;
 
 
 
@@ -4959,9 +4322,6 @@ function intArrayToString(array) {
 }
 
 
-function checkIncomingModuleAPI() {
-  ignoredModuleProp('fetchSettings');
-}
 var asmLibraryArg = {
   "__clock_gettime": ___clock_gettime,
   "__cxa_allocate_exception": ___cxa_allocate_exception,
@@ -4988,144 +4348,204 @@ var asmLibraryArg = {
 };
 var asm = createWasm();
 /** @type {function(...*):?} */
-var ___wasm_call_ctors = Module["___wasm_call_ctors"] = createExportWrapper("__wasm_call_ctors");
-
-/** @type {function(...*):?} */
-var _ocgcore_shutdown = Module["_ocgcore_shutdown"] = createExportWrapper("ocgcore_shutdown");
-
-/** @type {function(...*):?} */
-var _set_script_reader = Module["_set_script_reader"] = createExportWrapper("set_script_reader");
-
-/** @type {function(...*):?} */
-var _set_card_reader = Module["_set_card_reader"] = createExportWrapper("set_card_reader");
-
-/** @type {function(...*):?} */
-var _set_message_handler = Module["_set_message_handler"] = createExportWrapper("set_message_handler");
-
-/** @type {function(...*):?} */
-var _default_script_reader = Module["_default_script_reader"] = createExportWrapper("default_script_reader");
-
-/** @type {function(...*):?} */
-var _create_duel = Module["_create_duel"] = createExportWrapper("create_duel");
-
-/** @type {function(...*):?} */
-var _create_duel_v2 = Module["_create_duel_v2"] = createExportWrapper("create_duel_v2");
-
-/** @type {function(...*):?} */
-var _start_duel = Module["_start_duel"] = createExportWrapper("start_duel");
-
-/** @type {function(...*):?} */
-var _end_duel = Module["_end_duel"] = createExportWrapper("end_duel");
-
-/** @type {function(...*):?} */
-var _set_player_info = Module["_set_player_info"] = createExportWrapper("set_player_info");
-
-/** @type {function(...*):?} */
-var _get_log_message = Module["_get_log_message"] = createExportWrapper("get_log_message");
-
-/** @type {function(...*):?} */
-var _get_message = Module["_get_message"] = createExportWrapper("get_message");
-
-/** @type {function(...*):?} */
-var _process = Module["_process"] = createExportWrapper("process");
-
-/** @type {function(...*):?} */
-var _new_card = Module["_new_card"] = createExportWrapper("new_card");
-
-/** @type {function(...*):?} */
-var _new_tag_card = Module["_new_tag_card"] = createExportWrapper("new_tag_card");
-
-/** @type {function(...*):?} */
-var _query_card = Module["_query_card"] = createExportWrapper("query_card");
-
-/** @type {function(...*):?} */
-var _query_field_count = Module["_query_field_count"] = createExportWrapper("query_field_count");
-
-/** @type {function(...*):?} */
-var _query_field_card = Module["_query_field_card"] = createExportWrapper("query_field_card");
-
-/** @type {function(...*):?} */
-var _query_field_info = Module["_query_field_info"] = createExportWrapper("query_field_info");
-
-/** @type {function(...*):?} */
-var _set_responsei = Module["_set_responsei"] = createExportWrapper("set_responsei");
-
-/** @type {function(...*):?} */
-var _set_responseb = Module["_set_responseb"] = createExportWrapper("set_responseb");
-
-/** @type {function(...*):?} */
-var _preload_script = Module["_preload_script"] = createExportWrapper("preload_script");
-
-/** @type {function(...*):?} */
-var _get_registry_value = Module["_get_registry_value"] = createExportWrapper("get_registry_value");
-
-/** @type {function(...*):?} */
-var _set_registry_value = Module["_set_registry_value"] = createExportWrapper("set_registry_value");
-
-/** @type {function(...*):?} */
-var _get_registry_keys = Module["_get_registry_keys"] = createExportWrapper("get_registry_keys");
-
-/** @type {function(...*):?} */
-var _clear_registry = Module["_clear_registry"] = createExportWrapper("clear_registry");
-
-/** @type {function(...*):?} */
-var _dump_registry = Module["_dump_registry"] = createExportWrapper("dump_registry");
-
-/** @type {function(...*):?} */
-var _load_registry = Module["_load_registry"] = createExportWrapper("load_registry");
-
-/** @type {function(...*):?} */
-var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
-
-/** @type {function(...*):?} */
-var _free = Module["_free"] = createExportWrapper("free");
-
-/** @type {function(...*):?} */
-var _malloc = Module["_malloc"] = createExportWrapper("malloc");
-
-/** @type {function(...*):?} */
-var _saveSetjmp = Module["_saveSetjmp"] = createExportWrapper("saveSetjmp");
-
-/** @type {function(...*):?} */
-var ___stdio_exit = Module["___stdio_exit"] = createExportWrapper("__stdio_exit");
-
-/** @type {function(...*):?} */
-var ___funcs_on_exit = Module["___funcs_on_exit"] = createExportWrapper("__funcs_on_exit");
-
-/** @type {function(...*):?} */
-var _setThrew = Module["_setThrew"] = createExportWrapper("setThrew");
-
-/** @type {function(...*):?} */
-var _emscripten_stack_init = Module["_emscripten_stack_init"] = function() {
-  return (_emscripten_stack_init = Module["_emscripten_stack_init"] = Module["asm"]["emscripten_stack_init"]).apply(null, arguments);
+var ___wasm_call_ctors = Module["___wasm_call_ctors"] = function() {
+  return (___wasm_call_ctors = Module["___wasm_call_ctors"] = Module["asm"]["__wasm_call_ctors"]).apply(null, arguments);
 };
 
 /** @type {function(...*):?} */
-var _emscripten_stack_get_free = Module["_emscripten_stack_get_free"] = function() {
-  return (_emscripten_stack_get_free = Module["_emscripten_stack_get_free"] = Module["asm"]["emscripten_stack_get_free"]).apply(null, arguments);
+var _ocgcore_shutdown = Module["_ocgcore_shutdown"] = function() {
+  return (_ocgcore_shutdown = Module["_ocgcore_shutdown"] = Module["asm"]["ocgcore_shutdown"]).apply(null, arguments);
 };
 
 /** @type {function(...*):?} */
-var _emscripten_stack_get_base = Module["_emscripten_stack_get_base"] = function() {
-  return (_emscripten_stack_get_base = Module["_emscripten_stack_get_base"] = Module["asm"]["emscripten_stack_get_base"]).apply(null, arguments);
+var _set_script_reader = Module["_set_script_reader"] = function() {
+  return (_set_script_reader = Module["_set_script_reader"] = Module["asm"]["set_script_reader"]).apply(null, arguments);
 };
 
 /** @type {function(...*):?} */
-var _emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = function() {
-  return (_emscripten_stack_get_end = Module["_emscripten_stack_get_end"] = Module["asm"]["emscripten_stack_get_end"]).apply(null, arguments);
+var _set_card_reader = Module["_set_card_reader"] = function() {
+  return (_set_card_reader = Module["_set_card_reader"] = Module["asm"]["set_card_reader"]).apply(null, arguments);
 };
 
 /** @type {function(...*):?} */
-var stackSave = Module["stackSave"] = createExportWrapper("stackSave");
+var _set_message_handler = Module["_set_message_handler"] = function() {
+  return (_set_message_handler = Module["_set_message_handler"] = Module["asm"]["set_message_handler"]).apply(null, arguments);
+};
 
 /** @type {function(...*):?} */
-var stackRestore = Module["stackRestore"] = createExportWrapper("stackRestore");
+var _default_script_reader = Module["_default_script_reader"] = function() {
+  return (_default_script_reader = Module["_default_script_reader"] = Module["asm"]["default_script_reader"]).apply(null, arguments);
+};
 
 /** @type {function(...*):?} */
-var stackAlloc = Module["stackAlloc"] = createExportWrapper("stackAlloc");
+var _create_duel = Module["_create_duel"] = function() {
+  return (_create_duel = Module["_create_duel"] = Module["asm"]["create_duel"]).apply(null, arguments);
+};
 
 /** @type {function(...*):?} */
-var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
+var _create_duel_v2 = Module["_create_duel_v2"] = function() {
+  return (_create_duel_v2 = Module["_create_duel_v2"] = Module["asm"]["create_duel_v2"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _start_duel = Module["_start_duel"] = function() {
+  return (_start_duel = Module["_start_duel"] = Module["asm"]["start_duel"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _end_duel = Module["_end_duel"] = function() {
+  return (_end_duel = Module["_end_duel"] = Module["asm"]["end_duel"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _set_player_info = Module["_set_player_info"] = function() {
+  return (_set_player_info = Module["_set_player_info"] = Module["asm"]["set_player_info"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _get_log_message = Module["_get_log_message"] = function() {
+  return (_get_log_message = Module["_get_log_message"] = Module["asm"]["get_log_message"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _get_message = Module["_get_message"] = function() {
+  return (_get_message = Module["_get_message"] = Module["asm"]["get_message"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _process = Module["_process"] = function() {
+  return (_process = Module["_process"] = Module["asm"]["process"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _new_card = Module["_new_card"] = function() {
+  return (_new_card = Module["_new_card"] = Module["asm"]["new_card"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _new_tag_card = Module["_new_tag_card"] = function() {
+  return (_new_tag_card = Module["_new_tag_card"] = Module["asm"]["new_tag_card"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _query_card = Module["_query_card"] = function() {
+  return (_query_card = Module["_query_card"] = Module["asm"]["query_card"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _query_field_count = Module["_query_field_count"] = function() {
+  return (_query_field_count = Module["_query_field_count"] = Module["asm"]["query_field_count"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _query_field_card = Module["_query_field_card"] = function() {
+  return (_query_field_card = Module["_query_field_card"] = Module["asm"]["query_field_card"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _query_field_info = Module["_query_field_info"] = function() {
+  return (_query_field_info = Module["_query_field_info"] = Module["asm"]["query_field_info"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _set_responsei = Module["_set_responsei"] = function() {
+  return (_set_responsei = Module["_set_responsei"] = Module["asm"]["set_responsei"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _set_responseb = Module["_set_responseb"] = function() {
+  return (_set_responseb = Module["_set_responseb"] = Module["asm"]["set_responseb"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _preload_script = Module["_preload_script"] = function() {
+  return (_preload_script = Module["_preload_script"] = Module["asm"]["preload_script"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _get_registry_value = Module["_get_registry_value"] = function() {
+  return (_get_registry_value = Module["_get_registry_value"] = Module["asm"]["get_registry_value"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _set_registry_value = Module["_set_registry_value"] = function() {
+  return (_set_registry_value = Module["_set_registry_value"] = Module["asm"]["set_registry_value"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _get_registry_keys = Module["_get_registry_keys"] = function() {
+  return (_get_registry_keys = Module["_get_registry_keys"] = Module["asm"]["get_registry_keys"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _clear_registry = Module["_clear_registry"] = function() {
+  return (_clear_registry = Module["_clear_registry"] = Module["asm"]["clear_registry"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _dump_registry = Module["_dump_registry"] = function() {
+  return (_dump_registry = Module["_dump_registry"] = Module["asm"]["dump_registry"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _load_registry = Module["_load_registry"] = function() {
+  return (_load_registry = Module["_load_registry"] = Module["asm"]["load_registry"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var ___errno_location = Module["___errno_location"] = function() {
+  return (___errno_location = Module["___errno_location"] = Module["asm"]["__errno_location"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _free = Module["_free"] = function() {
+  return (_free = Module["_free"] = Module["asm"]["free"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _malloc = Module["_malloc"] = function() {
+  return (_malloc = Module["_malloc"] = Module["asm"]["malloc"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _saveSetjmp = Module["_saveSetjmp"] = function() {
+  return (_saveSetjmp = Module["_saveSetjmp"] = Module["asm"]["saveSetjmp"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var ___stdio_exit = Module["___stdio_exit"] = function() {
+  return (___stdio_exit = Module["___stdio_exit"] = Module["asm"]["__stdio_exit"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var ___funcs_on_exit = Module["___funcs_on_exit"] = function() {
+  return (___funcs_on_exit = Module["___funcs_on_exit"] = Module["asm"]["__funcs_on_exit"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var _setThrew = Module["_setThrew"] = function() {
+  return (_setThrew = Module["_setThrew"] = Module["asm"]["setThrew"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var stackSave = Module["stackSave"] = function() {
+  return (stackSave = Module["stackSave"] = Module["asm"]["stackSave"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var stackRestore = Module["stackRestore"] = function() {
+  return (stackRestore = Module["stackRestore"] = Module["asm"]["stackRestore"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var stackAlloc = Module["stackAlloc"] = function() {
+  return (stackAlloc = Module["stackAlloc"] = Module["asm"]["stackAlloc"]).apply(null, arguments);
+};
+
+/** @type {function(...*):?} */
+var dynCall_jiji = Module["dynCall_jiji"] = function() {
+  return (dynCall_jiji = Module["dynCall_jiji"] = Module["asm"]["dynCall_jiji"]).apply(null, arguments);
+};
 
 
 function invoke_vii(index,a1,a2) {
@@ -5144,237 +4564,10 @@ function invoke_vii(index,a1,a2) {
 
 // === Auto-generated postamble setup entry stuff ===
 
-unexportedRuntimeFunction('intArrayFromString', false);
-unexportedRuntimeFunction('intArrayToString', false);
 Module["ccall"] = ccall;
 Module["cwrap"] = cwrap;
-unexportedRuntimeFunction('setValue', false);
-unexportedRuntimeFunction('getValue', false);
-unexportedRuntimeFunction('allocate', false);
-unexportedRuntimeFunction('UTF8ArrayToString', false);
-unexportedRuntimeFunction('UTF8ToString', false);
-unexportedRuntimeFunction('stringToUTF8Array', false);
-unexportedRuntimeFunction('stringToUTF8', false);
-unexportedRuntimeFunction('lengthBytesUTF8', false);
-unexportedRuntimeFunction('stackTrace', false);
-unexportedRuntimeFunction('addOnPreRun', false);
-unexportedRuntimeFunction('addOnInit', false);
-unexportedRuntimeFunction('addOnPreMain', false);
-unexportedRuntimeFunction('addOnExit', false);
-unexportedRuntimeFunction('addOnPostRun', false);
-unexportedRuntimeFunction('writeStringToMemory', false);
-unexportedRuntimeFunction('writeArrayToMemory', false);
-unexportedRuntimeFunction('writeAsciiToMemory', false);
-unexportedRuntimeFunction('addRunDependency', true);
-unexportedRuntimeFunction('removeRunDependency', true);
-unexportedRuntimeFunction('FS_createFolder', false);
-unexportedRuntimeFunction('FS_createPath', true);
-unexportedRuntimeFunction('FS_createDataFile', true);
-unexportedRuntimeFunction('FS_createPreloadedFile', true);
-unexportedRuntimeFunction('FS_createLazyFile', true);
-unexportedRuntimeFunction('FS_createLink', false);
-unexportedRuntimeFunction('FS_createDevice', true);
-unexportedRuntimeFunction('FS_unlink', true);
-unexportedRuntimeFunction('getLEB', false);
-unexportedRuntimeFunction('getFunctionTables', false);
-unexportedRuntimeFunction('alignFunctionTables', false);
-unexportedRuntimeFunction('registerFunctions', false);
 Module["addFunction"] = addFunction;
 Module["removeFunction"] = removeFunction;
-unexportedRuntimeFunction('getFuncWrapper', false);
-unexportedRuntimeFunction('prettyPrint', false);
-unexportedRuntimeFunction('dynCall', false);
-unexportedRuntimeFunction('getCompilerSetting', false);
-unexportedRuntimeFunction('print', false);
-unexportedRuntimeFunction('printErr', false);
-unexportedRuntimeFunction('getTempRet0', false);
-unexportedRuntimeFunction('setTempRet0', false);
-unexportedRuntimeFunction('callMain', false);
-unexportedRuntimeFunction('abort', false);
-unexportedRuntimeFunction('keepRuntimeAlive', false);
-unexportedRuntimeFunction('zeroMemory', false);
-unexportedRuntimeFunction('stringToNewUTF8', false);
-unexportedRuntimeFunction('emscripten_realloc_buffer', false);
-unexportedRuntimeFunction('ENV', false);
-unexportedRuntimeFunction('withStackSave', false);
-unexportedRuntimeFunction('ERRNO_CODES', false);
-unexportedRuntimeFunction('ERRNO_MESSAGES', false);
-unexportedRuntimeFunction('setErrNo', false);
-unexportedRuntimeFunction('inetPton4', false);
-unexportedRuntimeFunction('inetNtop4', false);
-unexportedRuntimeFunction('inetPton6', false);
-unexportedRuntimeFunction('inetNtop6', false);
-unexportedRuntimeFunction('readSockaddr', false);
-unexportedRuntimeFunction('writeSockaddr', false);
-unexportedRuntimeFunction('DNS', false);
-unexportedRuntimeFunction('getHostByName', false);
-unexportedRuntimeFunction('Protocols', false);
-unexportedRuntimeFunction('Sockets', false);
-unexportedRuntimeFunction('getRandomDevice', false);
-unexportedRuntimeFunction('traverseStack', false);
-unexportedRuntimeFunction('convertFrameToPC', false);
-unexportedRuntimeFunction('UNWIND_CACHE', false);
-unexportedRuntimeFunction('saveInUnwindCache', false);
-unexportedRuntimeFunction('convertPCtoSourceLocation', false);
-unexportedRuntimeFunction('readAsmConstArgsArray', false);
-unexportedRuntimeFunction('readAsmConstArgs', false);
-unexportedRuntimeFunction('mainThreadEM_ASM', false);
-unexportedRuntimeFunction('jstoi_q', false);
-unexportedRuntimeFunction('jstoi_s', false);
-unexportedRuntimeFunction('getExecutableName', false);
-unexportedRuntimeFunction('listenOnce', false);
-unexportedRuntimeFunction('autoResumeAudioContext', false);
-unexportedRuntimeFunction('dynCallLegacy', false);
-unexportedRuntimeFunction('getDynCaller', false);
-unexportedRuntimeFunction('dynCall', false);
-unexportedRuntimeFunction('callRuntimeCallbacks', false);
-unexportedRuntimeFunction('wasmTableMirror', false);
-unexportedRuntimeFunction('setWasmTableEntry', false);
-unexportedRuntimeFunction('getWasmTableEntry', false);
-unexportedRuntimeFunction('handleException', false);
-unexportedRuntimeFunction('runtimeKeepalivePush', false);
-unexportedRuntimeFunction('runtimeKeepalivePop', false);
-unexportedRuntimeFunction('callUserCallback', false);
-unexportedRuntimeFunction('maybeExit', false);
-unexportedRuntimeFunction('safeSetTimeout', false);
-unexportedRuntimeFunction('asmjsMangle', false);
-unexportedRuntimeFunction('asyncLoad', false);
-unexportedRuntimeFunction('alignMemory', false);
-unexportedRuntimeFunction('mmapAlloc', false);
-unexportedRuntimeFunction('reallyNegative', false);
-unexportedRuntimeFunction('unSign', false);
-unexportedRuntimeFunction('reSign', false);
-unexportedRuntimeFunction('formatString', false);
-unexportedRuntimeFunction('PATH', false);
-unexportedRuntimeFunction('PATH_FS', false);
-unexportedRuntimeFunction('SYSCALLS', false);
-unexportedRuntimeFunction('getSocketFromFD', false);
-unexportedRuntimeFunction('getSocketAddress', false);
-unexportedRuntimeFunction('JSEvents', false);
-unexportedRuntimeFunction('registerKeyEventCallback', false);
-unexportedRuntimeFunction('specialHTMLTargets', false);
-unexportedRuntimeFunction('maybeCStringToJsString', false);
-unexportedRuntimeFunction('findEventTarget', false);
-unexportedRuntimeFunction('findCanvasEventTarget', false);
-unexportedRuntimeFunction('getBoundingClientRect', false);
-unexportedRuntimeFunction('fillMouseEventData', false);
-unexportedRuntimeFunction('registerMouseEventCallback', false);
-unexportedRuntimeFunction('registerWheelEventCallback', false);
-unexportedRuntimeFunction('registerUiEventCallback', false);
-unexportedRuntimeFunction('registerFocusEventCallback', false);
-unexportedRuntimeFunction('fillDeviceOrientationEventData', false);
-unexportedRuntimeFunction('registerDeviceOrientationEventCallback', false);
-unexportedRuntimeFunction('fillDeviceMotionEventData', false);
-unexportedRuntimeFunction('registerDeviceMotionEventCallback', false);
-unexportedRuntimeFunction('screenOrientation', false);
-unexportedRuntimeFunction('fillOrientationChangeEventData', false);
-unexportedRuntimeFunction('registerOrientationChangeEventCallback', false);
-unexportedRuntimeFunction('fillFullscreenChangeEventData', false);
-unexportedRuntimeFunction('registerFullscreenChangeEventCallback', false);
-unexportedRuntimeFunction('registerRestoreOldStyle', false);
-unexportedRuntimeFunction('hideEverythingExceptGivenElement', false);
-unexportedRuntimeFunction('restoreHiddenElements', false);
-unexportedRuntimeFunction('setLetterbox', false);
-unexportedRuntimeFunction('currentFullscreenStrategy', false);
-unexportedRuntimeFunction('restoreOldWindowedStyle', false);
-unexportedRuntimeFunction('softFullscreenResizeWebGLRenderTarget', false);
-unexportedRuntimeFunction('doRequestFullscreen', false);
-unexportedRuntimeFunction('fillPointerlockChangeEventData', false);
-unexportedRuntimeFunction('registerPointerlockChangeEventCallback', false);
-unexportedRuntimeFunction('registerPointerlockErrorEventCallback', false);
-unexportedRuntimeFunction('requestPointerLock', false);
-unexportedRuntimeFunction('fillVisibilityChangeEventData', false);
-unexportedRuntimeFunction('registerVisibilityChangeEventCallback', false);
-unexportedRuntimeFunction('registerTouchEventCallback', false);
-unexportedRuntimeFunction('fillGamepadEventData', false);
-unexportedRuntimeFunction('registerGamepadEventCallback', false);
-unexportedRuntimeFunction('registerBeforeUnloadEventCallback', false);
-unexportedRuntimeFunction('fillBatteryEventData', false);
-unexportedRuntimeFunction('battery', false);
-unexportedRuntimeFunction('registerBatteryEventCallback', false);
-unexportedRuntimeFunction('setCanvasElementSize', false);
-unexportedRuntimeFunction('getCanvasElementSize', false);
-unexportedRuntimeFunction('demangle', false);
-unexportedRuntimeFunction('demangleAll', false);
-unexportedRuntimeFunction('jsStackTrace', false);
-unexportedRuntimeFunction('stackTrace', false);
-unexportedRuntimeFunction('getEnvStrings', false);
-unexportedRuntimeFunction('checkWasiClock', false);
-unexportedRuntimeFunction('writeI53ToI64', false);
-unexportedRuntimeFunction('writeI53ToI64Clamped', false);
-unexportedRuntimeFunction('writeI53ToI64Signaling', false);
-unexportedRuntimeFunction('writeI53ToU64Clamped', false);
-unexportedRuntimeFunction('writeI53ToU64Signaling', false);
-unexportedRuntimeFunction('readI53FromI64', false);
-unexportedRuntimeFunction('readI53FromU64', false);
-unexportedRuntimeFunction('convertI32PairToI53', false);
-unexportedRuntimeFunction('convertU32PairToI53', false);
-unexportedRuntimeFunction('setImmediateWrapped', false);
-unexportedRuntimeFunction('clearImmediateWrapped', false);
-unexportedRuntimeFunction('polyfillSetImmediate', false);
-unexportedRuntimeFunction('uncaughtExceptionCount', false);
-unexportedRuntimeFunction('exceptionLast', false);
-unexportedRuntimeFunction('exceptionCaught', false);
-unexportedRuntimeFunction('ExceptionInfo', false);
-unexportedRuntimeFunction('CatchInfo', false);
-unexportedRuntimeFunction('exception_addRef', false);
-unexportedRuntimeFunction('exception_decRef', false);
-unexportedRuntimeFunction('Browser', false);
-unexportedRuntimeFunction('funcWrappers', false);
-unexportedRuntimeFunction('getFuncWrapper', false);
-unexportedRuntimeFunction('setMainLoop', false);
-unexportedRuntimeFunction('wget', false);
-unexportedRuntimeFunction('FS', false);
-unexportedRuntimeFunction('MEMFS', false);
-unexportedRuntimeFunction('TTY', false);
-unexportedRuntimeFunction('PIPEFS', false);
-unexportedRuntimeFunction('SOCKFS', false);
-unexportedRuntimeFunction('_setNetworkCallback', false);
-unexportedRuntimeFunction('tempFixedLengthArray', false);
-unexportedRuntimeFunction('miniTempWebGLFloatBuffers', false);
-unexportedRuntimeFunction('heapObjectForWebGLType', false);
-unexportedRuntimeFunction('heapAccessShiftForWebGLHeap', false);
-unexportedRuntimeFunction('GL', false);
-unexportedRuntimeFunction('emscriptenWebGLGet', false);
-unexportedRuntimeFunction('computeUnpackAlignedImageSize', false);
-unexportedRuntimeFunction('emscriptenWebGLGetTexPixelData', false);
-unexportedRuntimeFunction('emscriptenWebGLGetUniform', false);
-unexportedRuntimeFunction('webglGetUniformLocation', false);
-unexportedRuntimeFunction('webglPrepareUniformLocationsBeforeFirstUse', false);
-unexportedRuntimeFunction('webglGetLeftBracePos', false);
-unexportedRuntimeFunction('emscriptenWebGLGetVertexAttrib', false);
-unexportedRuntimeFunction('writeGLArray', false);
-unexportedRuntimeFunction('AL', false);
-unexportedRuntimeFunction('SDL_unicode', false);
-unexportedRuntimeFunction('SDL_ttfContext', false);
-unexportedRuntimeFunction('SDL_audio', false);
-unexportedRuntimeFunction('SDL', false);
-unexportedRuntimeFunction('SDL_gfx', false);
-unexportedRuntimeFunction('GLUT', false);
-unexportedRuntimeFunction('EGL', false);
-unexportedRuntimeFunction('GLFW_Window', false);
-unexportedRuntimeFunction('GLFW', false);
-unexportedRuntimeFunction('GLEW', false);
-unexportedRuntimeFunction('IDBStore', false);
-unexportedRuntimeFunction('runAndAbortIfError', false);
-unexportedRuntimeFunction('warnOnce', false);
-unexportedRuntimeFunction('stackSave', false);
-unexportedRuntimeFunction('stackRestore', false);
-unexportedRuntimeFunction('stackAlloc', false);
-unexportedRuntimeFunction('AsciiToString', false);
-unexportedRuntimeFunction('stringToAscii', false);
-unexportedRuntimeFunction('UTF16ToString', false);
-unexportedRuntimeFunction('stringToUTF16', false);
-unexportedRuntimeFunction('lengthBytesUTF16', false);
-unexportedRuntimeFunction('UTF32ToString', false);
-unexportedRuntimeFunction('stringToUTF32', false);
-unexportedRuntimeFunction('lengthBytesUTF32', false);
-unexportedRuntimeFunction('allocateUTF8', false);
-unexportedRuntimeFunction('allocateUTF8OnStack', false);
-Module["writeStackCookie"] = writeStackCookie;
-Module["checkStackCookie"] = checkStackCookie;
-unexportedRuntimeSymbol('ALLOC_NORMAL', false);
-unexportedRuntimeSymbol('ALLOC_STACK', false);
 
 var calledRun;
 
@@ -5396,15 +4589,6 @@ dependenciesFulfilled = function runCaller() {
   if (!calledRun) dependenciesFulfilled = runCaller; // try this again later, after new deps are fulfilled
 };
 
-function stackCheckInit() {
-  // This is normally called automatically during __wasm_call_ctors but need to
-  // get these values before even running any of the ctors so we call it redundantly
-  // here.
-  // TODO(sbc): Move writeStackCookie to native to to avoid this.
-  _emscripten_stack_init();
-  writeStackCookie();
-}
-
 /** @type {function(Array=)} */
 function run(args) {
   args = args || arguments_;
@@ -5412,8 +4596,6 @@ function run(args) {
   if (runDependencies > 0) {
     return;
   }
-
-  stackCheckInit();
 
   preRun();
 
@@ -5436,8 +4618,6 @@ function run(args) {
     readyPromiseResolve(Module);
     if (Module['onRuntimeInitialized']) Module['onRuntimeInitialized']();
 
-    assert(!Module['_main'], 'compiled without a main, but one is present. if you added it from JS, use Module["onRuntimeInitialized"]');
-
     postRun();
   }
 
@@ -5453,7 +4633,6 @@ function run(args) {
   {
     doRun();
   }
-  checkStackCookie();
 }
 Module['run'] = run;
 
@@ -5462,12 +4641,6 @@ function exit(status, implicit) {
   EXITSTATUS = status;
 
   if (keepRuntimeAlive()) {
-    // if exit() was called, we may warn the user if the runtime isn't actually being shut down
-    if (!implicit) {
-      var msg = 'program exited (with status: ' + status + '), but keepRuntimeAlive() is set (counter=' + runtimeKeepaliveCounter + ') due to an async operation, so halting execution but not exiting the runtime or preventing further async execution (you can use emscripten_force_exit, if you want to force a true shutdown)';
-      readyPromiseReject(msg);
-      err(msg);
-    }
   } else {
     exitRuntime();
   }
