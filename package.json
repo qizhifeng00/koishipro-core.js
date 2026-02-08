@@ -41,7 +41,8 @@
     "jszip": "^3.10.1",
     "nfkit": "^1.0.14",
     "sql.js": "^1.13.0",
-    "ygopro-msg-encode": "^1.1.5",
+    "ygopro-cdb-encode": "^1.0.1",
+    "ygopro-msg-encode": "^1.1.7",
     "ygopro-yrp-encode": "^1.0.1"
   },
   "jest": {

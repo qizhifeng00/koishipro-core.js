@@ -1,6 +1,7 @@
 /// <reference types="emscripten" />
 
 export interface OcgcoreModule extends EmscriptenModule {
+  quit?: (status: number, toThrow: unknown) => void;
   _malloc(size: number): number;
   _free(ptr: number): void;
   _set_script_reader(reader: number): void;

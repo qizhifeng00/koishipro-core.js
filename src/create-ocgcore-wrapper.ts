@@ -15,6 +15,11 @@ export async function createOcgcoreWrapper(
   const overrides: Partial<OcgcoreModule> = {
     ...options.moduleOverrides,
   };
+  if (overrides.quit == null) {
+    overrides.quit = () => {
+      // Prevent emscripten from exiting the host process.
+    };
+  }
   if (options.wasmBinary) {
     overrides.wasmBinary =
       options.wasmBinary as unknown as OcgcoreModule['wasmBinary'];

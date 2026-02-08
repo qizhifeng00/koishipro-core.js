@@ -1,6 +1,6 @@
 import type { OcgcoreDuel } from '../ocgcore-duel';
 import type { OcgcoreMessageType } from './ocgcore-enums';
-import type { CardDataWithText } from './card-data-with-text';
+import type { CardDataEntry } from 'ygopro-cdb-encode';
 
 export type WithFinalizer<F extends (...args: any[]) => any> =
   | F
@@ -15,7 +15,7 @@ export type ScriptReaderFn = (
 
 export type CardReaderFn = (
   cardId: number,
-) => Partial<CardDataWithText> | null | undefined;
+) => Partial<CardDataEntry> | null | undefined;
 
 export type MessageHandlerFn = (
   duel: OcgcoreDuel,
