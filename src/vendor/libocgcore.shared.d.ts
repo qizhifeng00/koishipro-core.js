@@ -31,6 +31,7 @@ export interface OcgcoreModule extends EmscriptenModule {
   _dump_registry(duelPtr: number, bufPtr: number): number;
   _load_registry(duelPtr: number, bufPtr: number, length: number): void;
   ___stdio_exit(): void;
+  _ocgcore_shutdown?: (code: number) => void;
   addFunction: (func: (...args: number[]) => number | void, signature: string) => number;
   removeFunction: (index: number) => void;
 }

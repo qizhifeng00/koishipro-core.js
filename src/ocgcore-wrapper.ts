@@ -287,6 +287,16 @@ export class OcgcoreWrapper {
   }
 
   finalize(): void {
+    if (!this.ocgcoreModule) return;
+    for (const duel of this.duels.values()) {
+      try {
+        duel.endDuel();
+      } catch {
+        // ignore duel cleanup errors
+      }
+    }
+    this.duels.clear();
+
     for (const reader of this.scriptReaders) {
       this.finalizeCallback(reader);
     }
@@ -325,6 +335,13 @@ export class OcgcoreWrapper {
       this.tmpStringBufferPtr = 0;
       this.tmpStringBufferSize = 0;
     }
+
+    try {
+      this.ocgcoreModule._ocgcore_shutdown?.(0);
+    } catch {
+      // ignore shutdown errors
+    }
+    this.ocgcoreModule = undefined;
   }
 
   private applyCallback<F extends (...args: any[]) => any>(
