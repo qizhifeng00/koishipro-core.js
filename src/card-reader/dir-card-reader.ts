@@ -1,34 +1,14 @@
 import JSZip from 'jszip';
 
 import type { CardReader } from '../types/callback';
+import { getNodeModuleOrThrow } from '../utility/get-node-module-or-throw';
 import { getNodeFs } from '../utility/node-fs';
-import { getNodePath } from '../utility/node-path';
+import { joinPath } from '../utility/path';
 import { searchZips } from '../utility/search-zips';
 import { SqljsCardReader } from './sqljs-card-reader';
 import type { Database, SqlJsStatic } from 'sql.js';
 
 type NodeFs = NonNullable<ReturnType<typeof getNodeFs>>;
-type NodePath = NonNullable<ReturnType<typeof getNodePath>>;
-
-function joinPath(
-  pathMod: NodePath | null,
-  baseDir: string,
-  rel: string,
-): string {
-  if (pathMod) {
-    return pathMod.join(baseDir, rel);
-  }
-  const trimmedBase = baseDir.replace(/[/\\]+$/, '');
-  const trimmedRel = rel.replace(/^[/\\]+/, '');
-  return `${trimmedBase}/${trimmedRel}`;
-}
-
-function getNodeModuleOrThrow<T>(value: T | null, label: string): T {
-  if (!value) {
-    throw new Error(`${label} is not supported in this runtime.`);
-  }
-  return value;
-}
 
 async function safeReadDir(fs: NodeFs, dirPath: string): Promise<string[]> {
   try {
@@ -40,7 +20,6 @@ async function safeReadDir(fs: NodeFs, dirPath: string): Promise<string[]> {
 
 async function collectFsDbPaths(
   fs: NodeFs,
-  pathMod: NodePath | null,
   baseDir: string,
 ): Promise<string[]> {
   const collectCdbFiles = async (dirPath: string): Promise<string[]> => {
@@ -50,7 +29,7 @@ async function collectFsDbPaths(
       if (!entry.toLowerCase().endsWith('.cdb')) {
         continue;
       }
-      const fullPath = joinPath(pathMod, dirPath, entry);
+      const fullPath = joinPath(dirPath, entry);
       try {
         const stats = await fs.promises.stat(fullPath);
         if (stats.isFile()) {
@@ -65,7 +44,7 @@ async function collectFsDbPaths(
 
   const results: string[] = [];
 
-  const expansionsDir = joinPath(pathMod, baseDir, 'expansions');
+  const expansionsDir = joinPath(baseDir, 'expansions');
   results.push(...(await collectCdbFiles(expansionsDir)));
 
   results.push(...(await collectCdbFiles(baseDir)));
@@ -83,11 +62,10 @@ export async function DirCardReader(
   ...baseDirs: string[]
 ): Promise<CardReader> {
   const fs = getNodeModuleOrThrow(getNodeFs(), 'DirCardReader');
-  const pathMod = getNodeModuleOrThrow(getNodePath(), 'DirCardReader');
 
   const dbs: Database[] = [];
   for (const baseDir of baseDirs) {
-    const dbPaths = await collectFsDbPaths(fs, pathMod, baseDir);
+    const dbPaths = await collectFsDbPaths(fs, baseDir);
     for (const dbPath of dbPaths) {
       try {
         const bytes = await fs.promises.readFile(dbPath);
@@ -99,7 +77,7 @@ export async function DirCardReader(
   }
 
   for (const baseDir of baseDirs) {
-    const zipPaths = await searchZips(fs, pathMod, baseDir);
+    const zipPaths = await searchZips(fs, baseDir);
     for (const zipPath of zipPaths) {
       try {
         const bytes = await fs.promises.readFile(zipPath);

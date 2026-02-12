@@ -1,12 +1,16 @@
 export type NodePath = {
   join: (...parts: string[]) => string;
+  resolve: (...parts: string[]) => string;
 };
 
-import { loadNodeModule } from './load-node-module';
+import { loadNodeModule, loadNodeModuleOrThrow } from './load-node-module';
 
 export function getNodePath(noThrow = false): NodePath | null {
-  const mod = loadNodeModule<NodePath>('node:path', 'path');
-  if (mod) return mod;
-  if (noThrow) return null;
-  throw new Error('Node.js path module is not available.');
+  if (noThrow) {
+    return loadNodeModule<NodePath>('path');
+  }
+  return loadNodeModuleOrThrow<NodePath>(
+    'path',
+    'Node.js path module is not available.',
+  );
 }

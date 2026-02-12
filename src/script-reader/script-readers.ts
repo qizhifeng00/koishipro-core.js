@@ -2,7 +2,7 @@ import JSZip from 'jszip';
 
 import { ScriptReader } from '../types/callback';
 import { getNodeFs } from '../utility/node-fs';
-import { getNodePath } from '../utility/node-path';
+import { resolvePath } from '../utility/path';
 
 const SCRIPT_PREFIX = './script/';
 
@@ -32,16 +32,6 @@ function buildCandidates(filename: string): string[] {
     }
   }
   return candidates;
-}
-
-function joinPath(baseDir: string, relativePath: string): string {
-  const pathMod = getNodePath();
-  if (pathMod) {
-    return pathMod.join(baseDir, relativePath);
-  }
-  const trimmedBase = baseDir.replace(/[/\\]+$/, '');
-  const trimmedRel = relativePath.replace(/^[/\\]+/, '');
-  return `${trimmedBase}/${trimmedRel}`;
 }
 
 export function MapScriptReader(
@@ -77,7 +67,7 @@ export function DirScriptReader(...baseDirs: string[]): ScriptReader {
         const normalized = candidate.startsWith('/')
           ? candidate.slice(1)
           : candidate;
-        const fullPath = joinPath(baseDir, normalized);
+        const fullPath = resolvePath(baseDir, normalized);
         if (fs.existsSync(fullPath)) {
           return fs.readFileSync(fullPath);
         }

@@ -1,21 +1,7 @@
 import { getNodeFs } from './node-fs';
-import { getNodePath } from './node-path';
+import { joinPath } from './path';
 
 type NodeFs = NonNullable<ReturnType<typeof getNodeFs>>;
-type NodePath = NonNullable<ReturnType<typeof getNodePath>>;
-
-function joinPath(
-  pathMod: NodePath | null,
-  baseDir: string,
-  rel: string,
-): string {
-  if (pathMod) {
-    return pathMod.join(baseDir, rel);
-  }
-  const trimmedBase = baseDir.replace(/[/\\]+$/, '');
-  const trimmedRel = rel.replace(/^[/\\]+/, '');
-  return `${trimmedBase}/${trimmedRel}`;
-}
 
 async function safeReadDir(fs: NodeFs, dirPath: string): Promise<string[]> {
   try {
@@ -27,7 +13,6 @@ async function safeReadDir(fs: NodeFs, dirPath: string): Promise<string[]> {
 
 export async function searchZips(
   fs: NodeFs,
-  pathMod: NodePath | null,
   baseDir: string,
 ): Promise<string[]> {
   const results: string[] = [];
@@ -37,7 +22,7 @@ export async function searchZips(
     if (!lower.endsWith('.zip') && !lower.endsWith('.ypk')) {
       continue;
     }
-    const fullPath = joinPath(pathMod, baseDir, entry);
+    const fullPath = joinPath(baseDir, entry);
     try {
       const stats = await fs.promises.stat(fullPath);
       if (stats.isFile()) {
@@ -48,14 +33,14 @@ export async function searchZips(
     }
   }
 
-  const expansionsDir = joinPath(pathMod, baseDir, 'expansions');
+  const expansionsDir = joinPath(baseDir, 'expansions');
   const expansionEntries = await safeReadDir(fs, expansionsDir);
   for (const entry of expansionEntries) {
     const lower = entry.toLowerCase();
     if (!lower.endsWith('.zip') && !lower.endsWith('.ypk')) {
       continue;
     }
-    const fullPath = joinPath(pathMod, expansionsDir, entry);
+    const fullPath = joinPath(expansionsDir, entry);
     try {
       const stats = await fs.promises.stat(fullPath);
       if (stats.isFile()) {

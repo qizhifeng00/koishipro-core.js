@@ -15,11 +15,14 @@ export type NodeFs = {
   promises: NodeFsPromises;
 };
 
-import { loadNodeModule } from './load-node-module';
+import { loadNodeModule, loadNodeModuleOrThrow } from './load-node-module';
 
 export function getNodeFs(noThrow = false): NodeFs | null {
-  const mod = loadNodeModule<NodeFs>('node:fs', 'fs');
-  if (mod) return mod;
-  if (noThrow) return null;
-  throw new Error('Node.js fs module is not available.');
+  if (noThrow) {
+    return loadNodeModule<NodeFs>('fs');
+  }
+  return loadNodeModuleOrThrow<NodeFs>(
+    'fs',
+    'Node.js fs module is not available.',
+  );
 }
