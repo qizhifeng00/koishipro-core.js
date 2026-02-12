@@ -20,4 +20,5 @@ export * from './src/card-reader';
 export * from './src/play-yrp';
 export * from './src/test-card';
 export * from './src/advancors';
+export * from './src/utility/search-zips';
 export { CardDataEntry as _CardDataEntry } from 'ygopro-cdb-encode';
