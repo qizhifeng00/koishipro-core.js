@@ -2,12 +2,14 @@ import type { OcgcoreDuel } from '../ocgcore-duel';
 import type { OcgcoreMessageType } from './ocgcore-enums';
 import type { CardDataEntry } from 'ygopro-cdb-encode';
 
-export type WithFinalizer<F extends (...args: any[]) => any> =
+export type WithFinalizer<F extends (...args: any[]) => any> = {
+  apply: F;
+  finalize?: () => void;
+};
+
+export type MayWithFinalizer<F extends (...args: any[]) => any> =
   | F
-  | {
-      apply: F;
-      finalize?: () => void;
-    };
+  | WithFinalizer<F>;
 
 export type ScriptReaderFn = (
   path: string,
@@ -23,6 +25,10 @@ export type MessageHandlerFn = (
   type: OcgcoreMessageType,
 ) => void;
 
-export type ScriptReader = WithFinalizer<ScriptReaderFn>;
-export type CardReader = WithFinalizer<CardReaderFn>;
-export type MessageHandler = WithFinalizer<MessageHandlerFn>;
+export type ScriptReaderFinalized = WithFinalizer<ScriptReaderFn>;
+export type CardReaderFinalized = WithFinalizer<CardReaderFn>;
+export type MessageHandlerFinalized = WithFinalizer<MessageHandlerFn>;
+
+export type ScriptReader = MayWithFinalizer<ScriptReaderFn>;
+export type CardReader = MayWithFinalizer<CardReaderFn>;
+export type MessageHandler = MayWithFinalizer<MessageHandlerFn>;

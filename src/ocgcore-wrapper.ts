@@ -5,11 +5,11 @@ import { OcgcoreMessageType } from './types/ocgcore-enums';
 import {
   CardReader,
   CardReaderFn,
+  MayWithFinalizer,
   MessageHandler,
   MessageHandlerFn,
   ScriptReader,
   ScriptReaderFn,
-  WithFinalizer,
 } from './types/callback';
 
 export class OcgcoreWrapper {
@@ -345,7 +345,7 @@ export class OcgcoreWrapper {
   }
 
   private applyCallback<F extends (...args: any[]) => any>(
-    cb: WithFinalizer<F>,
+    cb: MayWithFinalizer<F>,
     ...args: Parameters<F>
   ): ReturnType<F> {
     if (typeof cb === 'function') {
@@ -355,7 +355,7 @@ export class OcgcoreWrapper {
   }
 
   private finalizeCallback<F extends (...args: any[]) => any>(
-    cb: WithFinalizer<F>,
+    cb: MayWithFinalizer<F>,
   ): void {
     if (typeof cb === 'function') {
       return;

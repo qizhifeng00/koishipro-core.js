@@ -1,6 +1,9 @@
 import type { Database, SqlJsStatic } from 'sql.js';
 import { YGOProCdb } from 'ygopro-cdb-encode';
-import type { CardReader, CardReaderFn } from '../types/callback';
+import type {
+  CardReaderFinalized,
+  CardReaderFn,
+} from '../types/callback';
 
 function createReader(dbs: YGOProCdb[]): CardReaderFn {
   return (cardId: number) => {
@@ -24,11 +27,11 @@ export function SqljsCardReader(
 export function SqljsCardReader(
   sqljs: SqlJsStatic,
   ...dbs: Array<Uint8Array | YGOProCdb | Database>
-): CardReader;
+): CardReaderFinalized;
 export function SqljsCardReader(
   first: SqlJsStatic | Database | YGOProCdb,
   ...rest: Array<Database | Uint8Array | YGOProCdb>
-): CardReader {
+): CardReaderFn | CardReaderFinalized {
   if (isSqlJsStatic(first)) {
     const sqljs = first;
     const owned: YGOProCdb[] = [];
@@ -64,7 +67,9 @@ export function SqljsCardReader(
       return item;
     }
     if (item instanceof Uint8Array) {
-      throw new Error('SqlJsStatic is required to create database from Uint8Array');
+      throw new Error(
+        'SqlJsStatic is required to create database from Uint8Array',
+      );
     }
     return new YGOProCdb(item as Database);
   });
@@ -79,12 +84,12 @@ export function createSqljsCardReader(
 export function createSqljsCardReader(
   sqljs: SqlJsStatic,
   ...dbs: Array<Uint8Array | YGOProCdb | Database>
-): CardReader;
+): CardReaderFinalized;
 /** @deprecated Use SqljsCardReader instead. */
 export function createSqljsCardReader(
   first: SqlJsStatic | Database | YGOProCdb,
   ...rest: Array<Database | Uint8Array | YGOProCdb>
-): CardReader {
+): CardReaderFn | CardReaderFinalized {
   if (isSqlJsStatic(first)) {
     return SqljsCardReader(first, ...(rest as Array<Uint8Array | YGOProCdb>));
   }

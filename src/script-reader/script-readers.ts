@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 
-import { ScriptReader } from '../types/callback';
+import { ScriptReaderFn } from '../types/callback';
 import { getNodeFs } from '../utility/node-fs';
 import { resolvePath } from '../utility/path';
 
@@ -36,7 +36,7 @@ function buildCandidates(filename: string): string[] {
 
 export function MapScriptReader(
   ...maps: Array<Map<string, string | Uint8Array>>
-): ScriptReader {
+): ScriptReaderFn {
   return (path) => {
     const filename = normalizePath(path);
     if (!filename.toLowerCase().endsWith('.lua')) {
@@ -54,7 +54,7 @@ export function MapScriptReader(
   };
 }
 
-export function DirScriptReader(...baseDirs: string[]): ScriptReader {
+export function DirScriptReader(...baseDirs: string[]): ScriptReaderFn {
   const fs = getNodeFs();
   return (path) => {
     const filename = normalizePath(path);
@@ -89,7 +89,7 @@ function normalizeZipEntryName(name: string): string[] {
 
 export async function ZipScriptReader(
   ...inputs: Array<Uint8Array | ArrayBuffer | Blob>
-): Promise<ScriptReader> {
+): Promise<ScriptReaderFn> {
   const maps = await Promise.all(
     inputs.map(async (data) => {
       const zip = await JSZip.loadAsync(data);
@@ -118,18 +118,18 @@ export async function ZipScriptReader(
 /** @deprecated Use MapScriptReader instead. */
 export function MapReader(
   ...maps: Array<Map<string, string | Uint8Array>>
-): ScriptReader {
+): ScriptReaderFn {
   return MapScriptReader(...maps);
 }
 
 /** @deprecated Use DirScriptReader instead. */
-export function DirReader(...baseDirs: string[]): ScriptReader {
+export function DirReader(...baseDirs: string[]): ScriptReaderFn {
   return DirScriptReader(...baseDirs);
 }
 
 /** @deprecated Use ZipScriptReader instead. */
 export async function ZipReader(
   ...inputs: Array<Uint8Array | ArrayBuffer | Blob>
-): Promise<ScriptReader> {
+): Promise<ScriptReaderFn> {
   return ZipScriptReader(...inputs);
 }
