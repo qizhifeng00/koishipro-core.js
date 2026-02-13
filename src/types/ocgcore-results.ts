@@ -15,13 +15,13 @@ type Parsed<T, TNoParse extends boolean | undefined> = TNoParse extends true
 
 export type OcgcoreCardQueryResult<TNoParse extends boolean | undefined = false> =
   OcgcoreBinaryResult & {
-    card: TNoParse extends true ? null : CardQuery | null;
+    card: Parsed<CardQuery | null, TNoParse>;
   };
 
 export type OcgcoreFieldCardQueryResult<
   TNoParse extends boolean | undefined = false,
 > = OcgcoreBinaryResult & {
-  cards: TNoParse extends true ? [] : CardQuery[];
+  cards: Parsed<CardQuery[], TNoParse>;
 };
 
 export interface OcgcoreMessageResult extends OcgcoreBinaryResult {}

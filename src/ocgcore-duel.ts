@@ -178,8 +178,9 @@ export class OcgcoreDuel {
     );
     const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
     this.ocgcoreWrapper.free(ptr);
-    const card =
-      parseOptions?.noParse || length <= LEN_HEADER
+    const card = parseOptions?.noParse
+      ? undefined
+      : length <= LEN_HEADER
         ? null
         : parseCardQuery(raw, length);
     return { length, raw, card: card as any };
@@ -208,7 +209,9 @@ export class OcgcoreDuel {
     );
     const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
     this.ocgcoreWrapper.free(ptr);
-    const cards = parseOptions?.noParse ? [] : parseFieldCardQuery(raw, length);
+    const cards = parseOptions?.noParse
+      ? undefined
+      : parseFieldCardQuery(raw, length);
     return { length, raw, cards: cards as any };
   }
 
