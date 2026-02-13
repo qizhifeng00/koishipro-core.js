@@ -14,6 +14,7 @@ import {
   OcgcoreQueryCardParams,
   OcgcoreQueryFieldCardParams,
   OcgcoreQueryFieldCountParams,
+  OcgcoreProcessOptions,
   OcgcoreSetPlayerInfoParams,
   OcgcoreStartDuelOptions,
 } from './types/ocgcore-params';
@@ -96,7 +97,7 @@ export class OcgcoreDuel {
     return { length, raw };
   }
 
-  process(): OcgcoreProcessResult {
+  process(options?: OcgcoreProcessOptions): OcgcoreProcessResult {
     const result = this.ocgcoreWrapper.ocgcoreModule._process(this.duelPtr);
     const length = (result & 0x0fffffff) >>> 0;
     const status = ((result >>> 28) & 0x0f) >>> 0;
@@ -104,7 +105,7 @@ export class OcgcoreDuel {
 
     // Parse message using YGOProMessages (only one message per process call)
     let parsedMessage: YGOProMsgBase | undefined;
-    if (messageData.raw.length > 0) {
+    if (!options?.noParse && messageData.raw.length > 0) {
       try {
         parsedMessage = YGOProMessages.getInstanceFromPayload(messageData.raw);
       } catch (e) {
