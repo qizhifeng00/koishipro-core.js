@@ -6,12 +6,11 @@ export interface OcgcoreStartDuelOptions {
   flags?: Array<OcgcoreDuelOptionFlag | number>;
 }
 
-export interface OcgcoreProcessOptions {
+export interface OcgcoreParseOptions<TNoParse extends boolean | undefined = boolean> {
   /**
-   * Do not parse the message payload with `ygopro-msg-encode`.
-   * When true, `process().message` will always be `undefined`.
+   * Do not parse the binary payload into structured objects.
    */
-  noParse?: boolean;
+  noParse?: TNoParse;
 }
 
 export interface OcgcoreSetPlayerInfoParams {

@@ -14,7 +14,7 @@ import {
   OcgcoreQueryCardParams,
   OcgcoreQueryFieldCardParams,
   OcgcoreQueryFieldCountParams,
-  OcgcoreProcessOptions,
+  OcgcoreParseOptions,
   OcgcoreSetPlayerInfoParams,
   OcgcoreStartDuelOptions,
 } from './types/ocgcore-params';
@@ -97,7 +97,9 @@ export class OcgcoreDuel {
     return { length, raw };
   }
 
-  process(options?: OcgcoreProcessOptions): OcgcoreProcessResult {
+  process<TNoParse extends boolean | undefined = false>(
+    parseOptions?: OcgcoreParseOptions<TNoParse>,
+  ): OcgcoreProcessResult<TNoParse> {
     const result = this.ocgcoreWrapper.ocgcoreModule._process(this.duelPtr);
     const length = (result & 0x0fffffff) >>> 0;
     const status = ((result >>> 28) & 0x0f) >>> 0;
@@ -105,10 +107,10 @@ export class OcgcoreDuel {
 
     // Parse message using YGOProMessages (only one message per process call)
     let parsedMessage: YGOProMsgBase | undefined;
-    if (!options?.noParse && messageData.raw.length > 0) {
+    if (!parseOptions?.noParse && messageData.raw.length > 0) {
       try {
         parsedMessage = YGOProMessages.getInstanceFromPayload(messageData.raw);
-      } catch (e) {
+      } catch {
         // If parsing fails, parsedMessage remains undefined
       }
     }
@@ -117,7 +119,7 @@ export class OcgcoreDuel {
       length: messageData.length,
       raw: messageData.raw,
       status,
-      message: parsedMessage,
+      message: parsedMessage as any,
     };
   }
 
@@ -160,7 +162,10 @@ export class OcgcoreDuel {
     );
   }
 
-  queryCard(query: OcgcoreQueryCardParams): OcgcoreCardQueryResult {
+  queryCard<TNoParse extends boolean | undefined = false>(
+    query: OcgcoreQueryCardParams,
+    parseOptions?: OcgcoreParseOptions<TNoParse>,
+  ): OcgcoreCardQueryResult<TNoParse> {
     const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_card(
       this.duelPtr,
@@ -173,8 +178,11 @@ export class OcgcoreDuel {
     );
     const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
     this.ocgcoreWrapper.free(ptr);
-    const card = length <= LEN_HEADER ? null : parseCardQuery(raw, length);
-    return { length, raw, card };
+    const card =
+      parseOptions?.noParse || length <= LEN_HEADER
+        ? null
+        : parseCardQuery(raw, length);
+    return { length, raw, card: card as any };
   }
 
   queryFieldCount(query: OcgcoreQueryFieldCountParams): number {
@@ -185,9 +193,10 @@ export class OcgcoreDuel {
     );
   }
 
-  queryFieldCard(
+  queryFieldCard<TNoParse extends boolean | undefined = false>(
     query: OcgcoreQueryFieldCardParams,
-  ): OcgcoreFieldCardQueryResult {
+    parseOptions?: OcgcoreParseOptions<TNoParse>,
+  ): OcgcoreFieldCardQueryResult<TNoParse> {
     const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_field_card(
       this.duelPtr,
@@ -199,11 +208,13 @@ export class OcgcoreDuel {
     );
     const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
     this.ocgcoreWrapper.free(ptr);
-    const cards = parseFieldCardQuery(raw, length);
-    return { length, raw, cards };
+    const cards = parseOptions?.noParse ? [] : parseFieldCardQuery(raw, length);
+    return { length, raw, cards: cards as any };
   }
 
-  queryFieldInfo(): OcgcoreFieldInfoResult {
+  queryFieldInfo<TNoParse extends boolean | undefined = false>(
+    parseOptions?: OcgcoreParseOptions<TNoParse>,
+  ): OcgcoreFieldInfoResult<TNoParse> {
     const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_field_info(
       this.duelPtr,
@@ -211,8 +222,8 @@ export class OcgcoreDuel {
     );
     const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
     this.ocgcoreWrapper.free(ptr);
-    const field = parseFieldInfo(raw);
-    return { length, raw, field };
+    const field = parseOptions?.noParse ? undefined : parseFieldInfo(raw);
+    return { length, raw, field: field as any };
   }
 
   setResponseInt(value: number): void {

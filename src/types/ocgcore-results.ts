@@ -9,24 +9,33 @@ export interface OcgcoreBinaryResult {
   raw: Uint8Array;
 }
 
-export interface OcgcoreCardQueryResult extends OcgcoreBinaryResult {
-  card: CardQuery | null;
-}
+type Parsed<T, TNoParse extends boolean | undefined> = TNoParse extends true
+  ? undefined
+  : T;
 
-export interface OcgcoreFieldCardQueryResult extends OcgcoreBinaryResult {
-  cards: CardQuery[];
-}
+export type OcgcoreCardQueryResult<TNoParse extends boolean | undefined = false> =
+  OcgcoreBinaryResult & {
+    card: TNoParse extends true ? null : CardQuery | null;
+  };
+
+export type OcgcoreFieldCardQueryResult<
+  TNoParse extends boolean | undefined = false,
+> = OcgcoreBinaryResult & {
+  cards: TNoParse extends true ? [] : CardQuery[];
+};
 
 export interface OcgcoreMessageResult extends OcgcoreBinaryResult {}
 
-export interface OcgcoreProcessResult extends OcgcoreBinaryResult {
-  status: number;
-  message?: YGOProMsgBase;
-}
+export type OcgcoreProcessResult<TNoParse extends boolean | undefined = false> =
+  OcgcoreBinaryResult & {
+    status: number;
+    message?: Parsed<YGOProMsgBase, TNoParse>;
+  };
 
-export interface OcgcoreFieldInfoResult extends OcgcoreBinaryResult {
-  field: YGOProMsgReloadField;
-}
+export type OcgcoreFieldInfoResult<TNoParse extends boolean | undefined = false> =
+  OcgcoreBinaryResult & {
+    field: Parsed<YGOProMsgReloadField, TNoParse>;
+  };
 
 export interface OcgcoreRegistryValueResult extends OcgcoreBinaryResult {
   value: Uint8Array;
