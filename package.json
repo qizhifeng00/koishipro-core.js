@@ -42,7 +42,7 @@
     "nfkit": "^1.0.14",
     "sql.js": "^1.13.0",
     "ygopro-cdb-encode": "^1.0.2",
-    "ygopro-msg-encode": "^1.1.10",
+    "ygopro-msg-encode": "^1.1.20",
     "ygopro-yrp-encode": "^1.0.1"
   },
   "jest": {

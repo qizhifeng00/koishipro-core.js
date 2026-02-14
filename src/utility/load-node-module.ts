@@ -16,10 +16,7 @@ export function loadNodeModule<T>(id: string): T | null {
   }
 }
 
-export function loadNodeModuleOrThrow<T>(
-  id: string,
-  errorMessage: string,
-): T {
+export function loadNodeModuleOrThrow<T>(id: string, errorMessage: string): T {
   const mod = loadNodeModule<T>(id);
   if (mod) {
     return mod;

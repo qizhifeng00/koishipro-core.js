@@ -6,7 +6,9 @@ export interface OcgcoreStartDuelOptions {
   flags?: Array<OcgcoreDuelOptionFlag | number>;
 }
 
-export interface OcgcoreParseOptions<TNoParse extends boolean | undefined = boolean> {
+export interface OcgcoreParseOptions<
+  TNoParse extends boolean | undefined = boolean,
+> {
   /**
    * Do not parse the binary payload into structured objects.
    */

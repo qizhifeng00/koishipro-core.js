@@ -1,9 +1,6 @@
 import type { Database, SqlJsStatic } from 'sql.js';
 import { YGOProCdb } from 'ygopro-cdb-encode';
-import type {
-  CardReaderFinalized,
-  CardReaderFn,
-} from '../types/callback';
+import type { CardReaderFinalized, CardReaderFn } from '../types/callback';
 
 function createReader(dbs: YGOProCdb[]): CardReaderFn {
   return (cardId: number) => {

@@ -1,4 +1,4 @@
-import { Advancor } from "./types";
+import { Advancor } from './types';
 
 export const CombinedAdvancor = (...advancors: Advancor[]): Advancor => {
   return (msg) => {

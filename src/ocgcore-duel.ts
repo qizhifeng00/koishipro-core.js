@@ -105,38 +105,68 @@ export class OcgcoreDuel {
     const status = ((result >>> 28) & 0x0f) >>> 0;
     const messageData = this.getMessage(length);
 
-    // Parse message using YGOProMessages (only one message per process call)
-    let parsedMessage: YGOProMsgBase | undefined;
+    // Parse messages using YGOProMessages (process may return multiple messages)
+    let parsedMessages: YGOProMsgBase[] | undefined;
     if (!parseOptions?.noParse && messageData.raw.length > 0) {
       try {
-        parsedMessage = YGOProMessages.getInstanceFromPayload(messageData.raw);
+        parsedMessages = YGOProMessages.getInstancesFromPayload(
+          messageData.raw,
+        );
       } catch {
-        // If parsing fails, parsedMessage remains undefined
+        // If parsing fails, parsedMessages remains undefined
       }
     }
+    const parsedMessage =
+      parsedMessages && parsedMessages.length > 0
+        ? parsedMessages[parsedMessages.length - 1]
+        : undefined;
 
     return {
       length: messageData.length,
       raw: messageData.raw,
       status,
       message: parsedMessage as any,
+      messages: parsedMessages as any,
     };
+  }
+
+  private splitProcessResult(
+    res: OcgcoreProcessResult,
+  ): OcgcoreProcessResult[] {
+    if (!res.messages || res.messages.length <= 1) {
+      return [res];
+    }
+    const messageCount = res.messages.length;
+    return res.messages.map((message, index) => {
+      const raw = message.toPayload();
+      return {
+        ...res,
+        length: raw.length,
+        raw,
+        status: index === messageCount - 1 ? res.status : 0,
+        message,
+        messages: [message],
+      };
+    });
   }
 
   *advance(advancor?: Advancor) {
     while (true) {
-      const res = this.process();
-      yield res;
-      if (res.status === 2 || res.message instanceof YGOProMsgRetry) {
-        break;
-      }
-
-      if (res.status === 1 && res.raw.length > 0) {
-        const response = advancor?.(res.message as YGOProMsgResponseBase);
-        if (!response) {
-          break;
+      const processedResults = this.splitProcessResult(this.process());
+      for (const res of processedResults) {
+        yield res;
+        const { message } = res;
+        if (res.status === 2 || message instanceof YGOProMsgRetry) {
+          return;
         }
-        this.setResponse(response);
+
+        if (message instanceof YGOProMsgResponseBase) {
+          const response = advancor?.(message);
+          if (!response) {
+            return;
+          }
+          this.setResponse(response);
+        }
       }
     }
   }
