@@ -33,30 +33,26 @@ async function* searchYGOProEntryPath(
   match: (entry: string) => boolean,
   ...baseDirs: string[]
 ): AsyncGenerator<string> {
-  for (const baseDir of baseDirs) {
-    const rootEntries = await safeReadDir(fs, baseDir);
-    for (const entry of rootEntries) {
-      if (!match(entry)) {
-        continue;
-      }
-      const fullPath = joinPath(baseDir, entry);
-      try {
-        const stats = await fs.promises.stat(fullPath);
-        if (stats.isFile()) {
-          yield fullPath;
-        }
-      } catch {
-        continue;
-      }
-    }
+  yield* searchYGOProEntryPathInScope(fs, 'expansions', match, ...baseDirs);
+  yield* searchYGOProEntryPathInScope(fs, '', match, ...baseDirs);
+}
 
-    const expansionsDir = joinPath(baseDir, 'expansions');
-    const expansionEntries = await safeReadDir(fs, expansionsDir);
-    for (const entry of expansionEntries) {
+type YGOProEntryScope = '' | 'expansions' | 'specials';
+
+async function* searchYGOProEntryPathInScope(
+  fs: NodeFs,
+  scope: YGOProEntryScope,
+  match: (entry: string) => boolean,
+  ...baseDirs: string[]
+): AsyncGenerator<string> {
+  for (const baseDir of baseDirs) {
+    const targetDir = scope === '' ? baseDir : joinPath(baseDir, scope);
+    const entries = await safeReadDir(fs, targetDir);
+    for (const entry of entries) {
       if (!match(entry)) {
         continue;
       }
-      const fullPath = joinPath(expansionsDir, entry);
+      const fullPath = joinPath(targetDir, entry);
       try {
         const stats = await fs.promises.stat(fullPath);
         if (stats.isFile()) {
@@ -112,25 +108,39 @@ export async function* searchYGOProResource(
 ): AsyncGenerator<YGOProResource> {
   const fs = getNodeModuleOrThrow(getNodeFs(), 'searchYGOProResource');
 
-  for await (const filePath of searchYGOProEntryPath(
-    fs,
-    (entry) => !isArchivePath(entry),
-    ...baseDirs,
-  )) {
-    yield {
-      path: filePath,
-      read: () => fs.promises.readFile(filePath),
-    };
-  }
+  yield* searchYGOProResourceInScope(fs, 'specials', false, ...baseDirs);
+  yield* searchYGOProResourceInScope(fs, 'expansions', false, ...baseDirs);
+  yield* searchYGOProResourceInScope(fs, 'expansions', true, ...baseDirs);
+  yield* searchYGOProResourceInScope(fs, '', false, ...baseDirs);
+  yield* searchYGOProResourceInScope(fs, '', true, ...baseDirs);
+}
 
-  for await (const zipPath of searchYGOProEntryPath(
+async function* searchYGOProResourceInScope(
+  fs: NodeFs,
+  scope: YGOProEntryScope,
+  archivesOnly: boolean,
+  ...baseDirs: string[]
+): AsyncGenerator<YGOProResource> {
+  const match = archivesOnly
+    ? isArchivePath
+    : (entry: string) => !isArchivePath(entry);
+  for await (const entryPath of searchYGOProEntryPathInScope(
     fs,
-    isArchivePath,
+    scope,
+    match,
     ...baseDirs,
   )) {
+    if (!archivesOnly) {
+      yield {
+        path: entryPath,
+        read: () => fs.promises.readFile(entryPath),
+      };
+      continue;
+    }
+
     let zip: JSZip;
     try {
-      zip = await JSZip.loadAsync(await fs.promises.readFile(zipPath));
+      zip = await JSZip.loadAsync(await fs.promises.readFile(entryPath));
     } catch {
       continue;
     }
@@ -141,7 +151,7 @@ export async function* searchYGOProResource(
       }
       yield {
         path: file.name,
-        zipPath,
+        zipPath: entryPath,
         read: () => file.async('uint8array'),
       };
     }
