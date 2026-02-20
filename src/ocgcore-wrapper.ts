@@ -2,6 +2,7 @@ import { OcgcoreModule } from './vendor/libocgcore.shared';
 import { OcgcoreDuel } from './ocgcore-duel';
 import { CardDataEntry } from 'ygopro-cdb-encode';
 import { OcgcoreMessageType } from './types/ocgcore-enums';
+import { applyCardSpecials } from './card-reader/specials';
 import {
   CardReader,
   CardReaderFn,
@@ -129,10 +130,11 @@ export class OcgcoreWrapper {
     if (!data) {
       return null;
     }
-    if (data instanceof CardDataEntry) {
-      return data;
+    const patched = applyCardSpecials(cardId, data);
+    if (patched instanceof CardDataEntry) {
+      return patched;
     }
-    return new CardDataEntry().fromPartial(data);
+    return new CardDataEntry().fromPartial(patched);
   }
 
   handleMessage(
