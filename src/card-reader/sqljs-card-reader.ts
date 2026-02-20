@@ -1,13 +1,14 @@
 import type { Database, SqlJsStatic } from 'sql.js';
 import { YGOProCdb } from 'ygopro-cdb-encode';
 import type { CardReaderFinalized, CardReaderFn } from '../types/callback';
+import { applyCardSpecials } from './specials';
 
 function createReader(dbs: YGOProCdb[]): CardReaderFn {
   return (cardId: number) => {
     for (const db of dbs) {
       const data = db.findById(cardId);
       if (data) {
-        return data;
+        return applyCardSpecials(cardId, data);
       }
     }
     return null;
