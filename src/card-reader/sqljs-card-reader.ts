@@ -43,6 +43,7 @@ export function SqljsCardReader(
       }
       return new YGOProCdb(item as Database);
     });
+    owned.forEach((db) => db.noTexts());
     const reader = createReader(dbs);
     return {
       apply: reader,
