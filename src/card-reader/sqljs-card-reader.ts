@@ -3,9 +3,20 @@ import { YGOProCdb } from 'ygopro-cdb-encode';
 import type { CardReaderFinalized, CardReaderFn } from '../types/callback';
 
 function createReader(dbs: YGOProCdb[]): CardReaderFn {
+  const brokenDbIndexes = new Set<number>();
   return (cardId: number) => {
-    for (const db of dbs) {
-      const data = db.findById(cardId);
+    for (let i = 0; i < dbs.length; i++) {
+      if (brokenDbIndexes.has(i)) {
+        continue;
+      }
+      const db = dbs[i];
+      let data;
+      try {
+        data = db.findById(cardId);
+      } catch {
+        brokenDbIndexes.add(i);
+        continue;
+      }
       if (data) {
         return data;
       }

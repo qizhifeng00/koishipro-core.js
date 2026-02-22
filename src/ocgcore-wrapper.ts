@@ -29,18 +29,31 @@ export class OcgcoreWrapper {
   public cardReaders: CardReader[] = [];
   public messageHandlers: MessageHandler[] = [];
 
-  private heapU8: Uint8Array;
-  private heapView: DataView;
+  private _heapView: DataView;
   private encoder = new TextEncoder();
   private decoder = new TextDecoder('utf-8');
   private duels = new Map<number, OcgcoreDuel>();
+
+  private get heapU8(): Uint8Array {
+    if (!this.ocgcoreModule) {
+      throw new Error('Ocgcore module has been finalized');
+    }
+    return this.ocgcoreModule.HEAPU8 as Uint8Array;
+  }
+
+  private get heapView(): DataView {
+    const heapU8 = this.heapU8;
+    if (this._heapView.buffer !== heapU8.buffer) {
+      this._heapView = new DataView(heapU8.buffer);
+    }
+    return this._heapView;
+  }
 
   constructor(
     public ocgcoreModule: OcgcoreModule,
     options?: { scriptBufferSize?: number; logBufferSize?: number },
   ) {
-    this.heapU8 = ocgcoreModule.HEAPU8 as Uint8Array;
-    this.heapView = new DataView(this.heapU8.buffer);
+    this._heapView = new DataView((ocgcoreModule.HEAPU8 as Uint8Array).buffer);
     this.scriptBufferSize = options?.scriptBufferSize ?? 0x100000;
     this.logBufferSize = options?.logBufferSize ?? 1024;
 
@@ -152,11 +165,12 @@ export class OcgcoreWrapper {
   }
 
   getUTF8String(ptr: number): string {
+    const heapU8 = this.heapU8;
     let length = 0;
-    while (this.heapU8[ptr + length] !== 0) {
+    while (heapU8[ptr + length] !== 0) {
       length++;
     }
-    return this.decoder.decode(this.heapU8.subarray(ptr, ptr + length));
+    return this.decoder.decode(heapU8.subarray(ptr, ptr + length));
   }
 
   setHeap(ptr: number, data: Uint8Array): void {
@@ -187,10 +201,11 @@ export class OcgcoreWrapper {
     }
 
     let offset = 0;
+    const heapU8 = this.heapU8;
     const ptrs = encoded.map((bytes) => {
       const ptr = this.tmpStringBufferPtr + offset;
-      this.heapU8.set(bytes, ptr);
-      this.heapU8[ptr + bytes.length] = 0;
+      heapU8.set(bytes, ptr);
+      heapU8[ptr + bytes.length] = 0;
       offset += bytes.length + 1;
       return ptr;
     });
