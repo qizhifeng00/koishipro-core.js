@@ -1,7 +1,7 @@
 {
   "name": "koishipro-core.js",
   "description": "WASM wrapper for YGOPro/ocgcore, designed for both Node and browser runtimes.",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -42,7 +42,7 @@
     "nfkit": "^1.0.14",
     "sql.js": "^1.13.0",
     "ygopro-cdb-encode": "^1.1.0",
-    "ygopro-msg-encode": "^1.2.0",
+    "ygopro-msg-encode": "^1.2.2",
     "ygopro-yrp-encode": "^1.0.1"
   },
   "jest": {
