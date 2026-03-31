@@ -20,6 +20,7 @@ import {
 } from './types/ocgcore-params';
 import {
   MESSAGE_BUFFER_SIZE,
+  RETURN_BUFFER_SIZE,
   QUERY_BUFFER_SIZE,
   REGISTRY_BUFFER_SIZE,
   LEN_HEADER,
@@ -43,18 +44,28 @@ import {
 import { Advancor } from './advancors';
 
 export class OcgcoreDuel {
+  private static readonly RECEIVE_SIZE = Math.max(
+    MESSAGE_BUFFER_SIZE,
+    QUERY_BUFFER_SIZE,
+    REGISTRY_BUFFER_SIZE,
+  );
+  private static readonly RETURN_SIZE = RETURN_BUFFER_SIZE;
+  private static readonly EMPTY_RETURN_BUFFER = new Uint8Array(
+    OcgcoreDuel.RETURN_SIZE,
+  );
+
   private returnPtr = 0;
-  private returnSize = 512;
+  private receivePtr = 0;
 
   constructor(
     public ocgcoreWrapper: OcgcoreWrapper,
     public duelPtr: number,
-  ) {}
+  ) {
+    this.returnPtr = this.ocgcoreWrapper.malloc(OcgcoreDuel.RETURN_SIZE);
+    this.receivePtr = this.ocgcoreWrapper.malloc(OcgcoreDuel.RECEIVE_SIZE);
+  }
 
   startDuel(options: number | OcgcoreStartDuelOptions): void {
-    if (!this.returnPtr) {
-      this.returnPtr = this.ocgcoreWrapper.malloc(this.returnSize);
-    }
     const optionValue = normalizeStartDuelOptions(options);
     this.ocgcoreWrapper.ocgcoreModule._start_duel(this.duelPtr, optionValue);
   }
@@ -68,6 +79,10 @@ export class OcgcoreDuel {
     if (this.returnPtr) {
       this.ocgcoreWrapper.free(this.returnPtr);
       this.returnPtr = 0;
+    }
+    if (this.receivePtr) {
+      this.ocgcoreWrapper.free(this.receivePtr);
+      this.receivePtr = 0;
     }
     this.ocgcoreWrapper.forgetDuel(this.duelPtr);
   }
@@ -90,10 +105,11 @@ export class OcgcoreDuel {
   }
 
   private getMessage(length: number): OcgcoreMessageResult {
-    const ptr = this.ocgcoreWrapper.malloc(MESSAGE_BUFFER_SIZE);
-    this.ocgcoreWrapper.ocgcoreModule._get_message(this.duelPtr, ptr);
-    const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
-    this.ocgcoreWrapper.free(ptr);
+    this.ocgcoreWrapper.ocgcoreModule._get_message(
+      this.duelPtr,
+      this.receivePtr,
+    );
+    const raw = this.ocgcoreWrapper.copyHeap(this.receivePtr, length);
     return { length, raw };
   }
 
@@ -196,18 +212,16 @@ export class OcgcoreDuel {
     query: OcgcoreQueryCardParams,
     parseOptions?: OcgcoreParseOptions<TNoParse>,
   ): OcgcoreCardQueryResult<TNoParse> {
-    const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_card(
       this.duelPtr,
       query.player,
       query.location,
       query.sequence,
       query.queryFlag,
-      ptr,
+      this.receivePtr,
       query.useCache ?? 0,
     );
-    const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
-    this.ocgcoreWrapper.free(ptr);
+    const raw = this.ocgcoreWrapper.copyHeap(this.receivePtr, length);
     const card = parseOptions?.noParse
       ? undefined
       : length <= LEN_HEADER
@@ -228,17 +242,15 @@ export class OcgcoreDuel {
     query: OcgcoreQueryFieldCardParams,
     parseOptions?: OcgcoreParseOptions<TNoParse>,
   ): OcgcoreFieldCardQueryResult<TNoParse> {
-    const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_field_card(
       this.duelPtr,
       query.player,
       query.location,
       query.queryFlag,
-      ptr,
+      this.receivePtr,
       query.useCache ?? 0,
     );
-    const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
-    this.ocgcoreWrapper.free(ptr);
+    const raw = this.ocgcoreWrapper.copyHeap(this.receivePtr, length);
     const cards = parseOptions?.noParse
       ? undefined
       : parseFieldCardQuery(raw, length);
@@ -248,13 +260,11 @@ export class OcgcoreDuel {
   queryFieldInfo<TNoParse extends boolean | undefined = false>(
     parseOptions?: OcgcoreParseOptions<TNoParse>,
   ): OcgcoreFieldInfoResult<TNoParse> {
-    const ptr = this.ocgcoreWrapper.malloc(QUERY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._query_field_info(
       this.duelPtr,
-      ptr,
+      this.receivePtr,
     );
-    const raw = this.ocgcoreWrapper.copyHeap(ptr, length);
-    this.ocgcoreWrapper.free(ptr);
+    const raw = this.ocgcoreWrapper.copyHeap(this.receivePtr, length);
     const field = parseOptions?.noParse ? undefined : parseFieldInfo(raw);
     return { length, raw, field: field as any };
   }
@@ -268,12 +278,14 @@ export class OcgcoreDuel {
       this.setResponseInt(response);
       return;
     }
-    if (response.length > this.returnSize) {
-      this.ocgcoreWrapper.free(this.returnPtr);
-      this.returnPtr = this.ocgcoreWrapper.malloc(response.length);
-      this.returnSize = response.length;
-    }
-    this.ocgcoreWrapper.setHeap(this.returnPtr, response);
+    this.ocgcoreWrapper.setHeap(
+      this.returnPtr,
+      OcgcoreDuel.EMPTY_RETURN_BUFFER,
+    );
+    this.ocgcoreWrapper.setHeap(
+      this.returnPtr,
+      response.subarray(0, OcgcoreDuel.RETURN_SIZE),
+    );
     this.ocgcoreWrapper.ocgcoreModule._set_responseb(
       this.duelPtr,
       this.returnPtr,
@@ -289,18 +301,19 @@ export class OcgcoreDuel {
   }
 
   getRegistryValue(key: string): OcgcoreRegistryValueResult {
-    const outPtr = this.ocgcoreWrapper.malloc(REGISTRY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.useTmpData(
       (keyPtr) =>
         this.ocgcoreWrapper.ocgcoreModule._get_registry_value(
           this.duelPtr,
           keyPtr,
-          outPtr,
+          this.receivePtr,
         ),
       key,
     );
-    const raw = this.ocgcoreWrapper.copyHeap(outPtr, Math.max(0, length));
-    this.ocgcoreWrapper.free(outPtr);
+    const raw = this.ocgcoreWrapper.copyHeap(
+      this.receivePtr,
+      Math.max(0, length),
+    );
     const value = raw;
     const text = length >= 0 ? decodeUtf8(raw) : undefined;
     return { length, raw, value, text };
@@ -320,13 +333,14 @@ export class OcgcoreDuel {
   }
 
   getRegistryKeys(): OcgcoreRegistryKeysResult {
-    const outPtr = this.ocgcoreWrapper.malloc(REGISTRY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._get_registry_keys(
       this.duelPtr,
-      outPtr,
+      this.receivePtr,
     );
-    const raw = this.ocgcoreWrapper.copyHeap(outPtr, Math.max(0, length));
-    this.ocgcoreWrapper.free(outPtr);
+    const raw = this.ocgcoreWrapper.copyHeap(
+      this.receivePtr,
+      Math.max(0, length),
+    );
     const keys = length >= 0 ? parseRegistryKeys(raw) : [];
     return { length, raw, keys };
   }
@@ -336,13 +350,14 @@ export class OcgcoreDuel {
   }
 
   dumpRegistry(): OcgcoreRegistryDumpResult {
-    const outPtr = this.ocgcoreWrapper.malloc(REGISTRY_BUFFER_SIZE);
     const length = this.ocgcoreWrapper.ocgcoreModule._dump_registry(
       this.duelPtr,
-      outPtr,
+      this.receivePtr,
     );
-    const raw = this.ocgcoreWrapper.copyHeap(outPtr, Math.max(0, length));
-    this.ocgcoreWrapper.free(outPtr);
+    const raw = this.ocgcoreWrapper.copyHeap(
+      this.receivePtr,
+      Math.max(0, length),
+    );
 
     // Parse directly into dict
     const dict: Record<string, string> = {};
