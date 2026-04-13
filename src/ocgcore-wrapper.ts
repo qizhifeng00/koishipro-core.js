@@ -12,6 +12,10 @@ import {
   ScriptReader,
   ScriptReaderFn,
 } from './types/callback';
+import {
+  OcgcoreDuelSnapshotState,
+  OcgcoreWrapperSnapshotState,
+} from './ocgcore-snapshot';
 
 export class OcgcoreWrapper {
   private scriptBufferPtr = 0;
@@ -33,6 +37,7 @@ export class OcgcoreWrapper {
   private encoder = new TextEncoder();
   private decoder = new TextDecoder('utf-8');
   private duels = new Map<number, OcgcoreDuel>();
+  private callbackDepth = 0;
 
   private get heapU8(): Uint8Array {
     if (!this.ocgcoreModule) {
@@ -57,57 +62,69 @@ export class OcgcoreWrapper {
     this.scriptBufferSize = options?.scriptBufferSize ?? 0x100000;
     this.logBufferSize = options?.logBufferSize ?? 1024;
 
-    this.scriptReaderFunc = this.createFunction((scriptPtr, lenPtr) => {
-      const scriptPath = this.getUTF8String(scriptPtr);
-      const content = this.readScript(scriptPath);
-      if (content == null) {
-        return 0;
-      }
+    this.scriptReaderFunc = this.createFunction(
+      (scriptPtr, lenPtr) =>
+        this.runInCallback(() => {
+          const scriptPath = this.getUTF8String(scriptPtr);
+          const content = this.readScript(scriptPath);
+          if (content == null) {
+            return 0;
+          }
 
-      if (!this.scriptBufferPtr) {
-        this.scriptBufferPtr = this.ocgcoreModule._malloc(
-          this.scriptBufferSize,
-        );
-      }
+          if (!this.scriptBufferPtr) {
+            this.scriptBufferPtr = this.ocgcoreModule._malloc(
+              this.scriptBufferSize,
+            );
+          }
 
-      const bytes = content;
-      if (bytes.length > this.scriptBufferSize) {
-        this.ocgcoreModule._free(this.scriptBufferPtr);
-        this.scriptBufferPtr = this.ocgcoreModule._malloc(bytes.length);
-        this.scriptBufferSize = bytes.length;
-      }
+          const bytes = content;
+          if (bytes.length > this.scriptBufferSize) {
+            this.ocgcoreModule._free(this.scriptBufferPtr);
+            this.scriptBufferPtr = this.ocgcoreModule._malloc(bytes.length);
+            this.scriptBufferSize = bytes.length;
+          }
 
-      this.heapU8.set(bytes, this.scriptBufferPtr);
-      this.heapView.setInt32(lenPtr, bytes.length, true);
-      return this.scriptBufferPtr;
-    }, 'iii');
+          this.heapU8.set(bytes, this.scriptBufferPtr);
+          this.heapView.setInt32(lenPtr, bytes.length, true);
+          return this.scriptBufferPtr;
+        }),
+      'iii',
+    );
     this.ocgcoreModule._set_script_reader(this.scriptReaderFunc);
 
-    this.cardReaderFunc = this.createFunction((cardId, cardDataPtr) => {
-      const data = this.readCard(cardId);
-      if (!data) {
-        return 0;
-      }
+    this.cardReaderFunc = this.createFunction(
+      (cardId, cardDataPtr) =>
+        this.runInCallback(() => {
+          const data = this.readCard(cardId);
+          if (!data) {
+            return 0;
+          }
 
-      const buf = data.toPayload();
-      this.heapU8.set(buf, cardDataPtr);
-      return 0;
-    }, 'iii');
+          const buf = data.toPayload();
+          this.heapU8.set(buf, cardDataPtr);
+          return 0;
+        }),
+      'iii',
+    );
     this.ocgcoreModule._set_card_reader(this.cardReaderFunc);
 
-    this.messageHandlerFunc = this.createFunction((duelPtr, messageType) => {
-      if (!this.logBufferPtr) {
-        this.logBufferPtr = this.ocgcoreModule._malloc(this.logBufferSize);
-      }
-      this.ocgcoreModule._get_log_message(duelPtr, this.logBufferPtr);
-      const message = this.getUTF8String(this.logBufferPtr);
-      const type =
-        messageType === 2
-          ? OcgcoreMessageType.DebugMessage
-          : OcgcoreMessageType.ScriptError;
-      const duel = this.getOrCreateDuel(duelPtr);
-      this.handleMessage(duel, message, type);
-    }, 'iii');
+    this.messageHandlerFunc = this.createFunction(
+      (duelPtr, messageType) =>
+        this.runInCallback(() => {
+          if (!this.logBufferPtr) {
+            this.logBufferPtr = this.ocgcoreModule._malloc(this.logBufferSize);
+          }
+          this.ocgcoreModule._get_log_message(duelPtr, this.logBufferPtr);
+          const message = this.getUTF8String(this.logBufferPtr);
+          const type =
+            messageType === 2
+              ? OcgcoreMessageType.DebugMessage
+              : OcgcoreMessageType.ScriptError;
+          const duel = this.getOrCreateDuel(duelPtr);
+          this.handleMessage(duel, message, type);
+        }),
+      'iii',
+    );
     this.ocgcoreModule._set_message_handler(this.messageHandlerFunc);
   }
 
@@ -179,6 +196,10 @@ export class OcgcoreWrapper {
 
   copyHeap(ptr: number, length: number): Uint8Array {
     return this.heapU8.slice(ptr, ptr + length);
+  }
+
+  snapshotHeap(): Uint8Array {
+    return this.heapU8.slice();
   }
 
   useTmpData<R>(
@@ -299,8 +320,61 @@ export class OcgcoreWrapper {
     return duel;
   }
 
+  attachDuel(
+    duelPtr: number,
+    snapshotState: OcgcoreDuelSnapshotState,
+  ): OcgcoreDuel {
+    if (snapshotState.duelPtr !== duelPtr) {
+      throw new Error('Cannot attach ocgcore duel: snapshot pointer mismatch');
+    }
+    const existing = this.duels.get(duelPtr);
+    if (existing) {
+      return existing;
+    }
+    const duel = new OcgcoreDuel(this, duelPtr, snapshotState);
+    this.duels.set(duelPtr, duel);
+    return duel;
+  }
+
   forgetDuel(duelPtr: number): void {
     this.duels.delete(duelPtr);
+  }
+
+  getSnapshotState(): OcgcoreWrapperSnapshotState {
+    return {
+      scriptBufferPtr: this.scriptBufferPtr,
+      scriptBufferSize: this.scriptBufferSize,
+      logBufferPtr: this.logBufferPtr,
+      logBufferSize: this.logBufferSize,
+      tmpStringBufferPtr: this.tmpStringBufferPtr,
+      tmpStringBufferSize: this.tmpStringBufferSize,
+    };
+  }
+
+  restoreSnapshotState(state: OcgcoreWrapperSnapshotState): void {
+    this.scriptBufferPtr = state.scriptBufferPtr;
+    this.scriptBufferSize = state.scriptBufferSize;
+    this.logBufferPtr = state.logBufferPtr;
+    this.logBufferSize = state.logBufferSize;
+    this.tmpStringBufferPtr = state.tmpStringBufferPtr;
+    this.tmpStringBufferSize = state.tmpStringBufferSize;
+  }
+
+  assertCanSnapshot(): void {
+    if (this.callbackDepth > 0) {
+      throw new Error(
+        'Cannot snapshot an ocgcore duel while an ocgcore callback is running',
+      );
+    }
+  }
+
+  private runInCallback<T>(fn: () => T): T {
+    this.callbackDepth++;
+    try {
+      return fn();
+    } finally {
+      this.callbackDepth--;
+    }
   }
 
   finalize(): void {

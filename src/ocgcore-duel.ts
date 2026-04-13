@@ -42,6 +42,11 @@ import {
   YGOProMsgRetry,
 } from 'ygopro-msg-encode';
 import { Advancor } from './advancors';
+import {
+  encodeOcgcoreDuelSnapshot,
+  OCGCORE_DUEL_SNAPSHOT_VERSION,
+  OcgcoreDuelSnapshotState,
+} from './ocgcore-snapshot';
 
 export class OcgcoreDuel {
   private static readonly RECEIVE_SIZE = Math.max(
@@ -60,9 +65,15 @@ export class OcgcoreDuel {
   constructor(
     public ocgcoreWrapper: OcgcoreWrapper,
     public duelPtr: number,
+    snapshotState?: OcgcoreDuelSnapshotState,
   ) {
-    this.returnPtr = this.ocgcoreWrapper.malloc(OcgcoreDuel.RETURN_SIZE);
-    this.receivePtr = this.ocgcoreWrapper.malloc(OcgcoreDuel.RECEIVE_SIZE);
+    if (snapshotState) {
+      this.returnPtr = snapshotState.returnPtr;
+      this.receivePtr = snapshotState.receivePtr;
+    } else {
+      this.returnPtr = this.ocgcoreWrapper.malloc(OcgcoreDuel.RETURN_SIZE);
+      this.receivePtr = this.ocgcoreWrapper.malloc(OcgcoreDuel.RECEIVE_SIZE);
+    }
   }
 
   startDuel(options: number | OcgcoreStartDuelOptions): void {
@@ -85,6 +96,27 @@ export class OcgcoreDuel {
       this.receivePtr = 0;
     }
     this.ocgcoreWrapper.forgetDuel(this.duelPtr);
+  }
+
+  snapshot(): Uint8Array {
+    if (this.ended) {
+      throw new Error('Cannot snapshot an ended ocgcore duel');
+    }
+    this.ocgcoreWrapper.assertCanSnapshot();
+    const memory = this.ocgcoreWrapper.snapshotHeap();
+    return encodeOcgcoreDuelSnapshot(
+      {
+        version: OCGCORE_DUEL_SNAPSHOT_VERSION,
+        memoryByteLength: memory.byteLength,
+        duel: {
+          duelPtr: this.duelPtr,
+          returnPtr: this.returnPtr,
+          receivePtr: this.receivePtr,
+        },
+        wrapper: this.ocgcoreWrapper.getSnapshotState(),
+      },
+      memory,
+    );
   }
 
   setPlayerInfo(info: OcgcoreSetPlayerInfoParams): void {
